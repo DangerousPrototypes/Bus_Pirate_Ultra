@@ -35213,13 +35213,9 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 </signal>
 <signal name="FSMC_NOE_OE">
 <contactref element="U2" pad="118"/>
-<contactref element="U1" pad="20"/>
-<wire x1="108.1093" y1="12.3183" x2="97.595" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_NWE_WE">
 <contactref element="U2" pad="119"/>
-<contactref element="U1" pad="21"/>
-<wire x1="108.1093" y1="11.8183" x2="97.095" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D0">
 <contactref element="U2" pad="85"/>
@@ -35233,23 +35229,23 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 </signal>
 <signal name="FSMC_D4">
 <contactref element="U2" pad="58"/>
-<contactref element="U1" pad="25"/>
-<wire x1="95.095" y1="2.3183" x2="108.1093" y2="9.8183" width="0" layer="19" extent="1-1"/>
+<contactref element="U1" pad="18"/>
+<wire x1="95.095" y1="2.3183" x2="108.1093" y2="13.3183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D5">
 <contactref element="U2" pad="59"/>
-<contactref element="U1" pad="26"/>
-<wire x1="95.595" y1="2.3183" x2="108.1093" y2="9.3183" width="0" layer="19" extent="1-1"/>
+<contactref element="U1" pad="19"/>
+<wire x1="95.595" y1="2.3183" x2="108.1093" y2="12.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D6">
 <contactref element="U2" pad="60"/>
-<contactref element="U1" pad="28"/>
-<wire x1="96.095" y1="2.3183" x2="108.1093" y2="8.3183" width="0" layer="19" extent="1-1"/>
+<contactref element="U1" pad="20"/>
+<wire x1="96.095" y1="2.3183" x2="108.1093" y2="12.3183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D7">
 <contactref element="U2" pad="63"/>
-<contactref element="U1" pad="29"/>
-<wire x1="97.595" y1="2.3183" x2="108.1093" y2="7.8183" width="0" layer="19" extent="1-1"/>
+<contactref element="U1" pad="21"/>
+<wire x1="97.595" y1="2.3183" x2="108.1093" y2="11.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_NE3_CE">
 <contactref element="U2" pad="125"/>
@@ -35306,27 +35302,61 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 </signal>
 <signal name="FSMC_D8">
 <contactref element="U2" pad="64"/>
+<contactref element="U1" pad="22"/>
+<wire x1="98.095" y1="2.3183" x2="108.1093" y2="11.3183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D9">
 <contactref element="U2" pad="65"/>
+<contactref element="U1" pad="25"/>
+<wire x1="98.595" y1="2.3183" x2="108.1093" y2="9.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D10">
 <contactref element="U2" pad="66"/>
+<contactref element="U1" pad="26"/>
+<wire x1="99.095" y1="2.3183" x2="108.1093" y2="9.3183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D11">
 <contactref element="U2" pad="67"/>
+<contactref element="U1" pad="28"/>
+<wire x1="99.595" y1="2.3183" x2="108.1093" y2="8.3183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D12">
 <contactref element="U2" pad="68"/>
+<contactref element="U1" pad="29"/>
+<wire x1="100.095" y1="2.3183" x2="108.1093" y2="7.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D13">
 <contactref element="U2" pad="77"/>
+<contactref element="U1" pad="33"/>
+<wire x1="104.095" y1="6.3183" x2="108.1093" y2="5.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D14">
 <contactref element="U2" pad="78"/>
+<contactref element="U1" pad="32"/>
+<wire x1="104.095" y1="6.8183" x2="108.1093" y2="6.3183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D15">
 <contactref element="U2" pad="79"/>
+<contactref element="U1" pad="31"/>
+<wire x1="104.095" y1="7.3183" x2="108.1093" y2="6.8183" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="N$17">
+<contactref element="U1" pad="34"/>
+</signal>
+<signal name="N$11">
+<contactref element="U1" pad="3"/>
+</signal>
+<signal name="N$15">
+<contactref element="U1" pad="4"/>
+</signal>
+<signal name="N$19">
+<contactref element="U1" pad="7"/>
+</signal>
+<signal name="N$21">
+<contactref element="U1" pad="8"/>
+</signal>
+<signal name="N$22">
+<contactref element="U1" pad="9"/>
 </signal>
 </signals>
 <mfgpreviewcolors>

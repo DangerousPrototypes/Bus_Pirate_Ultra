@@ -28091,22 +28091,12 @@ H     X    L   :(  (contention)</text>
 <wire x1="-215.9" y1="416.56" x2="-228.6" y2="416.56" width="0.1524" layer="91"/>
 <label x="-241.3" y="416.56" size="1.778" layer="95"/>
 </segment>
-<segment>
-<pinref part="U1" gate="BANK3" pin="GBIN7/IOL_13B"/>
-<wire x1="-2.54" y1="360.68" x2="0" y2="360.68" width="0.1524" layer="91"/>
-<label x="0" y="360.68" size="1.778" layer="95"/>
-</segment>
 </net>
 <net name="FSMC_NWE_WE" class="0">
 <segment>
 <pinref part="U2" gate="U" pin="PD5/FT/FSMC_NWE/USART2_TX('1')"/>
 <wire x1="-215.9" y1="414.02" x2="-228.6" y2="414.02" width="0.1524" layer="91"/>
 <label x="-241.3" y="414.02" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="U1" gate="BANK3" pin="GBIN6/IOL_14A"/>
-<wire x1="-2.54" y1="363.22" x2="0" y2="363.22" width="0.1524" layer="91"/>
-<label x="0" y="363.22" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="FSMC_D0" class="0">
@@ -28140,9 +28130,9 @@ H     X    L   :(  (contention)</text>
 <label x="-238.76" y="365.76" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK3" pin="IOL_18A"/>
-<wire x1="-2.54" y1="373.38" x2="0" y2="373.38" width="0.1524" layer="91"/>
-<label x="0" y="373.38" size="1.778" layer="95"/>
+<pinref part="U1" gate="BANK3" pin="IOL_12B"/>
+<wire x1="-2.54" y1="355.6" x2="0" y2="355.6" width="0.1524" layer="91"/>
+<label x="0" y="355.6" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="FSMC_D5" class="0">
@@ -28152,9 +28142,9 @@ H     X    L   :(  (contention)</text>
 <label x="-238.76" y="363.22" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK3" pin="IOL_18B"/>
-<wire x1="-2.54" y1="375.92" x2="0" y2="375.92" width="0.1524" layer="91"/>
-<label x="0" y="375.92" size="1.778" layer="95"/>
+<pinref part="U1" gate="BANK3" pin="IOL_13A"/>
+<wire x1="-2.54" y1="358.14" x2="0" y2="358.14" width="0.1524" layer="91"/>
+<label x="0" y="358.14" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="FSMC_D6" class="0">
@@ -28164,9 +28154,9 @@ H     X    L   :(  (contention)</text>
 <label x="-238.76" y="360.68" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK3" pin="IOL_23A"/>
-<wire x1="-2.54" y1="378.46" x2="0" y2="378.46" width="0.1524" layer="91"/>
-<label x="0" y="378.46" size="1.778" layer="95"/>
+<pinref part="U1" gate="BANK3" pin="GBIN7/IOL_13B"/>
+<wire x1="-2.54" y1="360.68" x2="0" y2="360.68" width="0.1524" layer="91"/>
+<label x="0" y="360.68" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="FSMC_D7" class="0">
@@ -28176,9 +28166,9 @@ H     X    L   :(  (contention)</text>
 <label x="-238.76" y="358.14" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK3" pin="IOL_23B"/>
-<wire x1="-2.54" y1="381" x2="0" y2="381" width="0.1524" layer="91"/>
-<label x="0" y="381" size="1.778" layer="95"/>
+<pinref part="U1" gate="BANK3" pin="GBIN6/IOL_14A"/>
+<wire x1="-2.54" y1="363.22" x2="0" y2="363.22" width="0.1524" layer="91"/>
+<label x="0" y="363.22" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="FSMC_NE3_CE" class="0">
@@ -28315,12 +28305,22 @@ H     X    L   :(  (contention)</text>
 <wire x1="-215.9" y1="355.6" x2="-228.6" y2="355.6" width="0.1524" layer="91"/>
 <label x="-238.76" y="355.6" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_14B"/>
+<wire x1="-2.54" y1="365.76" x2="0" y2="365.76" width="0.1524" layer="91"/>
+<label x="0" y="365.76" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="FSMC_D9" class="0">
 <segment>
 <pinref part="U2" gate="U" pin="PE12/FT/FSMC_D9/TIM1_CH3N('11')"/>
 <wire x1="-215.9" y1="353.06" x2="-228.6" y2="353.06" width="0.1524" layer="91"/>
 <label x="-238.76" y="353.06" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_18A"/>
+<wire x1="-2.54" y1="373.38" x2="0" y2="373.38" width="0.1524" layer="91"/>
+<label x="0" y="373.38" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="FSMC_D10" class="0">
@@ -28329,12 +28329,22 @@ H     X    L   :(  (contention)</text>
 <wire x1="-215.9" y1="350.52" x2="-228.6" y2="350.52" width="0.1524" layer="91"/>
 <label x="-238.76" y="350.52" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_18B"/>
+<wire x1="-2.54" y1="375.92" x2="0" y2="375.92" width="0.1524" layer="91"/>
+<label x="0" y="375.92" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="FSMC_D11" class="0">
 <segment>
 <pinref part="U2" gate="U" pin="PE14/FT/FSMC_D11/TIM1_CH4('11')"/>
 <wire x1="-215.9" y1="347.98" x2="-228.6" y2="347.98" width="0.1524" layer="91"/>
 <label x="-238.76" y="347.98" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_23A"/>
+<wire x1="-2.54" y1="378.46" x2="0" y2="378.46" width="0.1524" layer="91"/>
+<label x="0" y="378.46" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="FSMC_D12" class="0">
@@ -28343,12 +28353,22 @@ H     X    L   :(  (contention)</text>
 <wire x1="-215.9" y1="345.44" x2="-228.6" y2="345.44" width="0.1524" layer="91"/>
 <label x="-238.76" y="345.44" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_23B"/>
+<wire x1="-2.54" y1="381" x2="0" y2="381" width="0.1524" layer="91"/>
+<label x="0" y="381" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="FSMC_D13" class="0">
 <segment>
 <pinref part="U2" gate="U" pin="PD8/FT/FSMC_D13/USART3_TX('11')"/>
 <wire x1="-215.9" y1="406.4" x2="-228.6" y2="406.4" width="0.1524" layer="91"/>
 <label x="-241.3" y="406.4" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_25A"/>
+<wire x1="-2.54" y1="388.62" x2="0" y2="388.62" width="0.1524" layer="91"/>
+<label x="0" y="388.62" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="FSMC_D14" class="0">
@@ -28357,12 +28377,58 @@ H     X    L   :(  (contention)</text>
 <wire x1="-215.9" y1="403.86" x2="-228.6" y2="403.86" width="0.1524" layer="91"/>
 <label x="-241.3" y="403.86" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_24B"/>
+<wire x1="-2.54" y1="386.08" x2="0" y2="386.08" width="0.1524" layer="91"/>
+<label x="0" y="386.08" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="FSMC_D15" class="0">
 <segment>
 <pinref part="U2" gate="U" pin="PD10/FT/FSMC_D15/USART3_CK('11')"/>
 <wire x1="-215.9" y1="401.32" x2="-228.6" y2="401.32" width="0.1524" layer="91"/>
 <label x="-241.3" y="401.32" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_24A"/>
+<wire x1="-2.54" y1="383.54" x2="0" y2="383.54" width="0.1524" layer="91"/>
+<label x="0" y="383.54" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="N$17" class="0">
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_25B"/>
+<wire x1="-2.54" y1="391.16" x2="0" y2="391.16" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$11" class="0">
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_3A"/>
+<wire x1="-38.1" y1="365.76" x2="-40.64" y2="365.76" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$15" class="0">
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_3B"/>
+<wire x1="-38.1" y1="363.22" x2="-40.64" y2="363.22" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$19" class="0">
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_4A"/>
+<wire x1="-38.1" y1="360.68" x2="-40.64" y2="360.68" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$21" class="0">
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_4B"/>
+<wire x1="-38.1" y1="358.14" x2="-40.64" y2="358.14" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$22" class="0">
+<segment>
+<pinref part="U1" gate="BANK3" pin="IOL_5A"/>
+<wire x1="-38.1" y1="355.6" x2="-40.64" y2="355.6" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
