@@ -5,18 +5,27 @@
 #- August - 2016
 #- GPL license
 # -----------------------------------------------------------------------------
-# --  Pinout:
-# --  Guide:
+# --  Basic tests using the LEDs attached to D2-D9
+# -----------------------------------------------------------------------------
 
-# ------------ User Leds ------------------------------------------------------
-set_io  D2  C3 #io name, portIO
+# Clock source
+set_io clk J3 # friendly name, fpga pin
+
+# Dev board LEDs
+#set_io  D2  C3
 set_io  D3  B3
 set_io  D4  C4
 set_io  D5  C5
-set_io  D6  A1
+#set_io  D6  A1
 set_io  D7  A2
 set_io  D8  B4
 set_io  D9  B5
 
-# Onboard 12Mhz oscillator
-set_io clk J3
+# Each set of buffered IO pins
+set_io a[0] C3 #D2
+set_io a[1] A1 #D6
+
+# FSMC address and data
+# Interrupt lines
+# Logic analyer connections
+# Power supplies and pullup resistors

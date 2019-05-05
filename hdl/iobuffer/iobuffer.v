@@ -1,12 +1,20 @@
+//------------------------------------------------------------------
+//-- Input/output buffer control
+//-- Uses two output pins and one tristate pin
+//-- The 3 controls of the tristate pin need to be exposed in the top module and passed individually
+//-- 74LVC1T45 is a bidirectional buffer. LOW is input to FPGA and HiZ on IO header
+//-- 74LVC1G07 is an open drain output buffer. HIGH is HiZ, LOW is GND
+//--
+//------------------------------------------------------------------
 `ifndef __IOBUFF__
 `define __IOBUFF__
 module iobuff (
       //interface
-      input wire oe,
-      input wire od,
-      input wire dir,
-      input wire din,
-      output wire dout,
+      input wire oe, //output enable 1=true
+      input wire od, //open drain 1=true
+      input wire dir,//direction 1=input
+      input wire din,//data in (value when buffer is output)
+      output wire dout,//data out (value when buffer is input)
       //hardware driver
       output wire bufdir, //74LVC1T45 DIR pin LOW for Hi-Z
       output wire bufod, //74LVC1G07 OD pin HIGH for Hi-Z
