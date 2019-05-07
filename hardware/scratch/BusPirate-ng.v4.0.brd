@@ -34325,6 +34325,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="24.585" y1="31.79" x2="26.2670875" y2="31.79" width="0.254" layer="1"/>
 <wire x1="26.2670875" y1="31.79" x2="26.292175" y2="31.8150875" width="0.254" layer="1"/>
 <contactref element="U2" pad="133"/>
+<contactref element="U1" pad="138"/>
+<wire x1="90.095" y1="23.8183" x2="113.1093" y2="23.8183" width="0" layer="19" extent="1-1"/>
 <wire x1="50.95875" y1="25.46" x2="90.095" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="IO_OE">
@@ -34348,6 +34350,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="31.892875" y1="38.1936625" x2="35.2377375" y2="38.1936625" width="0.254" layer="1"/>
 <wire x1="35.2377375" y1="38.1936625" x2="36.0156125" y2="38.9715375" width="0.254" layer="1"/>
 <contactref element="U2" pad="97"/>
+<contactref element="U1" pad="130"/>
+<wire x1="104.095" y1="16.3183" x2="117.1093" y2="23.8183" width="0" layer="19" extent="1-1"/>
 <wire x1="63.319025" y1="28.6258" x2="104.095" y2="16.3183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="LA_AUX0">
@@ -34371,6 +34375,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="56.149875" y1="20.069175" x2="57.51195" y2="21.43125" width="0.3048" layer="16"/>
 <wire x1="41.0718" y1="20.069175" x2="39.049325" y2="22.09165" width="0.3048" layer="16"/>
 <wire x1="34.070925" y1="28.775025" x2="34.070925" y2="24.892" width="0.3048" layer="16"/>
+<contactref element="U1" pad="137"/>
+<wire x1="57.51195" y1="21.43125" x2="113.6093" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="LA_MOSI">
 <contactref element="IC4" pad="12"/>
@@ -34393,6 +34399,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="48.41875" y1="23.495" x2="53.58765" y2="23.495" width="0.254" layer="16"/>
 <wire x1="53.58765" y1="23.495" x2="53.924475" y2="23.158175" width="0.254" layer="16"/>
 <wire x1="48.41875" y1="23.495" x2="42.465625" y2="23.495" width="0.254" layer="16"/>
+<contactref element="U1" pad="142"/>
+<wire x1="54.875" y1="21.0456" x2="111.1093" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="LA_CS">
 <contactref element="IC4" pad="15"/>
@@ -34417,6 +34425,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="54.7469625" y1="22.8540875" x2="54.295675" y2="22.4028" width="0.254" layer="16"/>
 <wire x1="55.446175" y1="22.8540875" x2="56.3018375" y2="22.8540875" width="0.254" layer="1"/>
 <wire x1="55.446175" y1="22.8540875" x2="54.7469625" y2="22.8540875" width="0.254" layer="16"/>
+<contactref element="U1" pad="141"/>
+<wire x1="56.825" y1="22.330925" x2="111.6093" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="LA_MISO">
 <contactref element="IC4" pad="14"/>
@@ -34441,6 +34451,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="36.934775" y1="23.231475" x2="39.4335" y2="23.231475" width="0.254" layer="16"/>
 <wire x1="39.4335" y1="23.231475" x2="41.8465" y2="20.818475" width="0.254" layer="16"/>
 <wire x1="36.934775" y1="23.231475" x2="35.264725" y2="23.231475" width="0.254" layer="1"/>
+<contactref element="U1" pad="144"/>
+<wire x1="56.175" y1="21.70775" x2="110.1093" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SRAM_CLK">
 <contactref element="IC2" pad="6"/>
@@ -34465,6 +34477,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="30.648275" y1="35.15995" x2="31.3483625" y2="35.15995" width="0.254" layer="1"/>
 <wire x1="32.9819" y1="33.6042" x2="32.9041125" y2="33.6042" width="0.254" layer="1"/>
 <wire x1="32.9041125" y1="33.6042" x2="31.3483625" y2="35.15995" width="0.254" layer="1"/>
+<contactref element="U1" pad="139"/>
+<wire x1="48.41875" y1="20.26" x2="112.6093" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="RST">
 <contactref element="IC1" pad="7"/>
@@ -34665,6 +34679,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="41.849675" y1="28.6258" x2="40.3717125" y2="28.6258" width="0.254" layer="16"/>
 <wire x1="57.096025" y1="24.2697" x2="56.6293" y2="24.736425" width="0.254" layer="16"/>
 <wire x1="56.6293" y1="24.736425" x2="45.73905" y2="24.736425" width="0.254" layer="16"/>
+<contactref element="U1" pad="135"/>
+<wire x1="58.775" y1="22.590725" x2="114.6093" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="LA_SWV33">
 <contactref element="IC4" pad="17"/>
@@ -34687,6 +34703,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="44.961175" y1="24.2697" x2="55.07355" y2="24.2697" width="0.254" layer="16"/>
 <wire x1="57.718325" y1="22.558375" x2="56.784875" y2="22.558375" width="0.254" layer="16"/>
 <wire x1="56.784875" y1="22.558375" x2="55.07355" y2="24.2697" width="0.254" layer="16"/>
+<contactref element="U1" pad="136"/>
+<wire x1="58.2628375" y1="22.0138625" x2="114.1093" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="LA_CLK">
 <contactref element="IC2" pad="2"/>
@@ -34714,6 +34732,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <via x="35.315525" y="24.736425" extent="1-16" drill="0.508"/>
 <wire x1="35.315525" y1="24.736425" x2="35.78225" y2="24.736425" width="0.254" layer="16"/>
 <wire x1="54.9957625" y1="21.936075" x2="54.9957625" y2="21.7027125" width="0.254" layer="1"/>
+<contactref element="U1" pad="143"/>
+<wire x1="55.525" y1="21.173475" x2="110.6093" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="ADC6">
 <contactref element="IC1" pad="24"/>
@@ -34929,6 +34949,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="41.9274625" y1="19.3690875" x2="40.605075" y2="19.3690875" width="0.254" layer="16"/>
 <wire x1="40.605075" y1="19.3690875" x2="38.115875" y2="21.8582875" width="0.254" layer="16"/>
 <wire x1="38.115875" y1="21.8582875" x2="36.40455" y2="21.8582875" width="0.254" layer="16"/>
+<contactref element="U1" pad="134"/>
+<wire x1="42.306875" y1="20.26" x2="115.1093" y2="23.8183" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="UART_RX">
 <contactref element="J2" pad="2"/>
