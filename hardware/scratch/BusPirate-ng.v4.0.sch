@@ -24810,6 +24810,7 @@ H     X    L   :(  (contention)</text>
 <text x="91.44" y="220.98" size="2.54" layer="94" ratio="10" align="center">INTERNAL 1.2V VREG</text>
 <text x="55.88" y="563.88" size="1.778" layer="91" rot="R90">SRAM_1</text>
 <text x="55.88" y="535.94" size="1.778" layer="91" rot="R90">SRAM_2</text>
+<text x="114.3" y="591.82" size="1.778" layer="91">LA_LAT_MISO -&gt; BPIO_MISO</text>
 </plain>
 <instances>
 <instance part="LED2" gate="LED" x="81.28" y="78.74" smashed="yes" rot="R90">
@@ -26364,11 +26365,6 @@ H     X    L   :(  (contention)</text>
 <wire x1="33.02" y1="76.2" x2="38.1" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="IC4" gate="IC" pin="3D"/>
-<wire x1="147.32" y1="556.26" x2="149.86" y2="556.26" width="0.1524" layer="91"/>
-<label x="149.86" y="556.26" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="IC5" gate="IC" pin="A2"/>
 <wire x1="177.8" y1="139.7" x2="175.26" y2="139.7" width="0.1524" layer="91"/>
 <wire x1="175.26" y1="139.7" x2="175.26" y2="175.26" width="0.1524" layer="91"/>
@@ -26378,6 +26374,11 @@ H     X    L   :(  (contention)</text>
 <pinref part="J5" gate="J" pin="3"/>
 <wire x1="243.84" y1="297.18" x2="241.3" y2="297.18" width="0.1524" layer="91"/>
 <label x="228.6" y="297.18" size="1.778" layer="95"/>
+</segment>
+<segment>
+<wire x1="147.32" y1="566.42" x2="149.86" y2="566.42" width="0.1524" layer="91"/>
+<pinref part="IC4" gate="IC" pin="7D"/>
+<label x="149.86" y="566.42" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="SWV50" class="0">
@@ -26395,11 +26396,6 @@ H     X    L   :(  (contention)</text>
 <wire x1="33.02" y1="68.58" x2="38.1" y2="68.58" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="IC4" gate="IC" pin="2D"/>
-<wire x1="147.32" y1="553.72" x2="149.86" y2="553.72" width="0.1524" layer="91"/>
-<label x="149.86" y="553.72" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="IC5" gate="IC" pin="A1"/>
 <wire x1="177.8" y1="147.32" x2="177.8" y2="175.26" width="0.1524" layer="91"/>
 <label x="177.8" y="175.26" size="1.778" layer="95" rot="R90"/>
@@ -26408,6 +26404,11 @@ H     X    L   :(  (contention)</text>
 <pinref part="J5" gate="J" pin="2"/>
 <wire x1="243.84" y1="294.64" x2="241.3" y2="294.64" width="0.1524" layer="91"/>
 <label x="228.6" y="294.64" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="IC4" gate="IC" pin="8D"/>
+<wire x1="147.32" y1="568.96" x2="149.86" y2="568.96" width="0.1524" layer="91"/>
+<label x="149.86" y="568.96" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="ADC2" class="0">
@@ -26677,9 +26678,9 @@ H     X    L   :(  (contention)</text>
 <pinref part="IC4" gate="IC" pin="!OE"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK0" pin="IOT_177"/>
-<wire x1="-38.1" y1="436.88" x2="-40.64" y2="436.88" width="0.1524" layer="91"/>
-<label x="-48.26" y="436.88" size="1.778" layer="95"/>
+<pinref part="U1" gate="BANK1" pin="IOR_139"/>
+<wire x1="88.9" y1="449.58" x2="91.44" y2="449.58" width="0.1524" layer="91"/>
+<label x="91.44" y="449.58" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="SRAM_CLK" class="0">
@@ -27038,9 +27039,9 @@ H     X    L   :(  (contention)</text>
 <pinref part="RN4" gate="A" pin="1"/>
 </segment>
 <segment>
-<wire x1="147.32" y1="568.96" x2="149.86" y2="568.96" width="0.1524" layer="91"/>
-<pinref part="IC4" gate="IC" pin="8D"/>
-<label x="149.86" y="568.96" size="1.778" layer="95"/>
+<pinref part="IC4" gate="IC" pin="2D"/>
+<wire x1="147.32" y1="553.72" x2="149.86" y2="553.72" width="0.1524" layer="91"/>
+<label x="149.86" y="553.72" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFDIR_MOSI" class="0">
@@ -27121,9 +27122,9 @@ H     X    L   :(  (contention)</text>
 <pinref part="RN4" gate="B" pin="1"/>
 </segment>
 <segment>
-<wire x1="147.32" y1="566.42" x2="149.86" y2="566.42" width="0.1524" layer="91"/>
-<pinref part="IC4" gate="IC" pin="7D"/>
-<label x="149.86" y="566.42" size="1.778" layer="95"/>
+<pinref part="IC4" gate="IC" pin="3D"/>
+<wire x1="147.32" y1="556.26" x2="149.86" y2="556.26" width="0.1524" layer="91"/>
+<label x="149.86" y="556.26" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFDIR_CLOCK" class="0">
@@ -27202,9 +27203,9 @@ H     X    L   :(  (contention)</text>
 <pinref part="RN4" gate="C" pin="1"/>
 </segment>
 <segment>
-<wire x1="147.32" y1="563.88" x2="149.86" y2="563.88" width="0.1524" layer="91"/>
-<pinref part="IC4" gate="IC" pin="6D"/>
-<label x="149.86" y="563.88" size="1.778" layer="95"/>
+<pinref part="IC4" gate="IC" pin="4D"/>
+<wire x1="147.32" y1="558.8" x2="149.86" y2="558.8" width="0.1524" layer="91"/>
+<label x="149.86" y="558.8" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFOD_MISO" class="0">
@@ -27273,7 +27274,7 @@ H     X    L   :(  (contention)</text>
 <segment>
 <wire x1="147.32" y1="561.34" x2="149.86" y2="561.34" width="0.1524" layer="91"/>
 <pinref part="IC4" gate="IC" pin="5D"/>
-<label x="149.86" y="561.34" size="1.778" layer="95"/>
+<label x="149.86" y="561.34" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFOD_CS" class="0">
@@ -27335,9 +27336,9 @@ H     X    L   :(  (contention)</text>
 <label x="228.6" y="304.8" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="IC4" gate="IC" pin="4D"/>
-<wire x1="147.32" y1="558.8" x2="149.86" y2="558.8" width="0.1524" layer="91"/>
-<label x="149.86" y="558.8" size="1.778" layer="95"/>
+<wire x1="147.32" y1="563.88" x2="149.86" y2="563.88" width="0.1524" layer="91"/>
+<pinref part="IC4" gate="IC" pin="6D"/>
+<label x="149.86" y="563.88" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFOD_AUX" class="0">
@@ -27938,14 +27939,14 @@ H     X    L   :(  (contention)</text>
 </net>
 <net name="LA_LAT_MOSI" class="0">
 <segment>
-<wire x1="127" y1="568.96" x2="124.46" y2="568.96" width="0.1524" layer="91"/>
-<pinref part="IC4" gate="IC" pin="8Q"/>
-<label x="124.46" y="568.96" size="1.778" layer="95" align="center-right"/>
+<pinref part="IC4" gate="IC" pin="2Q"/>
+<wire x1="127" y1="553.72" x2="124.46" y2="553.72" width="0.1524" layer="91"/>
+<label x="124.46" y="553.72" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK0" pin="IOT_174"/>
-<wire x1="-38.1" y1="439.42" x2="-40.64" y2="439.42" width="0.1524" layer="91"/>
-<label x="-58.42" y="439.42" size="1.778" layer="95"/>
+<pinref part="U1" gate="BANK1" pin="GBIN3/IOR_140"/>
+<wire x1="88.9" y1="452.12" x2="91.44" y2="452.12" width="0.1524" layer="91"/>
+<label x="91.44" y="452.12" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="LA_MEM_CS" class="0">
@@ -28022,26 +28023,26 @@ H     X    L   :(  (contention)</text>
 </net>
 <net name="LA_LAT_CLK" class="0">
 <segment>
-<wire x1="127" y1="566.42" x2="124.46" y2="566.42" width="0.1524" layer="91"/>
-<pinref part="IC4" gate="IC" pin="7Q"/>
-<label x="124.46" y="566.42" size="1.778" layer="95" align="center-right"/>
+<pinref part="IC4" gate="IC" pin="3Q"/>
+<wire x1="127" y1="556.26" x2="124.46" y2="556.26" width="0.1524" layer="91"/>
+<label x="124.46" y="556.26" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK0" pin="IOT_173"/>
-<wire x1="-38.1" y1="441.96" x2="-40.64" y2="441.96" width="0.1524" layer="91"/>
-<label x="-58.42" y="441.96" size="1.778" layer="95"/>
+<pinref part="U1" gate="BANK1" pin="GBIN2/IOR_141"/>
+<wire x1="88.9" y1="454.66" x2="91.44" y2="454.66" width="0.1524" layer="91"/>
+<label x="91.44" y="454.66" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="LA_LAT_MISO" class="0">
 <segment>
-<wire x1="127" y1="563.88" x2="124.46" y2="563.88" width="0.1524" layer="91"/>
-<pinref part="IC4" gate="IC" pin="6Q"/>
-<label x="124.46" y="563.88" size="1.778" layer="95" align="center-right"/>
+<pinref part="IC4" gate="IC" pin="4Q"/>
+<wire x1="127" y1="558.8" x2="124.46" y2="558.8" width="0.1524" layer="91"/>
+<label x="124.46" y="558.8" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK0" pin="IOT_172"/>
-<wire x1="-38.1" y1="444.5" x2="-40.64" y2="444.5" width="0.1524" layer="91"/>
-<label x="-58.42" y="444.5" size="1.778" layer="95"/>
+<pinref part="U1" gate="BANK1" pin="IOR_144"/>
+<wire x1="88.9" y1="457.2" x2="91.44" y2="457.2" width="0.1524" layer="91"/>
+<label x="91.44" y="457.2" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="LA_LAT_CS" class="0">
@@ -28051,45 +28052,45 @@ H     X    L   :(  (contention)</text>
 <label x="124.46" y="561.34" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK0" pin="IOT_171"/>
-<wire x1="-38.1" y1="447.04" x2="-40.64" y2="447.04" width="0.1524" layer="91"/>
-<label x="-58.42" y="447.04" size="1.778" layer="95"/>
+<pinref part="U1" gate="BANK1" pin="IOR_146"/>
+<wire x1="88.9" y1="459.74" x2="91.44" y2="459.74" width="0.1524" layer="91"/>
+<label x="91.44" y="459.74" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="LA_LAT_AUX0" class="0">
 <segment>
-<pinref part="IC4" gate="IC" pin="4Q"/>
-<wire x1="127" y1="558.8" x2="124.46" y2="558.8" width="0.1524" layer="91"/>
-<label x="124.46" y="558.8" size="1.778" layer="95" align="center-right"/>
+<wire x1="127" y1="563.88" x2="124.46" y2="563.88" width="0.1524" layer="91"/>
+<pinref part="IC4" gate="IC" pin="6Q"/>
+<label x="124.46" y="563.88" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK0" pin="IOT_170"/>
-<wire x1="-38.1" y1="449.58" x2="-40.64" y2="449.58" width="0.1524" layer="91"/>
-<label x="-58.42" y="449.58" size="1.778" layer="95"/>
+<pinref part="U1" gate="BANK1" pin="IOR_147"/>
+<wire x1="88.9" y1="462.28" x2="91.44" y2="462.28" width="0.1524" layer="91"/>
+<label x="91.44" y="462.28" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="LA_LAT_SWV33" class="0">
 <segment>
-<pinref part="IC4" gate="IC" pin="3Q"/>
-<wire x1="127" y1="556.26" x2="124.46" y2="556.26" width="0.1524" layer="91"/>
-<label x="124.46" y="556.26" size="1.778" layer="95" align="center-right"/>
+<pinref part="U1" gate="BANK1" pin="IOR_148"/>
+<wire x1="88.9" y1="464.82" x2="91.44" y2="464.82" width="0.1524" layer="91"/>
+<label x="91.44" y="464.82" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK0" pin="IOT_169"/>
-<wire x1="-38.1" y1="452.12" x2="-40.64" y2="452.12" width="0.1524" layer="91"/>
-<label x="-58.42" y="452.12" size="1.778" layer="95"/>
+<wire x1="127" y1="566.42" x2="124.46" y2="566.42" width="0.1524" layer="91"/>
+<pinref part="IC4" gate="IC" pin="7Q"/>
+<label x="124.46" y="566.42" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="LA_LAT_SWV50" class="0">
 <segment>
-<pinref part="IC4" gate="IC" pin="2Q"/>
-<wire x1="127" y1="553.72" x2="124.46" y2="553.72" width="0.1524" layer="91"/>
-<label x="124.46" y="553.72" size="1.778" layer="95" align="center-right"/>
+<pinref part="U1" gate="BANK1" pin="IOR_152"/>
+<wire x1="88.9" y1="467.36" x2="91.44" y2="467.36" width="0.1524" layer="91"/>
+<label x="91.44" y="467.36" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK0" pin="IOT_168"/>
-<wire x1="-38.1" y1="454.66" x2="-40.64" y2="454.66" width="0.1524" layer="91"/>
-<label x="-58.42" y="454.66" size="1.778" layer="95"/>
+<pinref part="IC4" gate="IC" pin="8Q"/>
+<wire x1="127" y1="568.96" x2="124.46" y2="568.96" width="0.1524" layer="91"/>
+<label x="124.46" y="568.96" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="N$11" class="0">
