@@ -24,8 +24,3 @@ set_io  D9  B5
 # Each set of buffered IO pins
 set_io a[0] C3 #D2
 set_io a[1] A1 #D6
-
-# FSMC address and data
-# Interrupt lines
-# Logic analyer connections
-# Power supplies and pullup resistors

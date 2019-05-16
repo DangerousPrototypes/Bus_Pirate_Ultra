@@ -21,6 +21,7 @@ module iobuffer_tb();
    wire bufdat_tristate_dout; //tristate data pin data out
    wire bufdat_tristate_din;  //tristate data pin data in
 
+//an instance of the bus pirate io buffer driver
   iobuff DUT(
     //interface
       .oe(oe), //.module(testbench)
@@ -36,6 +37,8 @@ module iobuffer_tb();
       .bufdat_tristate_din(bufdat_tristate_din)
     );
 
+    //this simulates the 74LVC logic buffers so we can see the results in simulation
+    //the output from the iobuff "hardware driver" goes into here instead of physical hardware
     iobuffphy SYM(
         .iopin_state(iopin_state),
         .iopin_contention(iopin_contention),
