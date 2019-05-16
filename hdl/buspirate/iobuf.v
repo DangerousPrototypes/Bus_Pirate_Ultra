@@ -6,9 +6,9 @@
 //-- 74LVC1G07 is an open drain output buffer. HIGH is HiZ, LOW is GND
 //--
 //------------------------------------------------------------------
-`ifndef __IOBUFF__
-`define __IOBUFF__
-module iobuff (
+`ifndef __IOBUF__
+`define __IOBUF__
+module iobuf (
       //interface
       input wire oe, //output enable 1=true
       input wire od, //open drain 1=true

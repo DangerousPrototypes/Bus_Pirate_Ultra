@@ -6,9 +6,9 @@
 //-- 74LVC1G07 is an open drain output buffer. HIGH is HiZ, LOW is GND
 //--
 //------------------------------------------------------------------
-`ifndef __IOBUFFPHY__
-`define __IOBUFFPHY__
-module iobuffphy (
+`ifndef __IOBUFPHY__
+`define __IOBUFPHY__
+module iobufphy (
       //interface
       output wire iopin_state, //is pin 0/1/HiZ?
       output wire iopin_contention, //if buffer direction is input and pin is output this is a problem!!
