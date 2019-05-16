@@ -1,6 +1,6 @@
 `define DUMPSTR(x) `"x.vcd`"
 
-module iobuffer_tb();
+module iobuf_tb();
 
   parameter DURATION = 10;
 
@@ -62,7 +62,7 @@ module iobuffer_tb();
 
     initial begin
       $dumpfile(`DUMPSTR(`VCD_OUTPUT));
-      $dumpvars(0, iobuffer_tb);
+      $dumpvars(0, iobuf_tb);
       oe=1'b0; //initial values
       od=1'b0;
       dir=1'b0;

@@ -25,7 +25,5 @@ module iobufphy (
     assign bufdat_tristate_din=iopin_input; //for simulating pin input
     assign iopin_contention=(!bufdir&&bufdat_tristate_oe); //if dir is low and fpga pin is output, then contention!!!!
 
-
-
 endmodule
 `endif

@@ -1,7 +1,7 @@
-//------------------------------------------------------------------
-//-- Bus Pirate pin map for development hardware
-//--
-//------------------------------------------------------------------
+#------------------------------------------------------------------
+#-- Bus Pirate pin map for development hardware
+#--
+#------------------------------------------------------------------
 
 # Clock source
 set_io clk 20 # friendly name, fpga pin
@@ -25,13 +25,14 @@ set_io bufio_aux 106
 
 # Peek-behind buffer/latch (74AC573)
 set_io lat_oe 91 #latch output enable
-set_io lat_mosi 93
-set_io lat_clock 94
-set_io lat_miso 95
-set_io lat_cs 96
-set_io lat_aux0 97
-set_io lat_swv33 98
-set_io lat_swv50 99
+set_io lat[0] 93 #mosi
+set_io lat[1] 94 #clock
+set_io lat[2] 95 #miso
+set_io lat[3] 96 #cs
+set_io lat[4] 97 #aux0
+set_io lat[5] 98 #swv33
+set_io lat[6] 99 #swv50
+set_io lat[7] 90 # not currently attached!!!!
 
 # Memory controller interface address and data
 set_io mc_add[0] 3
@@ -66,13 +67,13 @@ set_io irq1 128
 set_io sram_clock 141 #shared
 
 set_io sram0_cs 144
-set_io sram0_sio[0]
-set_io sram0_sio[1]
-set_io sram0_sio[2]
-set_io sram0_sio[3]
+set_io sram0_sio[0] 142
+set_io sram0_sio[1] 139
+set_io sram0_sio[2] 138
+set_io sram0_sio[3] 137
 
 set_io sram1_cs 130
-set_io sram1_sio[0]
-set_io sram1_sio[1]
-set_io sram1_sio[2]
-set_io sram1_sio[3]
+set_io sram1_sio[0] 136
+set_io sram1_sio[1] 135
+set_io sram1_sio[2] 134
+set_io sram1_sio[3] 124 #currently wrong pin! needs to be updated when schematic has updated naming
