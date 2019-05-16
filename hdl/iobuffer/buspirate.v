@@ -3,6 +3,7 @@
 //--
 //------------------------------------------------------------------
 `include "iobuffer.v"
+`include "iobuffer_physical.v"
 module top (input clk,
             inout[1:0] a,
             output wire D3,
