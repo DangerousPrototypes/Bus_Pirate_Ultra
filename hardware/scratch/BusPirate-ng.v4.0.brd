@@ -33629,35 +33629,6 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="34.306" y1="44.4759" x2="34.306" y2="47.181" width="0.254" layer="1"/>
 <wire x1="37.1" y1="48.63966875" x2="37.1" y2="49.2738" width="0.254" layer="1"/>
 </signal>
-<signal name="IO_OE">
-<contactref element="IC4" pad="1"/>
-<via x="61.595" y="24.765" extent="1-16" drill="0.508"/>
-<wire x1="61.595" y1="24.765" x2="65.405" y2="28.575" width="0.254" layer="16"/>
-<wire x1="65.405" y1="28.575" x2="79.756" y2="28.575" width="0.254" layer="16"/>
-<via x="79.756" y="28.575" extent="1-16" drill="0.508"/>
-<wire x1="79.78486875" y1="28.575" x2="80.16986875" y2="28.19" width="0.254" layer="1"/>
-<wire x1="79.756" y1="28.575" x2="79.78486875" y2="28.575" width="0.254" layer="1"/>
-<wire x1="80.16986875" y1="28.19" x2="82.075" y2="28.19" width="0.254" layer="1"/>
-<contactref element="U1" pad="90"/>
-<wire x1="63.5693" y1="24.75" x2="61.61" y2="24.75" width="0.254" layer="1"/>
-<wire x1="61.61" y1="24.75" x2="61.595" y2="24.765" width="0.254" layer="1"/>
-</signal>
-<signal name="SRAM_CLK">
-<contactref element="IC2" pad="6"/>
-<contactref element="IC3" pad="6"/>
-<wire x1="59.055" y1="44.51" x2="59.055" y2="42.72" width="0.254" layer="1"/>
-<via x="59.055" y="42.72" extent="1-16" drill="0.508"/>
-<via x="46.355" y="41.91" extent="1-16" drill="0.508"/>
-<wire x1="46.355" y1="41.91" x2="58.245" y2="41.91" width="0.254" layer="16"/>
-<contactref element="U1" pad="141"/>
-<wire x1="58.245" y1="41.91" x2="59.055" y2="42.72" width="0.254" layer="16"/>
-<wire x1="46.355" y1="44.51" x2="46.355" y2="41.91" width="0.254" layer="1"/>
-<wire x1="45.5693" y1="37.51513125" x2="45.7756" y2="37.72143125" width="0.254" layer="1"/>
-<wire x1="46.355" y1="41.86713125" x2="46.355" y2="41.91" width="0.254" layer="1"/>
-<wire x1="45.7756" y1="41.28773125" x2="46.355" y2="41.86713125" width="0.254" layer="1"/>
-<wire x1="45.7756" y1="37.72143125" x2="45.7756" y2="41.28773125" width="0.254" layer="1"/>
-<wire x1="45.5693" y1="35.75" x2="45.5693" y2="37.51513125" width="0.254" layer="1"/>
-</signal>
 <signal name="RST">
 <contactref element="SW2" pad="1"/>
 <contactref element="SW2" pad="2"/>
@@ -34427,9 +34398,13 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 </signal>
 <signal name="FSMC_NOE_OE">
 <contactref element="U2" pad="118"/>
+<contactref element="U1" pad="11"/>
+<wire x1="30.285" y1="35.75" x2="42.0693" y2="28.75" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_NWE_WE">
 <contactref element="U2" pad="119"/>
+<contactref element="U1" pad="12"/>
+<wire x1="29.785" y1="35.75" x2="42.0693" y2="28.25" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_D0">
 <contactref element="U2" pad="85"/>
@@ -34501,6 +34476,8 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 </signal>
 <signal name="FSMC_NE3_CE">
 <contactref element="U2" pad="125"/>
+<contactref element="U1" pad="22"/>
+<wire x1="26.785" y1="35.75" x2="42.0693" y2="23.25" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FSMC_A0">
 <contactref element="U2" pad="10"/>
@@ -34739,17 +34716,10 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="52.0693" y1="33.8307" x2="52.0693" y2="35.75" width="0.254" layer="1"/>
 <wire x1="34.0992" y1="37.005" x2="34.15" y2="37.0558" width="0.254" layer="16"/>
 </signal>
-<signal name="N$15">
-<contactref element="U1" pad="11"/>
-</signal>
-<signal name="N$19">
-<contactref element="U1" pad="12"/>
-</signal>
-<signal name="N$21">
+<signal name="PWM">
 <contactref element="U1" pad="21"/>
-</signal>
-<signal name="N$22">
-<contactref element="U1" pad="22"/>
+<contactref element="U2" pad="96"/>
+<wire x1="36.785" y1="27.75" x2="42.0693" y2="23.75" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="MCU_MCO">
 <contactref element="U2" pad="100"/>
@@ -34759,118 +34729,6 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="40.005" y1="24.94" x2="40.695" y2="24.25" width="0.254" layer="1"/>
 <wire x1="40.695" y1="24.25" x2="42.0693" y2="24.25" width="0.254" layer="1"/>
 <wire x1="36.785" y1="29.75" x2="37.6232" y2="29.75" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_MEM_MISO">
-<contactref element="IC2" pad="5"/>
-<contactref element="U1" pad="138"/>
-<wire x1="47.625" y1="44.51" x2="47.625" y2="41.10513125" width="0.254" layer="1"/>
-<wire x1="47.625" y1="41.10513125" x2="47.0456" y2="40.52573125" width="0.254" layer="1"/>
-<wire x1="47.0456" y1="37.91983125" x2="47.0693" y2="37.89613125" width="0.254" layer="1"/>
-<wire x1="47.0456" y1="40.52573125" x2="47.0456" y2="37.91983125" width="0.254" layer="1"/>
-<wire x1="47.0693" y1="37.89613125" x2="47.0693" y2="35.75" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_MEM_CLK">
-<contactref element="IC2" pad="2"/>
-<contactref element="U1" pad="142"/>
-<wire x1="45.0693" y1="35.75" x2="45.0693" y2="39.2943" width="0.254" layer="1"/>
-<wire x1="45.0693" y1="39.2943" x2="45.085" y2="39.31" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_LAT_MOSI">
-<contactref element="IC4" pad="18"/>
-<contactref element="U1" pad="93"/>
-<wire x1="70.895" y1="26.25" x2="74.135" y2="29.49" width="0.254" layer="1"/>
-<wire x1="63.5693" y1="26.25" x2="70.895" y2="26.25" width="0.254" layer="1"/>
-<wire x1="74.135" y1="29.49" x2="76.675" y2="29.49" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_MEM_CS">
-<contactref element="IC2" pad="7"/>
-<contactref element="U1" pad="143"/>
-<wire x1="44.5693" y1="37.82456875" x2="44.5056" y2="37.88826875" width="0.254" layer="1"/>
-<wire x1="44.5056" y1="37.88826875" x2="44.5056" y2="40.70073125" width="0.254" layer="1"/>
-<wire x1="44.5693" y1="35.75" x2="44.5693" y2="37.82456875" width="0.254" layer="1"/>
-<wire x1="44.5056" y1="40.70073125" x2="45.085" y2="41.28013125" width="0.254" layer="1"/>
-<wire x1="45.085" y1="41.28013125" x2="45.085" y2="44.51" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_MEM_AUX0">
-<contactref element="IC3" pad="5"/>
-<wire x1="60.325" y1="42.4406" x2="59.7408" y2="41.8564" width="0.254" layer="1"/>
-<wire x1="60.325" y1="42.4406" x2="60.325" y2="44.51" width="0.254" layer="1"/>
-<contactref element="U1" pad="112"/>
-<wire x1="59.7408" y1="37.46263125" x2="60.0693" y2="37.13413125" width="0.254" layer="1"/>
-<wire x1="59.7408" y1="41.8564" x2="59.7408" y2="37.46263125" width="0.254" layer="1"/>
-<wire x1="60.0693" y1="37.13413125" x2="60.0693" y2="35.75" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_MEM_SWV33">
-<contactref element="IC3" pad="2"/>
-<wire x1="57.785" y1="39.31" x2="57.785" y2="37.91183125" width="0.254" layer="1"/>
-<contactref element="U1" pad="114"/>
-<wire x1="57.785" y1="37.91183125" x2="59.0693" y2="36.62753125" width="0.254" layer="1"/>
-<wire x1="59.0693" y1="36.62753125" x2="59.0693" y2="35.75" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_MEM_SWV50">
-<contactref element="IC3" pad="3"/>
-<wire x1="59.055" y1="39.31" x2="59.055" y2="37.57369375" width="0.254" layer="1"/>
-<contactref element="U1" pad="113"/>
-<wire x1="59.055" y1="37.57369375" x2="59.5693" y2="37.05939375" width="0.254" layer="1"/>
-<wire x1="59.5693" y1="37.05939375" x2="59.5693" y2="35.75" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_MEM_HOLD">
-<contactref element="IC3" pad="7"/>
-<wire x1="57.785" y1="41.28013125" x2="57.785" y2="44.51" width="0.254" layer="1"/>
-<wire x1="57.1649" y1="40.66003125" x2="57.1649" y2="37.95719375" width="0.254" layer="1"/>
-<wire x1="57.1649" y1="40.66003125" x2="57.785" y2="41.28013125" width="0.254" layer="1"/>
-<contactref element="U1" pad="115"/>
-<wire x1="57.1649" y1="37.95719375" x2="58.5693" y2="36.55279375" width="0.254" layer="1"/>
-<wire x1="58.5693" y1="36.55279375" x2="58.5693" y2="35.75" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_MEM_MOSI">
-<contactref element="IC2" pad="3"/>
-<contactref element="U1" pad="139"/>
-<wire x1="46.355" y1="39.31" x2="46.355" y2="37.60243125" width="0.254" layer="1"/>
-<wire x1="46.355" y1="37.60243125" x2="46.5693" y2="37.38813125" width="0.254" layer="1"/>
-<wire x1="46.5693" y1="37.38813125" x2="46.5693" y2="35.75" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_LAT_CLK">
-<contactref element="IC4" pad="17"/>
-<contactref element="U1" pad="94"/>
-<wire x1="63.5693" y1="26.75" x2="70.6476" y2="26.75" width="0.254" layer="1"/>
-<wire x1="70.6476" y1="26.75" x2="74.0376" y2="30.14" width="0.254" layer="1"/>
-<wire x1="74.0376" y1="30.14" x2="76.675" y2="30.14" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_LAT_MISO">
-<contactref element="IC4" pad="16"/>
-<contactref element="U1" pad="95"/>
-<wire x1="73.90908125" y1="30.79" x2="76.675" y2="30.79" width="0.254" layer="1"/>
-<wire x1="63.5693" y1="27.25" x2="70.36908125" y2="27.25" width="0.254" layer="1"/>
-<wire x1="70.36908125" y1="27.25" x2="73.90908125" y2="30.79" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_LAT_CS">
-<contactref element="IC4" pad="15"/>
-<contactref element="U1" pad="96"/>
-<wire x1="73.98434375" y1="31.44" x2="76.675" y2="31.44" width="0.254" layer="1"/>
-<wire x1="70.29434375" y1="27.75" x2="73.98434375" y2="31.44" width="0.254" layer="1"/>
-<wire x1="63.5693" y1="27.75" x2="70.29434375" y2="27.75" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_LAT_AUX0">
-<contactref element="IC4" pad="14"/>
-<contactref element="U1" pad="97"/>
-<wire x1="74.05960625" y1="32.09" x2="76.675" y2="32.09" width="0.254" layer="1"/>
-<wire x1="63.5693" y1="28.25" x2="70.21960625" y2="28.25" width="0.254" layer="1"/>
-<wire x1="70.21960625" y1="28.25" x2="74.05960625" y2="32.09" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_LAT_SWV33">
-<contactref element="U1" pad="98"/>
-<contactref element="IC4" pad="13"/>
-<wire x1="74.13486875" y1="32.74" x2="76.675" y2="32.74" width="0.254" layer="1"/>
-<wire x1="63.5693" y1="28.75" x2="70.14486875" y2="28.75" width="0.254" layer="1"/>
-<wire x1="70.14486875" y1="28.75" x2="74.13486875" y2="32.74" width="0.254" layer="1"/>
-</signal>
-<signal name="LA_LAT_SWV50">
-<contactref element="U1" pad="99"/>
-<contactref element="IC4" pad="12"/>
-<wire x1="73.88086875" y1="33.39" x2="76.675" y2="33.39" width="0.254" layer="1"/>
-<wire x1="63.5693" y1="29.25" x2="69.74086875" y2="29.25" width="0.254" layer="1"/>
-<wire x1="69.74086875" y1="29.25" x2="73.88086875" y2="33.39" width="0.254" layer="1"/>
 </signal>
 <signal name="N$11">
 <contactref element="U1" pad="125"/>
@@ -34938,21 +34796,6 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <signal name="N$35">
 <contactref element="U2" pad="27"/>
 </signal>
-<signal name="SRAM_CS1">
-<contactref element="IC2" pad="1"/>
-<contactref element="U1" pad="144"/>
-<wire x1="43.8407" y1="37.7058" x2="43.8407" y2="39.5958" width="0.254" layer="1"/>
-<wire x1="44.0693" y1="37.4772" x2="43.8407" y2="37.7058" width="0.254" layer="1"/>
-<wire x1="44.0693" y1="35.75" x2="44.0693" y2="37.4772" width="0.254" layer="1"/>
-<wire x1="43.8407" y1="39.5958" x2="43.815" y2="39.31" width="0" layer="19" extent="1-1"/>
-</signal>
-<signal name="SRAM_CS2">
-<contactref element="IC3" pad="1"/>
-<contactref element="U1" pad="116"/>
-<wire x1="56.515" y1="38.03235625" x2="58.0693" y2="36.47805625" width="0.254" layer="1"/>
-<wire x1="58.0693" y1="36.47805625" x2="58.0693" y2="35.75" width="0.254" layer="1"/>
-<wire x1="56.515" y1="39.31" x2="56.515" y2="38.03235625" width="0.254" layer="1"/>
-</signal>
 <signal name="N$41">
 <contactref element="U2" pad="99"/>
 </signal>
@@ -34962,15 +34805,6 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <signal name="N$25">
 <contactref element="U2" pad="45"/>
 </signal>
-<signal name="LA_LAT_AUX1">
-<contactref element="U1" pad="91"/>
-<contactref element="IC4" pad="19"/>
-<wire x1="76.675" y1="28.84" x2="74.0597375" y2="28.84" width="0.254" layer="1"/>
-<wire x1="74.0597375" y1="28.84" x2="69.8403375" y2="24.6206" width="0.254" layer="1"/>
-<wire x1="65.79426875" y1="24.6206" x2="65.16486875" y2="25.25" width="0.254" layer="1"/>
-<wire x1="65.16486875" y1="25.25" x2="63.5693" y2="25.25" width="0.254" layer="1"/>
-<wire x1="69.8403375" y1="24.6206" x2="65.79426875" y2="24.6206" width="0.254" layer="1"/>
-</signal>
 <signal name="N$24">
 <contactref element="U1" pad="110"/>
 </signal>
@@ -34979,6 +34813,214 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 </signal>
 <signal name="N$49">
 <contactref element="U1" pad="118"/>
+</signal>
+<signal name="SRAM0_SIO0">
+<contactref element="IC2" pad="5"/>
+<contactref element="U1" pad="138"/>
+<wire x1="47.625" y1="41.10513125" x2="47.392434375" y2="40.872565625" width="0.254" layer="1"/>
+<wire x1="47.392434375" y1="40.872565625" x2="47.0456" y2="40.52573125" width="0.254" layer="1"/>
+<wire x1="47.0456" y1="37.91983125" x2="47.0693" y2="37.89613125" width="0.254" layer="1"/>
+<wire x1="47.0456" y1="40.52573125" x2="47.0456" y2="37.91983125" width="0.254" layer="1"/>
+<wire x1="47.0693" y1="37.89613125" x2="47.0693" y2="35.75" width="0.254" layer="1"/>
+<wire x1="47.625" y1="44.51" x2="47.625" y2="41.10513125" width="0.254" layer="1"/>
+<wire x1="47.625" y1="41.10513125" x2="47.392434375" y2="40.872565625" width="0.254" layer="1"/>
+</signal>
+<signal name="SRAM0_SIO1">
+<contactref element="IC2" pad="2"/>
+<contactref element="U1" pad="142"/>
+<wire x1="45.0693" y1="35.75" x2="45.0693" y2="39.2943" width="0.254" layer="1"/>
+<wire x1="45.0693" y1="39.2943" x2="45.085" y2="39.31" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="SRAM0_SIO2">
+<contactref element="IC2" pad="3"/>
+<contactref element="U1" pad="139"/>
+<wire x1="46.355" y1="37.60243125" x2="46.423715625" y2="37.533715625" width="0.254" layer="1"/>
+<wire x1="46.423715625" y1="37.533715625" x2="46.5693" y2="37.38813125" width="0.254" layer="1"/>
+<wire x1="46.5693" y1="37.38813125" x2="46.5693" y2="35.75" width="0.254" layer="1"/>
+<wire x1="46.355" y1="39.31" x2="46.355" y2="37.60243125" width="0.254" layer="1"/>
+<wire x1="46.355" y1="37.60243125" x2="46.423715625" y2="37.533715625" width="0.254" layer="1"/>
+</signal>
+<signal name="SRAM0_SIO3">
+<contactref element="IC2" pad="7"/>
+<contactref element="U1" pad="143"/>
+<wire x1="44.5693" y1="37.82456875" x2="44.5056" y2="37.88826875" width="0.254" layer="1"/>
+<wire x1="44.5056" y1="37.88826875" x2="44.5056" y2="40.70073125" width="0.254" layer="1"/>
+<wire x1="44.5693" y1="35.75" x2="44.5693" y2="37.82456875" width="0.254" layer="1"/>
+<wire x1="45.085" y1="41.28013125" x2="44.5056" y2="40.70073125" width="0.254" layer="1"/>
+<wire x1="45.085" y1="44.51" x2="45.085" y2="41.28013125" width="0.254" layer="1"/>
+</signal>
+<signal name="SRAM_CLOCK">
+<contactref element="IC2" pad="6"/>
+<contactref element="IC3" pad="6"/>
+<via x="59.055" y="42.72" extent="1-16" drill="0.508"/>
+<via x="46.355" y="41.91" extent="1-16" drill="0.508"/>
+<wire x1="46.355" y1="41.91" x2="58.245" y2="41.91" width="0.254" layer="16"/>
+<contactref element="U1" pad="141"/>
+<wire x1="58.245" y1="41.91" x2="59.055" y2="42.72" width="0.254" layer="16"/>
+<wire x1="45.5693" y1="37.51513125" x2="45.7756" y2="37.72143125" width="0.254" layer="1"/>
+<wire x1="46.355" y1="41.86713125" x2="46.355" y2="41.91" width="0.254" layer="1"/>
+<wire x1="45.7756" y1="41.28773125" x2="46.355" y2="41.86713125" width="0.254" layer="1"/>
+<wire x1="45.7756" y1="37.72143125" x2="45.7756" y2="41.28773125" width="0.254" layer="1"/>
+<wire x1="45.5693" y1="35.75" x2="45.5693" y2="37.51513125" width="0.254" layer="1"/>
+<wire x1="46.355" y1="44.51" x2="46.355" y2="41.86713125" width="0.254" layer="1"/>
+<wire x1="59.055" y1="44.51" x2="59.055" y2="42.72" width="0.254" layer="1"/>
+</signal>
+<signal name="SRAM0_CS">
+<contactref element="IC2" pad="1"/>
+<contactref element="U1" pad="144"/>
+<wire x1="43.8407" y1="37.7058" x2="43.8407" y2="39.5958" width="0.254" layer="1"/>
+<wire x1="44.0693" y1="37.4772" x2="43.8407" y2="37.7058" width="0.254" layer="1"/>
+<wire x1="44.0693" y1="35.75" x2="44.0693" y2="37.4772" width="0.254" layer="1"/>
+<wire x1="43.8407" y1="39.5958" x2="43.815" y2="39.31" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="SRAM1_CS">
+<contactref element="IC3" pad="1"/>
+<contactref element="U1" pad="116"/>
+<wire x1="56.515" y1="38.03235625" x2="58.0693" y2="36.47805625" width="0.254" layer="1"/>
+<wire x1="58.0693" y1="36.47805625" x2="58.0693" y2="35.75" width="0.254" layer="1"/>
+<wire x1="56.515" y1="39.31" x2="56.515" y2="38.03235625" width="0.254" layer="1"/>
+</signal>
+<signal name="SRAM1_SIO0">
+<contactref element="IC3" pad="5"/>
+<wire x1="60.325" y1="42.4406" x2="59.7408" y2="41.8564" width="0.254" layer="1"/>
+<contactref element="U1" pad="112"/>
+<wire x1="59.7408" y1="37.46263125" x2="60.0693" y2="37.13413125" width="0.254" layer="1"/>
+<wire x1="59.7408" y1="41.8564" x2="59.7408" y2="37.46263125" width="0.254" layer="1"/>
+<wire x1="60.0693" y1="37.13413125" x2="60.0693" y2="35.75" width="0.254" layer="1"/>
+<wire x1="60.325" y1="44.51" x2="60.325" y2="42.4406" width="0.254" layer="1"/>
+</signal>
+<signal name="SRAM1_SIO1">
+<contactref element="IC3" pad="2"/>
+<contactref element="U1" pad="114"/>
+<wire x1="57.785" y1="37.91183125" x2="59.0693" y2="36.62753125" width="0.254" layer="1"/>
+<wire x1="59.0693" y1="36.62753125" x2="59.0693" y2="35.75" width="0.254" layer="1"/>
+<wire x1="57.785" y1="39.31" x2="57.785" y2="37.91183125" width="0.254" layer="1"/>
+</signal>
+<signal name="SRAM1_SIO2">
+<contactref element="IC3" pad="3"/>
+<contactref element="U1" pad="113"/>
+<wire x1="59.055" y1="37.57369375" x2="59.5693" y2="37.05939375" width="0.254" layer="1"/>
+<wire x1="59.5693" y1="37.05939375" x2="59.5693" y2="35.75" width="0.254" layer="1"/>
+<wire x1="59.055" y1="39.31" x2="59.055" y2="37.57369375" width="0.254" layer="1"/>
+</signal>
+<signal name="SRAM1_SIO3">
+<contactref element="IC3" pad="7"/>
+<wire x1="57.1649" y1="40.66003125" x2="57.1649" y2="40.64" width="0.254" layer="1"/>
+<contactref element="U1" pad="115"/>
+<wire x1="57.1649" y1="37.95719375" x2="58.5693" y2="36.55279375" width="0.254" layer="1"/>
+<wire x1="58.5693" y1="36.55279375" x2="58.5693" y2="35.75" width="0.254" layer="1"/>
+<wire x1="57.785" y1="44.51" x2="57.785" y2="41.2601" width="0.254" layer="1"/>
+<wire x1="57.785" y1="41.2601" x2="57.1649" y2="40.64" width="0.254" layer="1"/>
+<wire x1="57.1649" y1="40.64" x2="57.1649" y2="37.95719375" width="0.254" layer="1"/>
+</signal>
+<signal name="LAT_SWV50">
+<contactref element="IC4" pad="12"/>
+<contactref element="U1" pad="99"/>
+<wire x1="63.5693" y1="29.25" x2="69.74086875" y2="29.25" width="0.254" layer="1"/>
+<wire x1="69.74086875" y1="29.25" x2="73.88086875" y2="33.39" width="0.254" layer="1"/>
+<wire x1="73.88086875" y1="33.39" x2="76.675" y2="33.39" width="0.254" layer="1"/>
+</signal>
+<signal name="LAT_SWV33">
+<contactref element="IC4" pad="13"/>
+<contactref element="U1" pad="98"/>
+<wire x1="63.5693" y1="28.75" x2="70.14486875" y2="28.75" width="0.254" layer="1"/>
+<wire x1="74.13486875" y1="32.74" x2="70.14486875" y2="28.75" width="0.254" layer="1"/>
+<wire x1="76.675" y1="32.74" x2="74.13486875" y2="32.74" width="0.254" layer="1"/>
+</signal>
+<signal name="LAT_AUX0">
+<contactref element="IC4" pad="14"/>
+<contactref element="U1" pad="97"/>
+<wire x1="63.5693" y1="28.25" x2="70.21960625" y2="28.25" width="0.254" layer="1"/>
+<wire x1="74.05960625" y1="32.09" x2="70.21960625" y2="28.25" width="0.254" layer="1"/>
+<wire x1="76.675" y1="32.09" x2="74.05960625" y2="32.09" width="0.254" layer="1"/>
+</signal>
+<signal name="LAT_CS">
+<contactref element="IC4" pad="15"/>
+<contactref element="U1" pad="96"/>
+<wire x1="73.98434375" y1="31.44" x2="70.29434375" y2="27.75" width="0.254" layer="1"/>
+<wire x1="63.5693" y1="27.75" x2="70.29434375" y2="27.75" width="0.254" layer="1"/>
+<wire x1="76.675" y1="31.44" x2="73.98434375" y2="31.44" width="0.254" layer="1"/>
+</signal>
+<signal name="LAT_MISO">
+<contactref element="IC4" pad="16"/>
+<contactref element="U1" pad="95"/>
+<wire x1="63.5693" y1="27.25" x2="70.36908125" y2="27.25" width="0.254" layer="1"/>
+<wire x1="73.90908125" y1="30.79" x2="70.36908125" y2="27.25" width="0.254" layer="1"/>
+<wire x1="76.675" y1="30.79" x2="73.90908125" y2="30.79" width="0.254" layer="1"/>
+</signal>
+<signal name="LAT_CLK">
+<contactref element="IC4" pad="17"/>
+<contactref element="U1" pad="94"/>
+<wire x1="63.5693" y1="26.75" x2="70.6476" y2="26.75" width="0.254" layer="1"/>
+<wire x1="74.0376" y1="30.14" x2="70.6476" y2="26.75" width="0.254" layer="1"/>
+<wire x1="76.675" y1="30.14" x2="74.0376" y2="30.14" width="0.254" layer="1"/>
+</signal>
+<signal name="LAT_MOSI">
+<contactref element="IC4" pad="18"/>
+<contactref element="U1" pad="93"/>
+<wire x1="74.135" y1="29.49" x2="70.895" y2="26.25" width="0.254" layer="1"/>
+<wire x1="63.5693" y1="26.25" x2="70.895" y2="26.25" width="0.254" layer="1"/>
+<wire x1="76.675" y1="29.49" x2="74.135" y2="29.49" width="0.254" layer="1"/>
+</signal>
+<signal name="LAT_AUX1">
+<contactref element="IC4" pad="19"/>
+<contactref element="U1" pad="91"/>
+<wire x1="74.0597375" y1="28.84" x2="74.04486875" y2="28.82513125" width="0.254" layer="1"/>
+<wire x1="74.04486875" y1="28.82513125" x2="69.8403375" y2="24.6206" width="0.254" layer="1"/>
+<wire x1="65.79426875" y1="24.6206" x2="65.16486875" y2="25.25" width="0.254" layer="1"/>
+<wire x1="65.16486875" y1="25.25" x2="63.5693" y2="25.25" width="0.254" layer="1"/>
+<wire x1="69.8403375" y1="24.6206" x2="65.79426875" y2="24.6206" width="0.254" layer="1"/>
+<wire x1="76.675" y1="28.84" x2="74.0597375" y2="28.84" width="0.254" layer="1"/>
+<wire x1="74.0597375" y1="28.84" x2="74.04486875" y2="28.82513125" width="0.254" layer="1"/>
+</signal>
+<signal name="LAT_OE">
+<contactref element="IC4" pad="1"/>
+<via x="61.595" y="24.765" extent="1-16" drill="0.508"/>
+<wire x1="61.595" y1="24.765" x2="65.405" y2="28.575" width="0.254" layer="16"/>
+<wire x1="65.405" y1="28.575" x2="79.756" y2="28.575" width="0.254" layer="16"/>
+<via x="79.756" y="28.575" extent="1-16" drill="0.508"/>
+<wire x1="80.16986875" y1="28.19" x2="79.78486875" y2="28.575" width="0.254" layer="1"/>
+<wire x1="79.756" y1="28.575" x2="79.78486875" y2="28.575" width="0.254" layer="1"/>
+<contactref element="U1" pad="90"/>
+<wire x1="63.5693" y1="24.75" x2="61.61" y2="24.75" width="0.254" layer="1"/>
+<wire x1="61.61" y1="24.75" x2="61.595" y2="24.765" width="0.254" layer="1"/>
+<wire x1="82.075" y1="28.19" x2="80.16986875" y2="28.19" width="0.254" layer="1"/>
+</signal>
+<signal name="N$19">
+<contactref element="U2" pad="97"/>
+</signal>
+<signal name="N$22">
+<contactref element="U2" pad="98"/>
+</signal>
+<signal name="N$34">
+<contactref element="U2" pad="82"/>
+</signal>
+<signal name="N$43">
+<contactref element="U2" pad="81"/>
+</signal>
+<signal name="N$45">
+<contactref element="U2" pad="102"/>
+</signal>
+<signal name="N$46">
+<contactref element="U2" pad="101"/>
+</signal>
+<signal name="N$47">
+<contactref element="U2" pad="110"/>
+</signal>
+<signal name="N$50">
+<contactref element="U2" pad="88"/>
+</signal>
+<signal name="N$51">
+<contactref element="U2" pad="89"/>
+</signal>
+<signal name="N$52">
+<contactref element="U2" pad="90"/>
+</signal>
+<signal name="N$53">
+<contactref element="U2" pad="93"/>
+</signal>
+<signal name="N$54">
+<contactref element="U2" pad="124"/>
 </signal>
 </signals>
 <mfgpreviewcolors>
