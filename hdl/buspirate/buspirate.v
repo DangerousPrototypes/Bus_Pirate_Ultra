@@ -31,18 +31,23 @@ module top (clock,
     output wire sram_clock, sram0_cs, sram1_cs;
     inout wire [3:0] sram0_sio, sram1_sio;
 
-    //tristate pin handling
+    // Tristate pin handling
     wire buftoe_mosi,buftoe_clock,buftoe_miso,buftoe_cs,buftoe_aux;
     wire buftdo_mosi,buftdo_clock,buftdo_miso,buftdo_cs,buftdo_aux;
     wire buftdi_mosi,buftdi_clock,buftdi_miso,buftdi_cs,buftdi_aux;
-
+    // Memory controller interface
     wire [MC_DATA_WIDTH-1:0] mc_din;
     reg [MC_DATA_WIDTH-1:0] mc_dout;
+    // Interrupts
+    reg irq0_out, irq1_out;
+    wire irq0_in, irq0_dir, irq1_in, irq1_dir;
+    // Temporary stuff
+    wire temp;
 
     localparam N = 24;
     reg [N:0] count;
     //                  oe      od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
-    iobuf MOSI_BUF(count[N], 1'b0, 1'b0, 1'b1,  irq0,    bufdir_mosi,   bufod_mosi,  buftoe_mosi,buftdo_mosi,buftdi_mosi); //D2
+    iobuf MOSI_BUF(count[N], 1'b0, 1'b0, 1'b1,  temp,    bufdir_mosi,   bufod_mosi,  buftoe_mosi,buftdo_mosi,buftdi_mosi); //D2
     //iobuff CLOCK_BUFF(1'b0,    1'b0, 1'b0, 1'b0,   D9,    D8,   D7,  buff_data_oe[CLOCK],buff_data_dout[CLOCK],buff_data_din[CLOCK]); //D6
     //iobuff MISO_BUFF(count[N],1'b0,1'b0,1'b0, D6,    D5,   D4,  mosi_data_oe,mosi_data_dout,mosi_data_din);
     //iobuff CS(count[N],1'b0,1'b0,1'b0, D6,    D5,   D4,  mosi_data_oe,mosi_data_dout,mosi_data_din);
@@ -108,6 +113,25 @@ module top (clock,
       .OUTPUT_ENABLE(!mc_oe),
       .D_OUT_0(mc_dout),
       .D_IN_0(mc_din)
+    );
+    // Interrupt pins
+    SB_IO #(
+      .PIN_TYPE(6'b1010_01),
+      .PULLUP(1'b0)
+    ) irq0_io (
+      .PACKAGE_PIN(irq0),
+      .OUTPUT_ENABLE(irq0_dir),
+      .D_OUT_0(irq0_out),
+      .D_IN_0(irq0_in)
+    );
+    SB_IO #(
+      .PIN_TYPE(6'b1010_01),
+      .PULLUP(1'b0)
+    ) irq1_io (
+      .PACKAGE_PIN(irq1),
+      .OUTPUT_ENABLE(irq1_dir),
+      .D_OUT_0(irq1_out),
+      .D_IN_0(irq1_in)
     );
 
 endmodule
