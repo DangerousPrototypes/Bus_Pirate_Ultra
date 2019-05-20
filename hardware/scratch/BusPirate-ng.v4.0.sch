@@ -27149,9 +27149,9 @@ H     X    L   :(  (contention)</text>
 <junction x="190.5" y="495.3"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_111"/>
-<wire x1="53.34" y1="457.2" x2="50.8" y2="457.2" width="0.1524" layer="91"/>
-<label x="50.8" y="457.2" size="1.778" layer="95" align="center-right"/>
+<pinref part="U1" gate="BANK1" pin="IOR_115"/>
+<wire x1="53.34" y1="447.04" x2="50.8" y2="447.04" width="0.1524" layer="91"/>
+<label x="50.8" y="447.04" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="BUFOD_MOSI" class="0">
@@ -27163,9 +27163,9 @@ H     X    L   :(  (contention)</text>
 <label x="133.35" y="471.17" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_109"/>
-<wire x1="53.34" y1="462.28" x2="50.8" y2="462.28" width="0.1524" layer="91"/>
-<label x="50.8" y="462.28" size="1.778" layer="95" align="center-right"/>
+<pinref part="U1" gate="BANK1" pin="IOR_112"/>
+<wire x1="53.34" y1="454.66" x2="50.8" y2="454.66" width="0.1524" layer="91"/>
+<label x="50.8" y="454.66" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="BUFIO_MOSI" class="0">
@@ -27175,9 +27175,9 @@ H     X    L   :(  (contention)</text>
 <label x="137.16" y="492.76" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_110"/>
-<wire x1="53.34" y1="459.74" x2="50.8" y2="459.74" width="0.1524" layer="91"/>
-<label x="50.8" y="459.74" size="1.778" layer="95" align="center-right"/>
+<pinref part="U1" gate="BANK1" pin="IOR_114"/>
+<wire x1="53.34" y1="449.58" x2="50.8" y2="449.58" width="0.1524" layer="91"/>
+<label x="50.8" y="449.58" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="BUFOD_CLOCK" class="0">
@@ -27189,9 +27189,9 @@ H     X    L   :(  (contention)</text>
 <label x="133.35" y="410.21" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_112"/>
-<wire x1="53.34" y1="454.66" x2="50.8" y2="454.66" width="0.1524" layer="91"/>
-<label x="50.8" y="454.66" size="1.778" layer="95" align="center-right"/>
+<pinref part="U1" gate="BANK1" pin="IOR_109"/>
+<wire x1="53.34" y1="462.28" x2="50.8" y2="462.28" width="0.1524" layer="91"/>
+<label x="50.8" y="462.28" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="BPIO_CLOCK" class="0">
@@ -27233,9 +27233,9 @@ H     X    L   :(  (contention)</text>
 <junction x="190.5" y="434.34"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_115"/>
-<wire x1="53.34" y1="447.04" x2="50.8" y2="447.04" width="0.1524" layer="91"/>
-<label x="50.8" y="447.04" size="1.778" layer="95" align="center-right"/>
+<pinref part="U1" gate="BANK1" pin="IOR_111"/>
+<wire x1="53.34" y1="457.2" x2="50.8" y2="457.2" width="0.1524" layer="91"/>
+<label x="50.8" y="457.2" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="BUFIO_CLOCK" class="0">
@@ -27245,9 +27245,9 @@ H     X    L   :(  (contention)</text>
 <label x="137.16" y="431.8" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_114"/>
-<wire x1="53.34" y1="449.58" x2="50.8" y2="449.58" width="0.1524" layer="91"/>
-<label x="50.8" y="449.58" size="1.778" layer="95" align="center-right"/>
+<pinref part="U1" gate="BANK1" pin="IOR_110"/>
+<wire x1="53.34" y1="459.74" x2="50.8" y2="459.74" width="0.1524" layer="91"/>
+<label x="50.8" y="459.74" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="BUFIO_MISO" class="0">
@@ -27328,9 +27328,9 @@ H     X    L   :(  (contention)</text>
 <label x="139.7" y="330.2" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_161"/>
-<wire x1="88.9" y1="474.98" x2="91.44" y2="474.98" width="0.1524" layer="91"/>
-<label x="91.44" y="474.98" size="1.778" layer="95" align="center-left"/>
+<pinref part="U1" gate="BANK1" pin="IOR_166"/>
+<wire x1="88.9" y1="482.6" x2="91.44" y2="482.6" width="0.1524" layer="91"/>
+<label x="91.44" y="482.6" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFDIR_CS" class="0">
@@ -27344,9 +27344,9 @@ H     X    L   :(  (contention)</text>
 <junction x="195.58" y="332.74"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_164"/>
-<wire x1="88.9" y1="477.52" x2="91.44" y2="477.52" width="0.1524" layer="91"/>
-<label x="91.44" y="477.52" size="1.778" layer="95" align="center-left"/>
+<pinref part="U1" gate="BANK1" pin="IOR_167"/>
+<wire x1="88.9" y1="485.14" x2="91.44" y2="485.14" width="0.1524" layer="91"/>
+<label x="91.44" y="485.14" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BPIO_CS" class="0">
@@ -27387,9 +27387,9 @@ H     X    L   :(  (contention)</text>
 <label x="137.16" y="308.61" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_160"/>
-<wire x1="88.9" y1="472.44" x2="91.44" y2="472.44" width="0.1524" layer="91"/>
-<label x="91.44" y="472.44" size="1.778" layer="95" align="center-left"/>
+<pinref part="U1" gate="BANK1" pin="IOR_165"/>
+<wire x1="88.9" y1="480.06" x2="91.44" y2="480.06" width="0.1524" layer="91"/>
+<label x="91.44" y="480.06" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFIO_AUX" class="0">
@@ -27399,9 +27399,9 @@ H     X    L   :(  (contention)</text>
 <label x="137.16" y="276.86" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_166"/>
-<wire x1="88.9" y1="482.6" x2="91.44" y2="482.6" width="0.1524" layer="91"/>
-<label x="91.44" y="482.6" size="1.778" layer="95" align="center-left"/>
+<pinref part="U1" gate="BANK1" pin="IOR_161"/>
+<wire x1="88.9" y1="474.98" x2="91.44" y2="474.98" width="0.1524" layer="91"/>
+<label x="91.44" y="474.98" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFDIR_AUX" class="0">
@@ -27414,9 +27414,9 @@ H     X    L   :(  (contention)</text>
 <junction x="190.5" y="279.4"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_167"/>
-<wire x1="88.9" y1="485.14" x2="91.44" y2="485.14" width="0.1524" layer="91"/>
-<label x="91.44" y="485.14" size="1.778" layer="95" align="center-left"/>
+<pinref part="U1" gate="BANK1" pin="IOR_164"/>
+<wire x1="88.9" y1="477.52" x2="91.44" y2="477.52" width="0.1524" layer="91"/>
+<label x="91.44" y="477.52" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BPIO_AUX" class="0">
@@ -27452,9 +27452,9 @@ H     X    L   :(  (contention)</text>
 <label x="133.35" y="255.27" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U1" gate="BANK1" pin="IOR_165"/>
-<wire x1="88.9" y1="480.06" x2="91.44" y2="480.06" width="0.1524" layer="91"/>
-<label x="91.44" y="480.06" size="1.778" layer="95" align="center-left"/>
+<pinref part="U1" gate="BANK1" pin="IOR_160"/>
+<wire x1="88.9" y1="472.44" x2="91.44" y2="472.44" width="0.1524" layer="91"/>
+<label x="91.44" y="472.44" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="FPGA_PROG_MISO" class="0">
