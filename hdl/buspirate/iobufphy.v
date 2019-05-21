@@ -16,14 +16,11 @@ module iobufphy (
       //hardware driver
       input wire bufdir, //74LVC1T45 DIR pin LOW for Hi-Z
       input wire bufod, //74LVC1G07 OD pin HIGH for Hi-Z
-      input wire bufdat_tristate_oe, //tristate data pin output enable
-      input wire bufdat_tristate_dout, //tristate data pin data out
-      output wire bufdat_tristate_din  //tristate data pin data in
+      inout wire bufio //tristate data pin
     );
 
-    assign iopin_state=(!bufdir && bufod)?1'bz:(!bufdir&&!bufod)?1'b0:bufdat_tristate_dout;
-    assign bufdat_tristate_din=iopin_input; //for simulating pin input
-    assign iopin_contention=(!bufdir&&bufdat_tristate_oe); //if dir is low and fpga pin is output, then contention!!!!
+    assign iopin_state=(!bufdir && bufod)?1'bz:(!bufdir&&!bufod)?1'b0:(bufio==1'bz)?iopin_input:bufio;
+    assign iopin_contention=(!bufdir&&bufio!=1'bz); //if dir is low and fpga pin is output, then contention!!!!
 
 endmodule
 `endif

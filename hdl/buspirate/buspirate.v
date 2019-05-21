@@ -4,6 +4,7 @@
 //------------------------------------------------------------------
 `include "iobuf.v"
 `include "iobufphy.v"
+`include "pwm.v"
 module top (clock,
             bufdir_mosi, bufod_mosi, bufio_mosi,
             bufdir_clock, bufod_clock, bufio_clock,
@@ -44,14 +45,24 @@ module top (clock,
     // Temporary stuff
     wire temp;
 
+    wire pwm_reset;
+    wire pwm_out;
+
     localparam N = 24;
-    reg [N:0] count;
+    reg [N:0] count; //count[N]
+    //rst,					// reset
+    //clkin,					// clock in
+    //clkout,					// clock out
+    //onperiod,				// #ticks period ontime
+    //offperiod				// #ticks period offtime
+    pwm AUX_PWM(pwm_reset, clock,pwm_out, 16'b0000000000000010,16'b0000000010000001);
+
     //                  oe      od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
-    iobuf MOSI_BUF(count[N], 1'b0, 1'b0, 1'b1,  temp,    bufdir_mosi,   bufod_mosi,  buftoe_mosi,buftdo_mosi,buftdi_mosi); //D2
+    //iobuf MOSI_BUF(, 1'b0, 1'b0, 1'b1,  temp,    bufdir_mosi,   bufod_mosi,  buftoe_mosi,buftdo_mosi,buftdi_mosi); //D2
     //iobuff CLOCK_BUFF(1'b0,    1'b0, 1'b0, 1'b0,   D9,    D8,   D7,  buff_data_oe[CLOCK],buff_data_dout[CLOCK],buff_data_din[CLOCK]); //D6
     //iobuff MISO_BUFF(count[N],1'b0,1'b0,1'b0, D6,    D5,   D4,  mosi_data_oe,mosi_data_dout,mosi_data_din);
     //iobuff CS(count[N],1'b0,1'b0,1'b0, D6,    D5,   D4,  mosi_data_oe,mosi_data_dout,mosi_data_din);
-    //iobuf AUX_BUF(1'b0,    1'b0, 1'b0, 1'b0,   D9,    D8,   D7,  buf_data_oe[AUX],buf_data_dout[AUX],buf_data_din[AUX]); //D6
+    iobuf AUX_BUF(1'b1, 1'b0, 1'b0, pwm_out, temp, bufdir_aux, bufod_aux, buftoe_aux, buftdo_aux,buftdi_aux);
 
   	always @(posedge clock)
   			count <= count + 1;
