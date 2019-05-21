@@ -5,6 +5,7 @@
 
 # Clock source
 set_io clock 20 # friendly name, fpga pin
+set_io reset 55 #wrong pin, just holder
 
 # Bus Pirate buffer control pins
 set_io bufdir_mosi 75 #74LVC1T45 DIR

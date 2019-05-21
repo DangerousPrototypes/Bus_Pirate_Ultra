@@ -5,7 +5,7 @@
 `include "iobuf.v"
 `include "iobufphy.v"
 `include "pwm.v"
-module top (clock,
+module top (clock, reset,
             bufdir_mosi, bufod_mosi, bufio_mosi,
             bufdir_clock, bufod_clock, bufio_clock,
             bufdir_miso, bufod_miso, bufio_miso,
@@ -20,7 +20,7 @@ module top (clock,
     localparam MC_DATA_WIDTH = 16;
     localparam MC_ADD_WIDTH = 6;
 
-    input wire clock;
+    input wire clock, reset;
     inout wire bufio_mosi,bufio_clock,bufio_miso,bufio_cs,bufio_aux;
     output wire bufdir_mosi, bufod_mosi, bufdir_clock, bufod_clock, bufdir_miso, bufod_miso, bufdir_cs, bufod_cs, bufdir_aux, bufod_aux;
     output wire lat_oe;
@@ -44,8 +44,6 @@ module top (clock,
     wire irq0_in, irq0_dir, irq1_in, irq1_dir;
     // Temporary stuff
     wire temp;
-
-    wire pwm_reset;
     wire pwm_out;
 
     localparam N = 24;
@@ -55,7 +53,7 @@ module top (clock,
     //clkout,					// clock out
     //onperiod,				// #ticks period ontime
     //offperiod				// #ticks period offtime
-    pwm AUX_PWM(pwm_reset, clock,pwm_out, 16'b0000000000000010,16'b0000000010000001);
+    pwm AUX_PWM(reset, clock,pwm_out, 16'b0000000000000010,16'b0000000010000001);
 
     //                  oe      od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
     //iobuf MOSI_BUF(, 1'b0, 1'b0, 1'b1,  temp,    bufdir_mosi,   bufod_mosi,  buftoe_mosi,buftdo_mosi,buftdi_mosi); //D2

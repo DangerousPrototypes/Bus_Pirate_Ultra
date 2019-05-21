@@ -31,6 +31,7 @@ module buspirate_tb();
 
   top buspirate(
     .clock(clk),
+    .reset(rst),
     .bufdir_mosi(bufdir_mosi),
     .bufod_mosi(bufod_mosi),
     .bufio_mosi(bufio_mosi),
@@ -93,31 +94,7 @@ module buspirate_tb();
       din=1'b0;
       iopin_input=1'bz;*/
       @(negedge rst); // wait for reset
-      /*oe=1'b0;
-      od=1'b0;
-      dir=1'b0;
-      din=1'b0;
-      repeat(1) @(posedge clk);
-      oe=1'b1;
-      od=1'b0;
-      dir=1'b0;
-      din=1'b0;
-      repeat(1) @(posedge clk);
-      oe=1'b1;
-      od=1'b0;
-      dir=1'b0;
-      din=1'b1;
-      repeat(1) @(posedge clk);
-      oe=1'b1;
-      od=1'b1;
-      dir=1'b0;
-      din=1'b1;
-      repeat(1) @(posedge clk);
-      oe=1'b1;
-      od=1'b1;
-      dir=1'b0;
-      din=1'b0;*/
-      repeat(1) @(posedge clk);
+      repeat(1000) @(posedge clk);
       $finish;
     end
 
