@@ -25481,11 +25481,11 @@ H     X    L   :(  (contention)</text>
 <instance part="SUPPLY99" gate="1" x="-121.92" y="162.56" smashed="yes"/>
 <instance part="SUPPLY100" gate="GND" x="-121.92" y="149.86" smashed="yes"/>
 <instance part="SUPPLY101" gate="GND" x="-139.7" y="149.86" smashed="yes"/>
-<instance part="R40" gate="G$1" x="-266.7" y="99.06" smashed="yes" rot="R180">
-<attribute name="NAME" x="-269.24" y="104.14" size="1.778" layer="95"/>
-<attribute name="VALUE" x="-269.24" y="101.6" size="1.778" layer="96"/>
+<instance part="R40" gate="G$1" x="-271.78" y="139.7" smashed="yes" rot="R180">
+<attribute name="NAME" x="-274.32" y="144.78" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-274.32" y="142.24" size="1.778" layer="96"/>
 </instance>
-<instance part="SUPPLY102" gate="GND" x="-271.78" y="96.52"/>
+<instance part="SUPPLY102" gate="GND" x="-276.86" y="137.16"/>
 <instance part="J5" gate="J" x="243.84" y="304.8" rot="MR180"/>
 <instance part="C55" gate="G$1" x="35.56" y="373.38" smashed="yes" rot="R180">
 <attribute name="NAME" x="27.94" y="373.38" size="1.778" layer="95"/>
@@ -26718,9 +26718,9 @@ H     X    L   :(  (contention)</text>
 <pinref part="R17" gate="G$1" pin="2"/>
 </segment>
 <segment>
-<pinref part="U2" gate="U" pin="PD2/FT/TIM3_ETR/UART5_RX"/>
-<wire x1="-248.92" y1="142.24" x2="-251.46" y2="142.24" width="0.1524" layer="91"/>
-<label x="-251.46" y="142.24" size="1.778" layer="95" align="center-right"/>
+<pinref part="U2" gate="U" pin="PA15/FT/JTDI/SPI3_NSS('0')/TIM2_CH1_ETR('11')/SPI1_NSS('1')"/>
+<wire x1="-248.92" y1="152.4" x2="-251.46" y2="152.4" width="0.1524" layer="91"/>
+<label x="-251.46" y="152.4" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="VREGEN" class="0">
@@ -26740,13 +26740,13 @@ H     X    L   :(  (contention)</text>
 <label x="121.92" y="83.82" size="1.778" layer="95" rot="R180"/>
 </segment>
 <segment>
-<pinref part="U2" gate="U" pin="PE1/FT/FSMC_NBL1"/>
-<label x="-271.78" y="101.6" size="1.778" layer="95" align="center-right"/>
+<label x="-276.86" y="142.24" size="1.778" layer="95" align="center-right"/>
 <pinref part="R40" gate="G$1" pin="1"/>
-<wire x1="-248.92" y1="101.6" x2="-261.62" y2="101.6" width="0.1524" layer="91"/>
-<wire x1="-261.62" y1="101.6" x2="-271.78" y2="101.6" width="0.1524" layer="91"/>
-<wire x1="-261.62" y1="99.06" x2="-261.62" y2="101.6" width="0.1524" layer="91"/>
-<junction x="-261.62" y="101.6"/>
+<wire x1="-266.7" y1="142.24" x2="-276.86" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="-266.7" y1="139.7" x2="-266.7" y2="142.24" width="0.1524" layer="91"/>
+<pinref part="U2" gate="U" pin="PD2/FT/TIM3_ETR/UART5_RX"/>
+<wire x1="-266.7" y1="142.24" x2="-248.92" y2="142.24" width="0.1524" layer="91"/>
+<junction x="-266.7" y="142.24"/>
 </segment>
 </net>
 <net name="N$18" class="0">
@@ -26909,6 +26909,10 @@ H     X    L   :(  (contention)</text>
 <pinref part="U2" gate="U" pin="PD3/FT/FSMC_CLK/USART2_CTS(1)"/>
 <wire x1="-248.92" y1="139.7" x2="-251.46" y2="139.7" width="0.1524" layer="91"/>
 <label x="-251.46" y="139.7" size="1.778" layer="95" align="center-right"/>
+</segment>
+<segment>
+<pinref part="U2" gate="U" pin="UART4_TX/USART3_TX('01')/FT/PC10"/>
+<wire x1="-142.24" y1="121.92" x2="-139.7" y2="121.92" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RST" class="0">
@@ -28598,12 +28602,6 @@ H     X    L   :(  (contention)</text>
 <wire x1="-248.92" y1="167.64" x2="-251.46" y2="167.64" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$47" class="0">
-<segment>
-<pinref part="U2" gate="U" pin="PA15/FT/JTDI/SPI3_NSS('0')/TIM2_CH1_ETR('11')/SPI1_NSS('1')"/>
-<wire x1="-248.92" y1="152.4" x2="-251.46" y2="152.4" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="N$50" class="0">
 <segment>
 <pinref part="U2" gate="U" pin="PG3/FT/FSMC_A13"/>
@@ -28632,6 +28630,12 @@ H     X    L   :(  (contention)</text>
 <segment>
 <pinref part="U2" gate="U" pin="PG9/FT/FSMC_NE2/FSMC_NCE3"/>
 <wire x1="-248.92" y1="38.1" x2="-251.46" y2="38.1" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$15" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="FSMC_A8/FT/PF14"/>
+<wire x1="-142.24" y1="68.58" x2="-139.7" y2="68.58" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
