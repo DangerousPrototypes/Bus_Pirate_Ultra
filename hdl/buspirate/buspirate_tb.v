@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 `define DUMPSTR(x) `"x.vcd`"
 
 module buspirate_tb();

@@ -1,0 +1,26 @@
+[*]
+[*] GTKWave Analyzer v3.3.77 (w)1999-2016 BSI
+[*] Wed May 22 09:56:02 2019
+[*]
+[dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.vcd"
+[dumpfile_mtime] "Wed May 22 09:49:46 2019"
+[dumpfile_size] 63312
+[savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.gtkw"
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+*-22.722095 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] buspirate_tb.
+[sst_width] 211
+[signals_width] 158
+[sst_expanded] 1
+[sst_vpaned_height] 154
+@28
+buspirate_tb.AUX.bufdir
+buspirate_tb.AUX.bufio
+buspirate_tb.AUX.bufod
+buspirate_tb.AUX.iopin_contention
+buspirate_tb.AUX.iopin_input
+buspirate_tb.AUX.iopin_state
+[pattern_trace] 1
+[pattern_trace] 0
