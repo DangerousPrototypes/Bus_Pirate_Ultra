@@ -19,8 +19,8 @@ module iobufphy (
       inout wire bufio //tristate data pin
     );
 
-    assign iopin_state=(!bufdir && bufod)?1'bz:(!bufdir&&!bufod)?1'b0:(bufio==1'bz)?iopin_input:bufio;
-    assign iopin_contention=(!bufdir&&bufio!=1'bz); //if dir is low and fpga pin is output, then contention!!!!
+    assign iopin_state=(!bufdir && bufod)?1'bz:(!bufdir&&!bufod)?1'b0:(bufio===1'bz)?iopin_input:bufio;
+    assign iopin_contention=(!bufdir&&bufio!==1'bz); //if dir is low and fpga pin is output, then contention!!!!
 
 endmodule
 `endif

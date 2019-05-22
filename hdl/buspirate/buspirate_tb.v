@@ -93,6 +93,7 @@ module buspirate_tb();
       dir=1'b0;
       din=1'b0;
       iopin_input=1'bz;*/
+      aux_input=1'bz;
       @(negedge rst); // wait for reset
       repeat(1000) @(posedge clk);
       $finish;
