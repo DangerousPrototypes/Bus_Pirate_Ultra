@@ -67,11 +67,13 @@ module top (clock, reset,
   			count <= count + 1;
 
     always @ (posedge mc_we)
-      if (mc_add == 6'h19)
-      begin
+      case(mc_add)
+      6'h19:
+        begin
         pwm_on=mc_data;
         pwm_off=mc_data;
-      end
+        end
+      endcase
 
 
 
