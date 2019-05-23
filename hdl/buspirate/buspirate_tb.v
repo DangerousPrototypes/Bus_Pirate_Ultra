@@ -23,9 +23,9 @@ module buspirate_tb();
 
   wire lat_oe;
   wire [7:0] lat;
-  wire mc_oe, mc_ce, mc_we;
-  wire [MC_ADD_WIDTH-1:0] mc_add;
-  wire [MC_DATA_WIDTH-1:0] mc_data;
+  reg mc_oe, mc_ce, mc_we;
+  reg [MC_ADD_WIDTH-1:0] mc_add;
+  reg [MC_DATA_WIDTH-1:0] mc_data;
   wire irq0, irq1;
   wire sram_clock, sram0_cs, sram1_cs;
   wire [3:0] sram0_sio, sram1_sio;
@@ -94,9 +94,27 @@ module buspirate_tb();
       dir=1'b0;
       din=1'b0;
       iopin_input=1'bz;*/
+      mc_we=0;
       aux_input=1'bz;
       @(negedge rst); // wait for reset
-      repeat(1000) @(posedge clk);
+      mc_add = 6'h19;
+      mc_data = 16'b10;
+      mc_we=1;
+      repeat(1) @(posedge clk);
+      mc_we=0;
+      repeat(100) @(posedge clk);
+      mc_add = 6'h19;
+      mc_data = 16'b01;
+      mc_we=1;
+      repeat(1) @(posedge clk);
+      mc_we=0;
+      repeat(100) @(posedge clk);
+      mc_add = 6'h19;
+      mc_data = 16'b11;
+      mc_we=1;
+      repeat(1) @(posedge clk);
+      mc_we=0;
+      repeat(100) @(posedge clk);
       $finish;
     end
 

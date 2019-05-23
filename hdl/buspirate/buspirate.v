@@ -25,9 +25,9 @@ module top (clock, reset,
     output wire bufdir_mosi, bufod_mosi, bufdir_clock, bufod_clock, bufdir_miso, bufod_miso, bufdir_cs, bufod_cs, bufdir_aux, bufod_aux;
     output wire lat_oe;
     input wire [7:0] lat;
-    output wire mc_oe, mc_ce, mc_we;
+    input wire mc_oe, mc_ce, mc_we;
     input wire [MC_ADD_WIDTH-1:0] mc_add;
-    inout wire [MC_DATA_WIDTH-1:0] mc_data;
+    input wire [MC_DATA_WIDTH-1:0] mc_data;
     inout wire irq0, irq1;
     output wire sram_clock, sram0_cs, sram1_cs;
     inout wire [3:0] sram0_sio, sram1_sio;
@@ -45,6 +45,7 @@ module top (clock, reset,
     // Temporary stuff
     wire temp;
     wire pwm_out;
+    reg [15:0] pwm_on, pwm_off;
 
     localparam N = 24;
     reg [N:0] count; //count[N]
@@ -53,7 +54,7 @@ module top (clock, reset,
     //clkout,					// clock out
     //onperiod,				// #ticks period ontime
     //offperiod				// #ticks period offtime
-    pwm AUX_PWM(reset, clock,pwm_out, 16'b0000000000000010,16'b0000000010000001);
+    pwm AUX_PWM(reset, clock,pwm_out, pwm_on,pwm_off);
 
     //                  oe      od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
     //iobuf MOSI_BUF(, 1'b0, 1'b0, 1'b1,  temp,    bufdir_mosi,   bufod_mosi,  buftoe_mosi,buftdo_mosi,buftdi_mosi); //D2
@@ -64,6 +65,14 @@ module top (clock, reset,
 
   	always @(posedge clock)
   			count <= count + 1;
+
+    always @ (posedge mc_we)
+      if (mc_add == 6'h19)
+      begin
+        pwm_on=mc_data;
+        pwm_off=mc_data;
+      end
+
 
 
     //define the tristate data pin explicitly in the top module
@@ -114,7 +123,7 @@ module top (clock, reset,
       .D_IN_0(buftdi_aux)           //data in wire
     );
     // Memory controller data pins
-    SB_IO #(
+  /*  SB_IO #(
       .PIN_TYPE(6'b1010_01),
       .PULLUP(1'b0)
     ) mc_io [MC_DATA_WIDTH-1:0] (
@@ -122,7 +131,7 @@ module top (clock, reset,
       .OUTPUT_ENABLE(!mc_oe),
       .D_OUT_0(mc_dout),
       .D_IN_0(mc_din)
-    );
+    );*/
     // Interrupt pins
     SB_IO #(
       .PIN_TYPE(6'b1010_01),
