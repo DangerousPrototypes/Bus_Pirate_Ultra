@@ -6,6 +6,7 @@
 `include "iobufphy.v"
 `include "pwm.v"
 `include "spimaster.v"
+`include "fifo.v"
 module top (clock, reset,
             bufdir_mosi, bufod_mosi, bufio_mosi,
             bufdir_clock, bufod_clock, bufio_clock,
@@ -52,10 +53,10 @@ module top (clock, reset,
 
     // SPI master
     // sync signals
-    reg spi_go;					// starts a SPI transmission
+    wire spi_go;					// starts a SPI transmission
     wire spi_state;				// state of module (0=idle, 1=busy/transmitting)
     // data in/out
-    reg [7:0] spi_din; 			// data in (will get transmitted)
+    wire [7:0] spi_din; 			// data in (will get transmitted)
     wire [7:0] spi_dout;				// data out (will get received)
     // spi signals
     wire spi_miso,spi_mosi,spi_clock,spi_cs;
@@ -91,6 +92,22 @@ module top (clock, reset,
     	spi_cs					// chip select
     	);
 
+      //FIFO
+      wire fifo_in_nempty, fifo_in_full,fifo_out_nempty;
+
+      fifo FIFO_IN (
+      	clock,
+      	mc_we, //in_shift
+      	mc_data, //16bits of data
+      	fifo_in_full,
+      	fifo_in_nempty,
+
+      	spi_state, //input                  out_pop,
+      	spi_din, //output     [WIDTH-1:0] out_data,
+      	fifo_out_nempty //output reg             out_nempty
+
+      );
+
     //              oe    od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
     iobuf MOSI_BUF(1'b1, 1'b0, 1'b0, spi_mosi, temp, bufdir_mosi, bufod_mosi, buftoe_mosi, buftdo_mosi,buftdi_mosi);
     iobuf CLOCK_BUF(1'b1, 1'b0, 1'b0, spi_clock, temp, bufdir_clock, bufod_clock, buftoe_clock, buftdo_clock,buftdi_clock);
@@ -101,12 +118,13 @@ module top (clock, reset,
   	always @(posedge clock)
   			count <= count + 1;
 
+   assign spi_go=fifo_in_nempty;
+
     always @ (posedge mc_we)
       case(mc_add)
       6'h00:
         begin
-        spi_din=mc_data[7:0];
-        spi_go=1'b1;
+
         end
       6'h19:
         begin

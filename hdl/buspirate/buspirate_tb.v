@@ -134,9 +134,10 @@ module buspirate_tb();
       mc_we=0;
       aux_input=1'bz;
       @(negedge rst); // wait for reset
-
+      repeat(10) @(posedge clk);
       mc_add = 6'h00;
       mc_data = 16'h0055;
+      repeat(1) @(posedge clk);
       mc_we=1;
       repeat(1) @(posedge clk);
       mc_we=0;
@@ -144,6 +145,7 @@ module buspirate_tb();
 
       mc_add = 6'h00;
       mc_data = 16'h00FF;
+      repeat(1) @(posedge clk);
       mc_we=1;
       repeat(1) @(posedge clk);
       mc_we=0;
