@@ -67,15 +67,52 @@ module buspirate_tb();
 
     //this simulates the 74LVC logic buffers so we can see the results in simulation
     //the output from the iobuff "hardware driver" goes into here instead of physical hardware
-    iobufphy AUX(
-        .iopin_state(aux_state),
-        .iopin_contention(aux_contention),
-        .iopin_input(aux_input),
+    iobufphy mosi(
+        .iopin_state(mosi_state),
+        .iopin_contention(mosi_contention),
+        .iopin_input(mosi_input),
       //hardware driver (reversed input/outputs from above)
-        .bufdir(bufdir_aux),
-        .bufod(bufod_aux),
-        .bufio(bufio_aux)
+        .bufdir(bufdir_mosi),
+        .bufod(bufod_mosi),
+        .bufio(bufio_mosi)
       );
+
+    iobufphy clock(
+        .iopin_state(clock_state),
+        .iopin_contention(clock_contention),
+        .iopin_input(clock_input),
+      //hardware driver (reversed input/outputs from above)
+        .bufdir(bufdir_clock),
+        .bufod(bufod_clock),
+        .bufio(bufio_clock)
+      );
+  iobufphy miso(
+      .iopin_state(miso_state),
+      .iopin_contention(miso_contention),
+      .iopin_input(miso_input),
+    //hardware driver (reversed input/outputs from above)
+      .bufdir(bufdir_miso),
+      .bufod(bufod_miso),
+      .bufio(bufio_miso)
+    );
+  iobufphy cs(
+      .iopin_state(cs_state),
+      .iopin_contention(cs_contention),
+      .iopin_input(cs_input),
+    //hardware driver (reversed input/outputs from above)
+      .bufdir(bufdir_cs),
+      .bufod(bufod_cs),
+      .bufio(bufio_cs)
+    );
+  iobufphy aux(
+      .iopin_state(aux_state),
+      .iopin_contention(aux_contention),
+      .iopin_input(aux_input),
+    //hardware driver (reversed input/outputs from above)
+      .bufdir(bufdir_aux),
+      .bufod(bufod_aux),
+      .bufio(bufio_aux)
+    );
 
 
     initial begin
@@ -97,6 +134,22 @@ module buspirate_tb();
       mc_we=0;
       aux_input=1'bz;
       @(negedge rst); // wait for reset
+
+      mc_add = 6'h00;
+      mc_data = 16'h0055;
+      mc_we=1;
+      repeat(1) @(posedge clk);
+      mc_we=0;
+      repeat(100) @(posedge clk);
+
+      mc_add = 6'h00;
+      mc_data = 16'h00FF;
+      mc_we=1;
+      repeat(1) @(posedge clk);
+      mc_we=0;
+      repeat(100) @(posedge clk);
+
+
       mc_add = 6'h19;
       mc_data = 16'b10;
       mc_we=1;

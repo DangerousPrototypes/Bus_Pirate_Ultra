@@ -5,6 +5,7 @@
 `include "iobuf.v"
 `include "iobufphy.v"
 `include "pwm.v"
+`include "spimaster.v"
 module top (clock, reset,
             bufdir_mosi, bufod_mosi, bufio_mosi,
             bufdir_clock, bufod_clock, bufio_clock,
@@ -44,8 +45,20 @@ module top (clock, reset,
     wire irq0_in, irq0_dir, irq1_in, irq1_dir;
     // Temporary stuff
     wire temp;
+
+    // PWM
     wire pwm_out;
     reg [15:0] pwm_on, pwm_off;
+
+    // SPI master
+    // sync signals
+    reg spi_go;					// starts a SPI transmission
+    wire spi_state;				// state of module (0=idle, 1=busy/transmitting)
+    // data in/out
+    reg [7:0] spi_din; 			// data in (will get transmitted)
+    wire [7:0] spi_dout;				// data out (will get received)
+    // spi signals
+    wire spi_miso,spi_mosi,spi_clock,spi_cs;
 
     localparam N = 24;
     reg [N:0] count; //count[N]
@@ -56,18 +69,45 @@ module top (clock, reset,
     //offperiod				// #ticks period offtime
     pwm AUX_PWM(reset, clock,pwm_out, pwm_on,pwm_off);
 
-    //                  oe      od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
-    //iobuf MOSI_BUF(, 1'b0, 1'b0, 1'b1,  temp,    bufdir_mosi,   bufod_mosi,  buftoe_mosi,buftdo_mosi,buftdi_mosi); //D2
-    //iobuff CLOCK_BUFF(1'b0,    1'b0, 1'b0, 1'b0,   D9,    D8,   D7,  buff_data_oe[CLOCK],buff_data_dout[CLOCK],buff_data_din[CLOCK]); //D6
-    //iobuff MISO_BUFF(count[N],1'b0,1'b0,1'b0, D6,    D5,   D4,  mosi_data_oe,mosi_data_dout,mosi_data_din);
-    //iobuff CS(count[N],1'b0,1'b0,1'b0, D6,    D5,   D4,  mosi_data_oe,mosi_data_dout,mosi_data_din);
-    iobuf AUX_BUF(1'b1, 1'b1, 1'b0, pwm_out, temp, bufdir_aux, bufod_aux, buftoe_aux, buftdo_aux,buftdi_aux);
+    spimaster SPI_MASTER(
+    // general control
+    	reset,				// resets module to known state
+    	clock,				// clock that makes everyhting tick
+    // spi configuration
+    	1'b1, //cpol,				// clock polarity
+    	1'b0, //cpha,				// clock phase
+    	1'b1, //cspol,				// CS polarity
+    	1'b1, //autocs,				// assert CS automatically
+    // sync signals
+    	spi_go,					// starts a SPI transmission
+    	spi_state,				// state of module (0=idle, 1=busy/transmitting)
+    // data in/out
+    	spi_din, 			// data in (will get transmitted)
+    	spi_dout,				// data out (will get received)
+    // spi signals
+    	spi_miso,				// master in slave out
+    	spi_mosi,				// master out slave in
+    	spi_clock,				// SPI clock (= clkin/2)
+    	spi_cs					// chip select
+    	);
+
+    //              oe    od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
+    iobuf MOSI_BUF(1'b1, 1'b0, 1'b0, spi_mosi, temp, bufdir_mosi, bufod_mosi, buftoe_mosi, buftdo_mosi,buftdi_mosi);
+    iobuf CLOCK_BUF(1'b1, 1'b0, 1'b0, spi_clock, temp, bufdir_clock, bufod_clock, buftoe_clock, buftdo_clock,buftdi_clock);
+    iobuf MISO_BUF(1'b1, 1'b0, 1'b1, 1'b0, spi_miso, bufdir_miso, bufod_miso, buftoe_miso, buftdo_miso,buftdi_miso);
+    iobuf CS_BUF(1'b1, 1'b0, 1'b0, spi_cs, temp, bufdir_cs, bufod_cs, buftoe_cs, buftdo_cs,buftdi_cs);
+    iobuf AUX_BUF(1'b1, 1'b0, 1'b0, pwm_out, temp, bufdir_aux, bufod_aux, buftoe_aux, buftdo_aux,buftdi_aux);
 
   	always @(posedge clock)
   			count <= count + 1;
 
     always @ (posedge mc_we)
       case(mc_add)
+      6'h00:
+        begin
+        spi_din=mc_data[7:0];
+        spi_go=1'b1;
+        end
       6'h19:
         begin
         pwm_on=mc_data;
