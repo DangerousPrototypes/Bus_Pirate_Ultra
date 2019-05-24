@@ -25296,8 +25296,8 @@ H     X    L   :(  (contention)</text>
 <attribute name="NAME" x="76.2" y="378.46" size="1.778" layer="95"/>
 <attribute name="VALUE" x="76.2" y="375.92" size="1.778" layer="96"/>
 </instance>
-<instance part="P+1" gate="VCC" x="83.82" y="388.62"/>
-<instance part="P+3" gate="VCC" x="81.28" y="386.08"/>
+<instance part="P+1" gate="VCC" x="83.82" y="388.62" smashed="yes"/>
+<instance part="P+3" gate="VCC" x="81.28" y="388.62" smashed="yes"/>
 <instance part="C21" gate="G$1" x="-195.58" y="543.56" smashed="yes" rot="R180">
 <attribute name="NAME" x="-195.58" y="548.64" size="1.778" layer="95" rot="R90"/>
 <attribute name="VALUE" x="-195.58" y="556.26" size="1.778" layer="96" rot="R90"/>
@@ -26550,6 +26550,18 @@ H     X    L   :(  (contention)</text>
 <pinref part="C9" gate="G$1" pin="1"/>
 <junction x="144.78" y="284.48"/>
 </segment>
+<segment>
+<pinref part="R38" gate="G$1" pin="2"/>
+<pinref part="P+1" gate="VCC" pin="VCC"/>
+<wire x1="83.82" y1="386.08" x2="83.82" y2="383.54" width="0.1524" layer="91"/>
+<label x="83.82" y="388.62" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="R39" gate="G$1" pin="2"/>
+<pinref part="P+3" gate="VCC" pin="VCC"/>
+<wire x1="81.28" y1="381" x2="81.28" y2="386.08" width="0.1524" layer="91"/>
+<label x="81.28" y="388.62" size="1.778" layer="95" align="bottom-right"/>
+</segment>
 </net>
 <net name="N$7" class="0">
 <segment>
@@ -26910,10 +26922,6 @@ H     X    L   :(  (contention)</text>
 <wire x1="-248.92" y1="139.7" x2="-251.46" y2="139.7" width="0.1524" layer="91"/>
 <label x="-251.46" y="139.7" size="1.778" layer="95" align="center-right"/>
 </segment>
-<segment>
-<pinref part="U2" gate="U" pin="UART4_TX/USART3_TX('01')/FT/PC10"/>
-<wire x1="-142.24" y1="121.92" x2="-139.7" y2="121.92" width="0.1524" layer="91"/>
-</segment>
 </net>
 <net name="RST" class="0">
 <segment>
@@ -27137,6 +27145,46 @@ H     X    L   :(  (contention)</text>
 <label x="50.8" y="73.66" size="1.778" layer="95" align="center-left"/>
 <pinref part="RN1" gate="C" pin="1"/>
 </segment>
+<segment>
+<pinref part="IC17" gate="G$1" pin="VCCB"/>
+<wire x1="175.26" y1="281.94" x2="175.26" y2="284.48" width="0.1524" layer="91"/>
+<label x="175.26" y="287.02" size="1.778" layer="95" align="center-right"/>
+<pinref part="C10" gate="G$1" pin="2"/>
+<wire x1="175.26" y1="284.48" x2="175.26" y2="287.02" width="0.1524" layer="91"/>
+<junction x="175.26" y="284.48"/>
+</segment>
+<segment>
+<pinref part="IC15" gate="G$1" pin="VCCB"/>
+<wire x1="179.07" y1="335.28" x2="179.07" y2="339.09" width="0.1524" layer="91"/>
+<label x="177.8" y="340.36" size="1.778" layer="95" align="center-right"/>
+<pinref part="C8" gate="G$1" pin="2"/>
+<wire x1="179.07" y1="339.09" x2="179.07" y2="341.63" width="0.1524" layer="91"/>
+<junction x="179.07" y="339.09"/>
+</segment>
+<segment>
+<pinref part="IC13" gate="G$1" pin="VCCB"/>
+<wire x1="175.26" y1="386.08" x2="175.26" y2="388.62" width="0.1524" layer="91"/>
+<label x="175.26" y="391.16" size="1.778" layer="95" align="center-right"/>
+<pinref part="C6" gate="G$1" pin="2"/>
+<wire x1="175.26" y1="388.62" x2="175.26" y2="391.16" width="0.1524" layer="91"/>
+<junction x="175.26" y="388.62"/>
+</segment>
+<segment>
+<pinref part="IC11" gate="G$1" pin="VCCB"/>
+<wire x1="175.26" y1="436.88" x2="175.26" y2="439.42" width="0.1524" layer="91"/>
+<label x="175.26" y="441.96" size="1.778" layer="95" align="center-right"/>
+<pinref part="C4" gate="G$1" pin="2"/>
+<wire x1="175.26" y1="439.42" x2="175.26" y2="441.96" width="0.1524" layer="91"/>
+<junction x="175.26" y="439.42"/>
+</segment>
+<segment>
+<pinref part="IC9" gate="G$1" pin="VCCB"/>
+<wire x1="175.26" y1="497.84" x2="175.26" y2="500.38" width="0.1524" layer="91"/>
+<label x="175.26" y="502.92" size="1.778" layer="95" align="center-right"/>
+<pinref part="C2" gate="G$1" pin="2"/>
+<wire x1="175.26" y1="500.38" x2="175.26" y2="502.92" width="0.1524" layer="91"/>
+<junction x="175.26" y="500.38"/>
+</segment>
 </net>
 <net name="UART_RX" class="0">
 <segment>
@@ -27192,60 +27240,6 @@ H     X    L   :(  (contention)</text>
 <pinref part="U2" gate="U" pin="PE4/FT/FSMC_A20"/>
 <wire x1="-248.92" y1="93.98" x2="-251.46" y2="93.98" width="0.1524" layer="91"/>
 <label x="-251.46" y="93.98" size="1.778" layer="95" align="center-right"/>
-</segment>
-</net>
-<net name="VCC" class="0">
-<segment>
-<pinref part="R38" gate="G$1" pin="2"/>
-<pinref part="P+1" gate="VCC" pin="VCC"/>
-<wire x1="83.82" y1="386.08" x2="83.82" y2="383.54" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="R39" gate="G$1" pin="2"/>
-<pinref part="P+3" gate="VCC" pin="VCC"/>
-<wire x1="81.28" y1="381" x2="81.28" y2="383.54" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="VCCEXT" class="0">
-<segment>
-<pinref part="IC9" gate="G$1" pin="VCCB"/>
-<wire x1="175.26" y1="497.84" x2="175.26" y2="500.38" width="0.1524" layer="91"/>
-<label x="175.26" y="502.92" size="1.778" layer="95" align="center-right"/>
-<pinref part="C2" gate="G$1" pin="2"/>
-<wire x1="175.26" y1="500.38" x2="175.26" y2="502.92" width="0.1524" layer="91"/>
-<junction x="175.26" y="500.38"/>
-</segment>
-<segment>
-<pinref part="IC11" gate="G$1" pin="VCCB"/>
-<wire x1="175.26" y1="436.88" x2="175.26" y2="439.42" width="0.1524" layer="91"/>
-<label x="175.26" y="441.96" size="1.778" layer="95" align="center-right"/>
-<pinref part="C4" gate="G$1" pin="2"/>
-<wire x1="175.26" y1="439.42" x2="175.26" y2="441.96" width="0.1524" layer="91"/>
-<junction x="175.26" y="439.42"/>
-</segment>
-<segment>
-<pinref part="IC13" gate="G$1" pin="VCCB"/>
-<wire x1="175.26" y1="386.08" x2="175.26" y2="388.62" width="0.1524" layer="91"/>
-<label x="175.26" y="391.16" size="1.778" layer="95" align="center-right"/>
-<pinref part="C6" gate="G$1" pin="2"/>
-<wire x1="175.26" y1="388.62" x2="175.26" y2="391.16" width="0.1524" layer="91"/>
-<junction x="175.26" y="388.62"/>
-</segment>
-<segment>
-<pinref part="IC15" gate="G$1" pin="VCCB"/>
-<wire x1="179.07" y1="335.28" x2="179.07" y2="339.09" width="0.1524" layer="91"/>
-<label x="177.8" y="340.36" size="1.778" layer="95" align="center-right"/>
-<pinref part="C8" gate="G$1" pin="2"/>
-<wire x1="179.07" y1="339.09" x2="179.07" y2="341.63" width="0.1524" layer="91"/>
-<junction x="179.07" y="339.09"/>
-</segment>
-<segment>
-<pinref part="IC17" gate="G$1" pin="VCCB"/>
-<wire x1="175.26" y1="281.94" x2="175.26" y2="284.48" width="0.1524" layer="91"/>
-<label x="175.26" y="287.02" size="1.778" layer="95" align="center-right"/>
-<pinref part="C10" gate="G$1" pin="2"/>
-<wire x1="175.26" y1="284.48" x2="175.26" y2="287.02" width="0.1524" layer="91"/>
-<junction x="175.26" y="284.48"/>
 </segment>
 </net>
 <net name="BPIO_MOSI" class="0">
