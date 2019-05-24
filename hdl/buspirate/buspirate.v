@@ -118,7 +118,7 @@ module top (clock, reset,
   	always @(posedge clock)
   			count <= count + 1;
 
-   assign spi_go=fifo_in_nempty;
+   assign spi_go=fifo_out_nempty;
 
     always @ (posedge mc_we)
       case(mc_add)

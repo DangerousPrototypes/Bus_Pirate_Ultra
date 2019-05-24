@@ -141,7 +141,7 @@ module buspirate_tb();
       mc_we=1;
       repeat(1) @(posedge clk);
       mc_we=0;
-      repeat(100) @(posedge clk);
+      repeat(2) @(posedge clk);
 
       mc_add = 6'h00;
       mc_data = 16'h00FF;
@@ -149,27 +149,33 @@ module buspirate_tb();
       mc_we=1;
       repeat(1) @(posedge clk);
       mc_we=0;
-      repeat(100) @(posedge clk);
+      repeat(2) @(posedge clk);
 
 
       mc_add = 6'h19;
       mc_data = 16'b10;
+      repeat(1) @(posedge clk);
       mc_we=1;
       repeat(1) @(posedge clk);
       mc_we=0;
-      repeat(100) @(posedge clk);
+      repeat(2) @(posedge clk);
+
       mc_add = 6'h19;
       mc_data = 16'b01;
+      repeat(1) @(posedge clk);
       mc_we=1;
       repeat(1) @(posedge clk);
       mc_we=0;
-      repeat(100) @(posedge clk);
+      repeat(20) @(posedge clk);
+
       mc_add = 6'h19;
       mc_data = 16'b11;
+      repeat(1) @(posedge clk);
       mc_we=1;
       repeat(1) @(posedge clk);
       mc_we=0;
-      repeat(100) @(posedge clk);
+      repeat(20) @(posedge clk);
+
       $finish;
     end
 

@@ -21,7 +21,7 @@
 `define __FIFO__
 module fifo #(
 	parameter WIDTH = 8,
-	parameter DEPTH = 16
+	parameter DEPTH = 4
 ) (
 	input                  clock,
 	input                  in_shift,
@@ -41,44 +41,41 @@ module fifo #(
 		out_nempty = 0;
 	end
 
-	reg [ABITS-1:0] in_ipos = 0, in_opos = 0;
-	reg [ABITS-1:0] out_opos = 0, out_ipos = 0;
+	reg [ABITS-1:0] in_pos = 0;
+	reg [ABITS-1:0] out_pos = 0;
 
 	reg [WIDTH-1:0] memory [0:DEPTH-1];
 
-	wire [ABITS-1:0] next_ipos = in_ipos == DEPTH-1 ? 0 : in_ipos + 1;
-	wire [ABITS-1:0] next_next_ipos = next_ipos == DEPTH-1 ? 0 : next_ipos + 1;
+	wire [ABITS-1:0] next_in_pos = (in_pos == DEPTH-1) ? 0 : in_pos + 1;
+	wire [ABITS-1:0] next_next_in_pos = (next_in_pos == DEPTH-1) ? 0 : next_in_pos + 1;
 
-	wire [ABITS-1:0] next_opos = out_opos == DEPTH-1 ? 0 : out_opos + 1;
-	reg [WIDTH-1:0] out_data_d;
+	wire [ABITS-1:0] next_out_pos = (out_pos == DEPTH-1) ? 0 : out_pos + 1;
+	reg [WIDTH-1:0] out_data_d = 0;
 
 	always @(posedge clock) begin
 
-	out_ipos <=in_ipos;
-	in_opos <= out_opos;
-
 		if (in_shift && !in_full) begin
-			memory[in_ipos] <= in_data;
-			in_full <= next_next_ipos == in_opos;
+			memory[in_pos] <= in_data;
+			in_full <= (next_next_in_pos == out_pos);
 			in_nempty <= 1;
-			in_ipos <= next_ipos;
+			in_pos <= next_in_pos;
 		end else begin
-			in_full <= next_ipos == in_opos;
-			in_nempty <= in_ipos != in_opos;
+			in_full <= (next_in_pos == out_pos);
+			in_nempty <= (in_pos != out_pos);
 		end
 
 		if (out_pop && out_nempty) begin
-			out_data_d <= memory[next_opos];
-			out_nempty <= next_opos != out_ipos;
-			out_opos <= next_opos;
+			out_data_d <= memory[out_pos];
+			out_nempty <= (next_out_pos != in_pos);
+			out_pos <= next_out_pos;
 		end else begin
-			out_data_d <= memory[out_opos];
-			out_nempty <= out_opos != out_ipos;
+			//out_data_d <= memory[out_pos];
+			out_nempty <= (out_pos != in_pos);
 		end
 
 	end
 
-	assign out_data = out_nempty ? out_data_d : 0;
+	assign out_data =  out_data_d;
 
 
 
