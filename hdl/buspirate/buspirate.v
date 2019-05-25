@@ -53,7 +53,7 @@ module top (clock, reset,
 
     // SPI master
     // sync signals
-    wire spi_go;					// starts a SPI transmission
+    reg spi_go;					// starts a SPI transmission
     wire spi_state;				// state of module (0=idle, 1=busy/transmitting)
     // data in/out
     wire [7:0] spi_din; 			// data in (will get transmitted)
@@ -102,7 +102,7 @@ module top (clock, reset,
       	fifo_in_full,
       	fifo_in_nempty,
 
-      	spi_state, //input                  out_pop,
+      	!spi_state, //input                  out_pop,
       	spi_din, //output     [WIDTH-1:0] out_data,
       	fifo_out_nempty //output reg             out_nempty
 
@@ -118,7 +118,14 @@ module top (clock, reset,
   	always @(posedge clock)
   			count <= count + 1;
 
-   assign spi_go=fifo_out_nempty;
+    always @(posedge clock)
+    begin
+      if(fifo_out_nempty && !spi_state) begin
+        spi_go<=1'b1;
+      end else begin
+        spi_go<=1'b0;
+      end
+    end
 
     always @ (posedge mc_we)
       case(mc_add)
