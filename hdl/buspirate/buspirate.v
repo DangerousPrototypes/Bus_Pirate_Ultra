@@ -53,7 +53,7 @@ module top (clock, reset,
 
     // SPI master
     // sync signals
-    reg spi_go;					// starts a SPI transmission
+    wire spi_go;					// starts a SPI transmission
     wire spi_state;				// state of module (0=idle, 1=busy/transmitting)
     // data in/out
     wire [7:0] spi_din; 			// data in (will get transmitted)
@@ -93,20 +93,32 @@ module top (clock, reset,
     	);
 
       //FIFO
-      wire fifo_in_nempty, fifo_in_full,fifo_out_nempty;
+      wire in_fifo_in_nempty, in_fifo_in_full, in_fifo_out_nempty;
+      wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty;
+      fifo #(
+        .WIDTH(16),
+      	.DEPTH(4)
+        ) FIFO_IN (
+      	.clock(clock),
+      	.in_shift(mc_we),
+      	.in_data(mc_data),
+      	.in_full(in_fifo_in_full),
+      	.in_nempty(in_fifo_in_nempty),
 
-      fifo FIFO_IN (
-      	clock,
-      	mc_we, //in_shift
-      	mc_data, //16bits of data
-      	fifo_in_full,
-      	fifo_in_nempty,
+      	.out_pop(!spi_state),
+      	.out_data(spi_din),
+      	.out_nempty(in_fifo_out_nempty)
+      ), FIFO_OUT (
+        .clock(clock),
+      	.in_shift(spi_go), //???
+      	.in_data(spi_dout), // in data
+      	.in_full(out_fifo_in_full), //output
+      	.in_nempty(out_fifo_in_nempty), //output
 
-      	!spi_state, //input                  out_pop,
-      	spi_din, //output     [WIDTH-1:0] out_data,
-      	fifo_out_nempty //output reg             out_nempty
-
-      );
+      	.out_pop(mc_ce), //input out_pop,
+      	.out_data(mc_din), //out data,
+      	.out_nempty(out_fifo_out_nempty) //output reg out_nempty
+        );
 
     //              oe    od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
     iobuf MOSI_BUF(1'b1, 1'b0, 1'b0, spi_mosi, temp, bufdir_mosi, bufod_mosi, buftoe_mosi, buftdo_mosi,buftdi_mosi);
@@ -115,17 +127,19 @@ module top (clock, reset,
     iobuf CS_BUF(1'b1, 1'b0, 1'b0, spi_cs, temp, bufdir_cs, bufod_cs, buftoe_cs, buftdo_cs,buftdi_cs);
     iobuf AUX_BUF(1'b1, 1'b0, 1'b0, pwm_out, temp, bufdir_aux, bufod_aux, buftoe_aux, buftdo_aux,buftdi_aux);
 
-  	always @(posedge clock)
-  			count <= count + 1;
+    assign spi_go=(in_fifo_out_nempty && !spi_state)? 1'b1:1'b0;
 
     always @(posedge clock)
+  			count <= count + 1;
+
+    /*always @(posedge clock)
     begin
-      if(fifo_out_nempty && !spi_state) begin
+      if(in_fifo_out_nempty && !spi_state) begin
         spi_go<=1'b1;
       end else begin
         spi_go<=1'b0;
       end
-    end
+    end*/
 
     always @ (posedge mc_we)
       case(mc_add)

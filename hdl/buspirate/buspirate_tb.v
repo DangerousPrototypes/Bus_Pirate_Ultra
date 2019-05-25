@@ -131,8 +131,8 @@ module buspirate_tb();
       dir=1'b0;
       din=1'b0;
       iopin_input=1'bz;*/
+      miso_input=1'b1;
       mc_we=0;
-      aux_input=1'bz;
       @(negedge rst); // wait for reset
       repeat(10) @(posedge clk);
       mc_add = 6'h00;
@@ -170,12 +170,14 @@ module buspirate_tb();
 
       mc_add = 6'h19;
       mc_data = 16'b11;
+      miso_input=1'b0;
       repeat(1) @(posedge clk);
       mc_we=1;
       repeat(1) @(posedge clk);
       mc_we=0;
       repeat(20) @(posedge clk);
 
+      repeat(200) @(posedge clk);
       $finish;
     end
 
