@@ -18,9 +18,14 @@ module iobufphy (
       input wire bufod, //74LVC1G07 OD pin HIGH for Hi-Z
       inout wire bufio //tristate data pin
     );
+    wire input_value;
 
-    assign iopin_state=(!bufdir && bufod)?1'bz:(!bufdir&&!bufod)?1'b0:(bufio===1'bz)?iopin_input:bufio;
+    assign input_value = bufio;
+    assign bufio = (bufdir==1'b0)? iopin_input : 1'bz;
+
+    assign iopin_state=(!bufdir && bufod)?iopin_input:(!bufdir&&!bufod)?1'b0:input_value;
     assign iopin_contention=(!bufdir&&bufio!==1'bz); //if dir is low and fpga pin is output, then contention!!!!
+
 
 endmodule
 `endif
