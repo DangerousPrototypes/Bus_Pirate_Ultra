@@ -1,0 +1,5 @@
+.sconsign.dblite
+abc.history
+*.out
+*.vcd
+*.ini
