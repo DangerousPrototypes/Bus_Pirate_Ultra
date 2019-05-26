@@ -132,12 +132,13 @@ module top (clock, reset,
     wire mc_we_sync;
     sync MC_WE(clock, mc_we, mc_we_sync);
 
-    assign pwm_reset=(mc_add==6'h1a)?!mc_we:1'b0;
+    assign pwm_reset=(mc_add==6'h1a)?!mc_we_sync:1'b0;
     //writing to chip
-    always @(negedge mc_we)
+    always @(posedge clock)
     begin
       //mc_add_reg<=mc_add;
       //mc_din_reg<=mc_data;
+      if(mc_we_sync) begin
       case(mc_add)
         6'h19:									// pwm on-time register
           begin
@@ -148,6 +149,7 @@ module top (clock, reset,
             pwm_off <= mc_din;
           end
       endcase
+      end
     end
 
     //reading from chip
