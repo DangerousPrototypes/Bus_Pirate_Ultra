@@ -50,7 +50,7 @@ module top (clock, reset,
     reg irq0_out, irq1_out;
     wire irq0_in, irq0_dir, irq1_in, irq1_dir;
     // Temporary stuff
-    wire temp;
+    wire temp, temp1, temp2, temp3, temp4, temp5;
 
     // PWM
     wire pwm_out, pwm_reset;
@@ -120,11 +120,11 @@ module top (clock, reset,
         );
 
     //              oe    od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
-    iobuf MOSI_BUF(1'b1, 1'b0, 1'b0, spi_mosi, temp, bufdir_mosi, bufod_mosi, buftoe_mosi, buftdo_mosi,buftdi_mosi);
-    iobuf CLOCK_BUF(1'b1, 1'b0, 1'b0, spi_clock, temp, bufdir_clock, bufod_clock, buftoe_clock, buftdo_clock,buftdi_clock);
+    iobuf MOSI_BUF(1'b1, 1'b0, 1'b0, spi_mosi, temp1, bufdir_mosi, bufod_mosi, buftoe_mosi, buftdo_mosi,buftdi_mosi);
+    iobuf CLOCK_BUF(1'b1, 1'b0, 1'b0, spi_clock, temp2, bufdir_clock, bufod_clock, buftoe_clock, buftdo_clock,buftdi_clock);
     iobuf MISO_BUF(1'b1, 1'b0, 1'b1, 1'b0, spi_miso, bufdir_miso, bufod_miso, buftoe_miso, buftdo_miso,buftdi_miso);
-    iobuf CS_BUF(1'b1, 1'b0, 1'b0, spi_cs, temp, bufdir_cs, bufod_cs, buftoe_cs, buftdo_cs,buftdi_cs);
-    iobuf AUX_BUF(1'b1, 1'b0, 1'b0, pwm_out, temp, bufdir_aux, bufod_aux, buftoe_aux, buftdo_aux,buftdi_aux);
+    iobuf CS_BUF(1'b1, 1'b0, 1'b0, spi_cs, temp3, bufdir_cs, bufod_cs, buftoe_cs, buftdo_cs,buftdi_cs);
+    iobuf AUX_BUF(1'b1, 1'b0, 1'b0, pwm_out, temp4, bufdir_aux, bufod_aux, buftoe_aux, buftdo_aux,buftdi_aux);
 
     wire mc_we_sync, mc_oe_sync;
     sync MC_WE_SYNC(clock, mc_we, mc_we_sync);
