@@ -41,7 +41,8 @@ module top (clock, reset,
     wire buftdi_mosi,buftdi_clock,buftdi_miso,buftdi_cs,buftdi_aux;
     // Memory controller interface
     wire [MC_DATA_WIDTH-1:0] mc_din;
-    reg [MC_DATA_WIDTH-1:0] mc_dout;
+    wire [MC_DATA_WIDTH-1:0] mc_dout;
+    reg [MC_DATA_WIDTH-1:0] mc_dout_reg;
 
 
 
@@ -59,6 +60,7 @@ module top (clock, reset,
     // sync signals
     wire spi_go;					// starts a SPI transmission
     wire spi_state;				// state of module (0=idle, 1=busy/transmitting)
+    reg spi_state_last;
     // data in/out
     wire [7:0] spi_din; 			// data in (will get transmitted)
     wire [7:0] spi_dout;				// data out (will get received)
@@ -91,7 +93,9 @@ module top (clock, reset,
 
       //FIFO
       wire in_fifo_in_nempty, in_fifo_in_full, in_fifo_out_nempty,in_fifo_in_shift,in_fifo_out_pop;
-      wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty,out_fifo_out_data;
+      wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty;
+      wire [MC_DATA_WIDTH-1:0] out_fifo_out_data;
+      reg out_fifo_in_shift;
 
       fifo FIFO_IN (
       	.clock(clock),
@@ -129,7 +133,8 @@ module top (clock, reset,
     assign in_fifo_in_shift=(mc_add===6'h00)?mc_we_sync:1'b0; //follow the we signal
     assign in_fifo_out_pop=!spi_state;
     assign spi_go=(in_fifo_out_nempty && !spi_state)? 1'b1:1'b0; //if pending FIFO and SPI idle
-    assign out_fifo_in_shift=!spi_state; //?? how to trigger the move of spi read to FIFO???
+    //assign out_fifo_in_shift=!spi_state; //?? how to trigger the move of spi read to FIFO???
+    assign mc_dout=(mc_add===6'h00&&!mc_oe)?out_fifo_out_data:mc_dout_reg;
     assign out_fifo_out_pop=(mc_add===6'h00)?mc_oe_sync:1'b0;//follow the oe signal
 
     assign pwm_reset=(mc_add===6'h1a)?!mc_we_sync:1'b0; //reset pwm counters after write to pwm
@@ -137,6 +142,8 @@ module top (clock, reset,
     //writes
     always @(posedge clock)
     begin
+      spi_state_last<=spi_state;
+      out_fifo_in_shift<=((spi_state_last===1'b1)&&(spi_state===1'b0));
       if(mc_we_sync) begin
       case(mc_add)
         6'h19:									// pwm on-time register
@@ -150,17 +157,13 @@ module top (clock, reset,
       endcase
       end else if (mc_oe_sync) begin
       case(mc_add)
-        6'h00:
-          begin
-            mc_dout<=out_fifo_out_data;
-          end
         6'h19:									// pwm on-time register
           begin
-            mc_dout<= pwm_on;
+            mc_dout_reg<= pwm_on;
           end
         6'h1a:									// pwm off-time register
           begin
-            mc_dout<=pwm_off;
+            mc_dout_reg<=pwm_off;
           end
       endcase
       end

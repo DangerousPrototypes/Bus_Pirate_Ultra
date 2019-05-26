@@ -1,21 +1,21 @@
 [*]
 [*] GTKWave Analyzer v3.3.77 (w)1999-2016 BSI
-[*] Sun May 26 13:17:42 2019
+[*] Sun May 26 13:50:13 2019
 [*]
 [dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.vcd"
-[dumpfile_mtime] "Sun May 26 13:02:30 2019"
-[dumpfile_size] 44556
+[dumpfile_mtime] "Sun May 26 13:46:44 2019"
+[dumpfile_size] 44680
 [savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.gtkw"
-[timestart] 1340000
-[size] 1920 1017
+[timestart] 1600000
+[size] 1284 649
 [pos] -1 -1
-*-18.427427 1659000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-19.427427 2502000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] buspirate_tb.
 [treeopen] buspirate_tb.buspirate.
-[sst_width] 331
+[sst_width] 211
 [signals_width] 218
 [sst_expanded] 1
-[sst_vpaned_height] 301
+[sst_vpaned_height] 272
 @28
 buspirate_tb.buspirate.clock
 buspirate_tb.buspirate.mc_we
@@ -38,15 +38,18 @@ buspirate_tb.buspirate.SPI_MASTER.data_o[7:0]
 @28
 buspirate_tb.buspirate.SPI_MASTER.go
 buspirate_tb.buspirate.SPI_MASTER.rst
-@29
 buspirate_tb.buspirate.SPI_MASTER.state
 @200
 -FIFO_OUT
 @28
 [color] 2
 buspirate_tb.buspirate.FIFO_OUT.in_shift
-[color] 2
-buspirate_tb.buspirate.FIFO_OUT.next_in_pos[1:0]
+buspirate_tb.buspirate.FIFO_OUT.in_pos[1:0]
+buspirate_tb.buspirate.FIFO_OUT.in_full
+@22
+buspirate_tb.buspirate.FIFO_OUT.in_data[7:0]
+@23
+buspirate_tb.buspirate.FIFO_OUT.out_data[7:0]
 @200
 -FIFO_IN
 @22
