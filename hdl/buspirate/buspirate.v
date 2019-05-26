@@ -44,7 +44,7 @@ module top (clock, reset,
     //reg [MC_DATA_WIDTH-1:0] mc_din_reg;
     wire [MC_DATA_WIDTH-1:0] mc_din;
     //reg [MC_DATA_WIDTH-1:0] mc_dout_reg;
-    wire [MC_DATA_WIDTH-1:0] mc_dout;
+    reg [MC_DATA_WIDTH-1:0] mc_dout;
 
 
 
@@ -96,10 +96,6 @@ module top (clock, reset,
       wire in_fifo_in_nempty, in_fifo_in_full, in_fifo_out_nempty,in_fifo_in_shift,in_fifo_out_pop;
       wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty;
 
-      //assign spi_go=(in_fifo_out_nempty && !spi_state)? 1'b1:1'b0;
-      assign in_fifo_in_shift=(mc_add==6'h00)?mc_we_sync:1'b0;
-      //assign in_fifo_out_pop=!spi_state;
-
       fifo FIFO_IN (
       	.clock(clock),
       	.in_shift(in_fifo_in_shift),
@@ -110,17 +106,17 @@ module top (clock, reset,
       	.out_pop(in_fifo_out_pop),
       	.out_data(spi_din),
       	.out_nempty(in_fifo_out_nempty)
-      );/*, FIFO_OUT (
+      ), FIFO_OUT (
         .clock(clock),
-      	.in_shift(spi_go), //???
+      	.in_shift(out_fifo_in_shift), //???
       	.in_data(spi_dout), // in data
       	.in_full(out_fifo_in_full), //output
       	.in_nempty(out_fifo_in_nempty), //output
 
-      	.out_pop(mc_ce), //input out_pop,
-      	.out_data(mc_din), //out data,
+      	.out_pop(out_fifo_out_pop), //input out_pop,
+      	.out_data(mc_dout), //out data,
       	.out_nempty(out_fifo_out_nempty) //output reg out_nempty
-        );*/
+        );
 
     //              oe    od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
     iobuf MOSI_BUF(1'b1, 1'b0, 1'b0, spi_mosi, temp, bufdir_mosi, bufod_mosi, buftoe_mosi, buftdo_mosi,buftdi_mosi);
@@ -129,15 +125,23 @@ module top (clock, reset,
     iobuf CS_BUF(1'b1, 1'b0, 1'b0, spi_cs, temp, bufdir_cs, bufod_cs, buftoe_cs, buftdo_cs,buftdi_cs);
     iobuf AUX_BUF(1'b1, 1'b0, 1'b0, pwm_out, temp, bufdir_aux, bufod_aux, buftoe_aux, buftdo_aux,buftdi_aux);
 
-    wire mc_we_sync;
-    sync MC_WE(clock, mc_we, mc_we_sync);
+    wire mc_we_sync, mc_oe_sync;
+    sync MC_WE_SYNC(clock, mc_we, mc_we_sync);
+    sync MC_OE_SYNC(clock, mc_oe, mc_oe_sync);
 
-    assign pwm_reset=(mc_add==6'h1a)?!mc_we_sync:1'b0;
-    //writing to chip
+
+    assign in_fifo_in_shift=(mc_add==6'h00)?mc_we_sync:1'b0; //follow the we signal
+    assign in_fifo_out_pop=!spi_state;
+    assign out_fifo_in_shift=!spi_state; //?? how to trigger the move of spi read to FIFO???
+    assign out_fifo_out_pop=(mc_add==6'h00)?mc_oe_sync:1'b0;//follow the oe signal
+
+    assign pwm_reset=(mc_add==6'h1a)?!mc_we_sync:1'b0; //reset pwm counters after write to pwm
+    assign spi_go=(in_fifo_out_nempty && !spi_state)? 1'b1:1'b0; //if pending FIFO and SPI idle
+
+
+    //writes
     always @(posedge clock)
     begin
-      //mc_add_reg<=mc_add;
-      //mc_din_reg<=mc_data;
       if(mc_we_sync) begin
       case(mc_add)
         6'h19:									// pwm on-time register
@@ -149,24 +153,20 @@ module top (clock, reset,
             pwm_off <= mc_din;
           end
       endcase
-      end
-    end
-
-    //reading from chip
-    /*always @(negedge mc_oe)
-      begin
+      end else if (mc_oe_sync) begin
       case(mc_add)
         6'h19:									// pwm on-time register
           begin
-            mc_din <= pwm_on;
+            mc_dout<= pwm_on;
           end
         6'h1a:									// pwm off-time register
           begin
-            mc_din <= pwm_off;
+            mc_dout<=pwm_off;
           end
       endcase
       end
-*/
+    end
+
     //define the tristate data pin explicitly in the top module
     // Bus Pirate IO pins
     SB_IO #(
