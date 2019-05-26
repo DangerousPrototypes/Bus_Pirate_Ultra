@@ -40,10 +40,7 @@ module top (clock, reset,
     wire buftdo_mosi,buftdo_clock,buftdo_miso,buftdo_cs,buftdo_aux;
     wire buftdi_mosi,buftdi_clock,buftdi_miso,buftdi_cs,buftdi_aux;
     // Memory controller interface
-    reg [MC_ADD_WIDTH-1:0] mc_add_reg;
-    //reg [MC_DATA_WIDTH-1:0] mc_din_reg;
     wire [MC_DATA_WIDTH-1:0] mc_din;
-    //reg [MC_DATA_WIDTH-1:0] mc_dout_reg;
     reg [MC_DATA_WIDTH-1:0] mc_dout;
 
 
@@ -94,7 +91,7 @@ module top (clock, reset,
 
       //FIFO
       wire in_fifo_in_nempty, in_fifo_in_full, in_fifo_out_nempty,in_fifo_in_shift,in_fifo_out_pop;
-      wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty;
+      wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty,out_fifo_out_data;
 
       fifo FIFO_IN (
       	.clock(clock),
@@ -114,7 +111,7 @@ module top (clock, reset,
       	.in_nempty(out_fifo_in_nempty), //output
 
       	.out_pop(out_fifo_out_pop), //input out_pop,
-      	.out_data(mc_dout), //out data,
+      	.out_data(out_fifo_out_data), //out data,
       	.out_nempty(out_fifo_out_nempty) //output reg out_nempty
         );
 
@@ -129,15 +126,13 @@ module top (clock, reset,
     sync MC_WE_SYNC(clock, mc_we, mc_we_sync);
     sync MC_OE_SYNC(clock, mc_oe, mc_oe_sync);
 
-
-    assign in_fifo_in_shift=(mc_add==6'h00)?mc_we_sync:1'b0; //follow the we signal
+    assign in_fifo_in_shift=(mc_add===6'h00)?mc_we_sync:1'b0; //follow the we signal
     assign in_fifo_out_pop=!spi_state;
-    assign out_fifo_in_shift=!spi_state; //?? how to trigger the move of spi read to FIFO???
-    assign out_fifo_out_pop=(mc_add==6'h00)?mc_oe_sync:1'b0;//follow the oe signal
-
-    assign pwm_reset=(mc_add==6'h1a)?!mc_we_sync:1'b0; //reset pwm counters after write to pwm
     assign spi_go=(in_fifo_out_nempty && !spi_state)? 1'b1:1'b0; //if pending FIFO and SPI idle
+    assign out_fifo_in_shift=!spi_state; //?? how to trigger the move of spi read to FIFO???
+    assign out_fifo_out_pop=(mc_add===6'h00)?mc_oe_sync:1'b0;//follow the oe signal
 
+    assign pwm_reset=(mc_add===6'h1a)?!mc_we_sync:1'b0; //reset pwm counters after write to pwm
 
     //writes
     always @(posedge clock)
@@ -155,6 +150,10 @@ module top (clock, reset,
       endcase
       end else if (mc_oe_sync) begin
       case(mc_add)
+        6'h00:
+          begin
+            mc_dout<=out_fifo_out_data;
+          end
         6'h19:									// pwm on-time register
           begin
             mc_dout<= pwm_on;

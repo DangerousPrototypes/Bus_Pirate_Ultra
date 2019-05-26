@@ -7,6 +7,11 @@ input wire i,
 output wire o
 );
     reg r1, r2, r3;
+    initial begin
+      r1=0;
+      r2=0;
+      r3=0;
+    end
 
     always @(posedge clock) begin
         r1 <= i;    // first stage of 2-stage synchronizer
