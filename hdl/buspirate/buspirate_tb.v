@@ -25,10 +25,13 @@ module buspirate_tb();
   wire [7:0] lat;
   reg mc_oe, mc_ce, mc_we;
   reg [MC_ADD_WIDTH-1:0] mc_add;
-  reg [MC_DATA_WIDTH-1:0] mc_data;
+  wire [MC_DATA_WIDTH-1:0] mc_data;
+  reg [MC_DATA_WIDTH-1:0] mc_data_reg;
   wire irq0, irq1;
   wire sram_clock, sram0_cs, sram1_cs;
   wire [3:0] sram0_sio, sram1_sio;
+
+  assign mc_data=mc_data_reg;
 
   top buspirate(
     .clock(clk),
@@ -126,58 +129,70 @@ module buspirate_tb();
     initial begin
       $dumpfile(`DUMPSTR(`VCD_OUTPUT));
       $dumpvars(0, buspirate_tb);
-    /*  oe=1'b0; //initial values
-      od=1'b0;
-      dir=1'b0;
-      din=1'b0;
-      iopin_input=1'bz;*/
       miso_input=1'b1;
-      mc_we=0;
+      mc_we=1;
+      mc_oe=1;
       @(negedge rst); // wait for reset
       repeat(10) @(posedge clk);
+
+      mc_add = 6'h19;
+      mc_data_reg <= 16'h0003;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+      mc_add = 6'h1a;
+      mc_data_reg <= 16'h0003;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+
       mc_add = 6'h00;
-      mc_data = 16'h0055;
-      repeat(1) @(posedge clk);
-      mc_we=1;
-      repeat(1) @(posedge clk);
+      mc_data_reg <= 16'h0055;
+      repeat(6)@(posedge clk);
       mc_we=0;
-      repeat(2) @(posedge clk);
-
-      mc_add = 6'h00;
-      mc_data = 16'h00FF;
-      repeat(1) @(posedge clk);
+      repeat(6)@(posedge clk);
       mc_we=1;
-      repeat(1) @(posedge clk);
+      repeat(6)@(posedge clk);
+      mc_data_reg <= 16'h0001;
+      repeat(6)@(posedge clk);
       mc_we=0;
-      repeat(2) @(posedge clk);
-
-
-      mc_add = 6'h19;
-      mc_data = 16'b10;
-      repeat(1) @(posedge clk);
+      repeat(6)@(posedge clk);
       mc_we=1;
-      repeat(1) @(posedge clk);
+      repeat(6)@(posedge clk);
+      mc_data_reg <= 16'h0002;
+      repeat(6)@(posedge clk);
       mc_we=0;
-      repeat(2) @(posedge clk);
-
-      mc_add = 6'h19;
-      mc_data = 16'b01;
-      repeat(1) @(posedge clk);
+      repeat(6)@(posedge clk);
       mc_we=1;
-      repeat(1) @(posedge clk);
-      mc_we=0;
-      repeat(20) @(posedge clk);
+      repeat(6)@(posedge clk);
 
-      mc_add = 6'h19;
-      mc_data = 16'b11;
-      miso_input=1'b0;
-      repeat(1) @(posedge clk);
+
+      mc_data_reg <= 16'h0055;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
       mc_we=1;
-      repeat(1) @(posedge clk);
+      repeat(6)@(posedge clk);
+  /*    mc_data_reg <= 16'h0001;
+      @(posedge clk);
       mc_we=0;
-      repeat(20) @(posedge clk);
+      @(posedge clk);
+      mc_we=1;
+      @(posedge clk);
+      mc_data_reg <= 16'h0002;
+      @(posedge clk);
+      mc_we=0;
+      @(posedge clk);
+      mc_we=1;
+      @(posedge clk);
+*/
 
-      repeat(200) @(posedge clk);
+
+      repeat(100) @(posedge clk);
       $finish;
     end
 

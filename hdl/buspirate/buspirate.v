@@ -7,6 +7,7 @@
 `include "pwm.v"
 `include "spimaster.v"
 `include "fifo.v"
+`include "synchronizer.v"
 module top (clock, reset,
             bufdir_mosi, bufod_mosi, bufio_mosi,
             bufdir_clock, bufod_clock, bufio_clock,
@@ -29,7 +30,7 @@ module top (clock, reset,
     input wire [7:0] lat;
     input wire mc_oe, mc_ce, mc_we;
     input wire [MC_ADD_WIDTH-1:0] mc_add;
-    input wire [MC_DATA_WIDTH-1:0] mc_data;
+    inout wire [MC_DATA_WIDTH-1:0] mc_data;
     inout wire irq0, irq1;
     output wire sram_clock, sram0_cs, sram1_cs;
     inout wire [3:0] sram0_sio, sram1_sio;
@@ -39,8 +40,14 @@ module top (clock, reset,
     wire buftdo_mosi,buftdo_clock,buftdo_miso,buftdo_cs,buftdo_aux;
     wire buftdi_mosi,buftdi_clock,buftdi_miso,buftdi_cs,buftdi_aux;
     // Memory controller interface
+    reg [MC_ADD_WIDTH-1:0] mc_add_reg;
+    //reg [MC_DATA_WIDTH-1:0] mc_din_reg;
     wire [MC_DATA_WIDTH-1:0] mc_din;
-    reg [MC_DATA_WIDTH-1:0] mc_dout;
+    //reg [MC_DATA_WIDTH-1:0] mc_dout_reg;
+    wire [MC_DATA_WIDTH-1:0] mc_dout;
+
+
+
     // Interrupts
     reg irq0_out, irq1_out;
     wire irq0_in, irq0_dir, irq1_in, irq1_dir;
@@ -48,7 +55,7 @@ module top (clock, reset,
     wire temp;
 
     // PWM
-    wire pwm_out;
+    wire pwm_out, pwm_reset;
     reg [15:0] pwm_on, pwm_off;
 
     // SPI master
@@ -61,14 +68,7 @@ module top (clock, reset,
     // spi signals
     wire spi_miso,spi_mosi,spi_clock,spi_cs;
 
-    localparam N = 24;
-    reg [N:0] count; //count[N]
-    //rst,					// reset
-    //clkin,					// clock in
-    //clkout,					// clock out
-    //onperiod,				// #ticks period ontime
-    //offperiod				// #ticks period offtime
-    pwm AUX_PWM(reset, clock,pwm_out, pwm_on,pwm_off);
+    pwm AUX_PWM(reset||pwm_reset, clock,pwm_out, pwm_on,pwm_off);
 
     spimaster SPI_MASTER(
     // general control
@@ -93,22 +93,24 @@ module top (clock, reset,
     	);
 
       //FIFO
-      wire in_fifo_in_nempty, in_fifo_in_full, in_fifo_out_nempty;
+      wire in_fifo_in_nempty, in_fifo_in_full, in_fifo_out_nempty,in_fifo_in_shift,in_fifo_out_pop;
       wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty;
-      fifo #(
-        .WIDTH(16),
-      	.DEPTH(4)
-        ) FIFO_IN (
+
+      //assign spi_go=(in_fifo_out_nempty && !spi_state)? 1'b1:1'b0;
+      assign in_fifo_in_shift=(mc_add==6'h00)?mc_we_sync:1'b0;
+      //assign in_fifo_out_pop=!spi_state;
+
+      fifo FIFO_IN (
       	.clock(clock),
-      	.in_shift(mc_we),
-      	.in_data(mc_data),
+      	.in_shift(in_fifo_in_shift),
+      	.in_data(mc_din),
       	.in_full(in_fifo_in_full),
       	.in_nempty(in_fifo_in_nempty),
 
-      	.out_pop(!spi_state),
+      	.out_pop(in_fifo_out_pop),
       	.out_data(spi_din),
       	.out_nempty(in_fifo_out_nempty)
-      ), FIFO_OUT (
+      );/*, FIFO_OUT (
         .clock(clock),
       	.in_shift(spi_go), //???
       	.in_data(spi_dout), // in data
@@ -118,7 +120,7 @@ module top (clock, reset,
       	.out_pop(mc_ce), //input out_pop,
       	.out_data(mc_din), //out data,
       	.out_nempty(out_fifo_out_nempty) //output reg out_nempty
-        );
+        );*/
 
     //              oe    od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
     iobuf MOSI_BUF(1'b1, 1'b0, 1'b0, spi_mosi, temp, bufdir_mosi, bufod_mosi, buftoe_mosi, buftdo_mosi,buftdi_mosi);
@@ -127,35 +129,42 @@ module top (clock, reset,
     iobuf CS_BUF(1'b1, 1'b0, 1'b0, spi_cs, temp, bufdir_cs, bufod_cs, buftoe_cs, buftdo_cs,buftdi_cs);
     iobuf AUX_BUF(1'b1, 1'b0, 1'b0, pwm_out, temp, bufdir_aux, bufod_aux, buftoe_aux, buftdo_aux,buftdi_aux);
 
-    assign spi_go=(in_fifo_out_nempty && !spi_state)? 1'b1:1'b0;
+    wire mc_we_sync;
+    sync MC_WE(clock, mc_we, mc_we_sync);
 
-    always @(posedge clock)
-  			count <= count + 1;
-
-    /*always @(posedge clock)
+    assign pwm_reset=(mc_add==6'h1a)?!mc_we:1'b0;
+    //writing to chip
+    always @(negedge mc_we)
     begin
-      if(in_fifo_out_nempty && !spi_state) begin
-        spi_go<=1'b1;
-      end else begin
-        spi_go<=1'b0;
-      end
-    end*/
-
-    always @ (posedge mc_we)
+      //mc_add_reg<=mc_add;
+      //mc_din_reg<=mc_data;
       case(mc_add)
-      6'h00:
-        begin
-
-        end
-      6'h19:
-        begin
-        pwm_on=mc_data;
-        pwm_off=mc_data;
-        end
+        6'h19:									// pwm on-time register
+          begin
+            pwm_on <= mc_din;
+          end
+        6'h1a:									// pwm off-time register
+          begin
+            pwm_off <= mc_din;
+          end
       endcase
+    end
 
-
-
+    //reading from chip
+    /*always @(negedge mc_oe)
+      begin
+      case(mc_add)
+        6'h19:									// pwm on-time register
+          begin
+            mc_din <= pwm_on;
+          end
+        6'h1a:									// pwm off-time register
+          begin
+            mc_din <= pwm_off;
+          end
+      endcase
+      end
+*/
     //define the tristate data pin explicitly in the top module
     // Bus Pirate IO pins
     SB_IO #(
@@ -204,7 +213,7 @@ module top (clock, reset,
       .D_IN_0(buftdi_aux)           //data in wire
     );
     // Memory controller data pins
-  /*  SB_IO #(
+    SB_IO #(
       .PIN_TYPE(6'b1010_01),
       .PULLUP(1'b0)
     ) mc_io [MC_DATA_WIDTH-1:0] (
@@ -212,7 +221,7 @@ module top (clock, reset,
       .OUTPUT_ENABLE(!mc_oe),
       .D_OUT_0(mc_dout),
       .D_IN_0(mc_din)
-    );*/
+    );
     // Interrupt pins
     SB_IO #(
       .PIN_TYPE(6'b1010_01),
