@@ -31,7 +31,7 @@ module buspirate_tb();
   wire sram_clock, sram0_cs, sram1_cs;
   wire [3:0] sram0_sio, sram1_sio;
 
-  assign mc_data=mc_data_reg;
+  assign mc_data=(mc_oe)?mc_data_reg:16'hzzzz;
 
   top buspirate(
     .clock(clk),
@@ -169,27 +169,21 @@ module buspirate_tb();
       repeat(6)@(posedge clk);
       mc_we=1;
       repeat(6)@(posedge clk);
+      mc_data_reg <= 16'h0003;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
 
-
-      mc_data_reg <= 16'h0055;
+      // Read test
+      mc_add = 6'h00;
+      @(posedge clk)
+      mc_oe=0;
       repeat(6)@(posedge clk);
-      mc_we=0;
+      $display("%h",mc_data);
       repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-  /*    mc_data_reg <= 16'h0001;
-      @(posedge clk);
-      mc_we=0;
-      @(posedge clk);
-      mc_we=1;
-      @(posedge clk);
-      mc_data_reg <= 16'h0002;
-      @(posedge clk);
-      mc_we=0;
-      @(posedge clk);
-      mc_we=1;
-      @(posedge clk);
-*/
+      mc_oe=1;
 
 
       repeat(100) @(posedge clk);

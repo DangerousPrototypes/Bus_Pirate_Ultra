@@ -18,6 +18,6 @@ output wire o
         r2 <= r1;       // second stage of 2-stage synchronizer
         r3 <= r2;       // edge detector memory
     end
-    assign o = (r2 && !r3);
+    assign o = (!r2 && r3);
 endmodule
 `endif
