@@ -21,7 +21,7 @@
 `define __FIFO__
 module fifo #(
 	parameter WIDTH = 8,
-	parameter DEPTH = 16
+	parameter DEPTH = 256
 ) (
 	input                  clock,
 	input                  in_shift,
