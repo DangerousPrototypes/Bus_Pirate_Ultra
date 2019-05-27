@@ -34,15 +34,15 @@ reg [_RESOLUTION:0] lastoffperiod;
 always @ (posedge clkin or posedge rst)
 if (rst)
 begin
-	count = 16'b0000000000000000;
-	clkout = 1'b0;
+	count <= 16'b0000000000000000;
+	clkout <= 1'b0;
 end
 else
 begin
 	if (onperiod != lastonperiod)		// reset count if onperiod has changed
-		count = 16'b0;
+		count <= 16'b0;
 	if (offperiod != lastoffperiod)		// reset count if offperiod has changed
-		count = 16'b0;
+		count <= 16'b0;
 
 	lastonperiod = onperiod;
 	lastoffperiod = offperiod;
@@ -51,24 +51,24 @@ begin
 	begin
 		if (count == offperiod)				// flip clock after halfperiod clocks
 		begin
-			count = 16'b0000000000000000;
-			clkout = 1;
+			count <= 16'b0000000000000000;
+			clkout <= 1;
 		end
 		else
 		begin
-			count = count + 1'b1;
+			count <= count + 1'b1;
 		end
 	end
 	else
 	begin
 		if (count == onperiod)				// flip clock after halfperiod clocks
 		begin
-			count = 16'b0000000000000000;
-			clkout = 0;
+			count <= 16'b0000000000000000;
+			clkout <= 0;
 		end
 		else
 		begin
-			count = count + 1'b1;
+			count <= count + 1'b1;
 		end
 	end
 
