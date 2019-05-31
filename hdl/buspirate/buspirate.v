@@ -56,46 +56,18 @@ module top (clock, reset,
     wire pwm_out, pwm_reset;
     reg [15:0] pwm_on, pwm_off;
 
-    // SPI master
-    // sync signals
-    wire spi_go;					// starts a SPI transmission
-    wire spi_state;				// state of module (0=idle, 1=busy/transmitting)
-    reg spi_state_last;
-    // data in/out
-    wire [7:0] spi_din; 			// data in (will get transmitted)
-    wire [7:0] spi_dout;				// data out (will get received)
-    // spi signals
-    wire spi_miso,spi_mosi,spi_clock,spi_cs;
+    //pwm AUX_PWM(reset||pwm_reset, clock,pwm_out, pwm_on,pwm_off);
 
-    pwm AUX_PWM(reset||pwm_reset, clock,pwm_out, pwm_on,pwm_off);
-
-    spimaster SPI_MASTER(
-    // general control
-    	reset,				// resets module to known state
-    	clock,				// clock that makes everyhting tick
-    // spi configuration
-    	1'b1, //cpol,				// clock polarity
-    	1'b0, //cpha,				// clock phase
-    	1'b1, //cspol,				// CS polarity
-    	1'b1, //autocs,				// assert CS automatically
-    // sync signals
-    	spi_go,					// starts a SPI transmission
-    	spi_state,				// state of module (0=idle, 1=busy/transmitting)
-    // data in/out
-    	spi_din, 			// data in (will get transmitted)
-    	spi_dout,				// data out (will get received)
-    // spi signals
-    	spi_miso,				// master in slave out
-    	spi_mosi,				// master out slave in
-    	spi_clock,				// SPI clock (= clkin/2)
-    	spi_cs					// chip select
-    	);
+    //three control lines for each pin
+    wire bp_mosi_din, bp_clock_din, bp_miso_din, bp_cs_din, bp_aux0_din; //input into the buffer (output pin direction)
+    wire bp_mosi_dout, bp_clock_dout, bp_miso_dout, bp_cs_dout, bp_aux0_dout;//output from the buffer (input pin direction)
+    wire bp_mosi_dir, bp_clock_dir, bp_miso_dir, bp_cs_dir, bp_aux0_dir;
 
       //FIFO
       wire in_fifo_in_nempty, in_fifo_in_full, in_fifo_out_nempty,in_fifo_in_shift,in_fifo_out_pop;
       wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty;
-      wire [MC_DATA_WIDTH-1:0] out_fifo_out_data;
-      reg out_fifo_in_shift;
+      wire [MC_DATA_WIDTH-1:0] out_fifo_out_data, out_fifo_in_data, in_fifo_out_data;
+      wire out_fifo_in_shift;
 
       fifo FIFO_IN (
       	.clock(clock),
@@ -105,12 +77,12 @@ module top (clock, reset,
       	.in_nempty(in_fifo_in_nempty),
 
       	.out_pop(in_fifo_out_pop),
-      	.out_data(spi_din),
+      	.out_data(in_fifo_out_data),
       	.out_nempty(in_fifo_out_nempty)
       ), FIFO_OUT (
         .clock(clock),
       	.in_shift(out_fifo_in_shift), //???
-      	.in_data(spi_dout), // in data
+      	.in_data(out_fifo_in_data), // in data
       	.in_full(out_fifo_in_full), //output
       	.in_nempty(out_fifo_in_nempty), //output
 
@@ -119,41 +91,57 @@ module top (clock, reset,
       	.out_nempty(out_fifo_out_nempty) //output reg out_nempty
         );
 
-    //              oe    od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
-    iobuf MOSI_BUF(1'b1, 1'b0, 1'b0, spi_mosi, temp1, bufdir_mosi, bufod_mosi, buftoe_mosi, buftdo_mosi,buftdi_mosi);
-    iobuf CLOCK_BUF(1'b1, 1'b0, 1'b0, spi_clock, temp2, bufdir_clock, bufod_clock, buftoe_clock, buftdo_clock,buftdi_clock);
-    iobuf MISO_BUF(1'b1, 1'b0, 1'b1, 1'b0, spi_miso, bufdir_miso, bufod_miso, buftoe_miso, buftdo_miso,buftdi_miso);
-    iobuf CS_BUF(1'b1, 1'b0, 1'b0, spi_cs, temp3, bufdir_cs, bufod_cs, buftoe_cs, buftdo_cs,buftdi_cs);
-    iobuf AUX_BUF(1'b1, 1'b0, 1'b0, pwm_out, temp4, bufdir_aux, bufod_aux, buftoe_aux, buftdo_aux,buftdi_aux);
+        dispatch DISPATCH (
+          clock,
+          reset,
+          //input from fifo and trigger
+          in_fifo_out_nempty,
+          in_fifo_out_pop,
+          in_fifo_out_data, //16bits!
 
+          //output to fifo and triggers
+          //out_fifo_in_nempty,
+          //out_fifo_in_full,
+          //out_fifo_in_shift,
+          //out_fifo_in_data,
+
+          // pins (directions???)
+          bp_mosi_din,				// master in slave out
+          bp_clock_din,				// master out slave in
+          bp_miso_dout,				// SPI clock (= clkin/2)
+          bp_cs_din,					// chip select
+          bp_aux0_din
+
+          //error?
+
+          //idle/busy?
+
+          );
+
+
+    //              oe    od    dir   din   dout bufdir bufod  the pins from the SB_IO block below
+    iobuf MOSI_BUF(1'b1, 1'b0, 1'b0, bp_mosi_din, temp1, bufdir_mosi, bufod_mosi, buftoe_mosi, buftdo_mosi,buftdi_mosi);
+    iobuf CLOCK_BUF(1'b1, 1'b0, 1'b0, bp_clock_din, temp2, bufdir_clock, bufod_clock, buftoe_clock, buftdo_clock,buftdi_clock);
+    iobuf MISO_BUF(1'b1, 1'b0, 1'b1, 1'b0, bp_miso_dout, bufdir_miso, bufod_miso, buftoe_miso, buftdo_miso,buftdi_miso);
+    iobuf CS_BUF(1'b1, 1'b0, 1'b0, bp_cs_din, temp3, bufdir_cs, bufod_cs, buftoe_cs, buftdo_cs,buftdi_cs);
+    iobuf AUX_BUF(1'b1, 1'b0, 1'b0, bp_aux0_din, temp4, bufdir_aux, bufod_aux, buftoe_aux, buftdo_aux,buftdi_aux);
+
+    //wires tied to the memory controller WE and OE signals
     wire mc_we_sync, mc_oe_sync;
     sync MC_WE_SYNC(clock, mc_we, mc_we_sync);
     sync MC_OE_SYNC(clock, mc_oe, mc_oe_sync);
-
     assign in_fifo_in_shift=(mc_add===6'h00)?mc_we_sync:1'b0; //follow the we signal
-    assign in_fifo_out_pop=!spi_state;
-    assign spi_go=(in_fifo_out_nempty && !spi_state)? 1'b1:1'b0; //if pending FIFO and SPI idle
-    //assign out_fifo_in_shift=!spi_state; //?? how to trigger the move of spi read to FIFO???
     assign mc_dout=(mc_add===6'h00&&!mc_oe)?out_fifo_out_data:mc_dout_reg;
     assign out_fifo_out_pop=(mc_add===6'h00)?mc_oe_sync:1'b0;//follow the oe signal
-
     assign pwm_reset=(mc_add===6'h1a)?!mc_we_sync:1'b0; //reset pwm counters after write to pwm
 
     //writes
     always @(posedge clock)
     begin
-      spi_state_last<=spi_state;
-      out_fifo_in_shift<=((spi_state_last===1'b1)&&(spi_state===1'b0));
       if(mc_we_sync) begin
       case(mc_add)
-        6'h19:									// pwm on-time register
-          begin
-            pwm_on <= mc_din;
-          end
-        6'h1a:									// pwm off-time register
-          begin
-            pwm_off <= mc_din;
-          end
+        6'h19: pwm_on <= mc_din;// pwm on-time register
+        6'h1a: pwm_off <= mc_din;	// pwm off-time register
       endcase
       end else if (mc_oe_sync) begin
       case(mc_add)

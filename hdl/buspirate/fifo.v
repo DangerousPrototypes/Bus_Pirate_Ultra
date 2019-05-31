@@ -20,8 +20,8 @@
 `ifndef __FIFO__
 `define __FIFO__
 module fifo #(
-	parameter WIDTH = 8,
-	parameter DEPTH = 256
+	parameter WIDTH = 16,
+	parameter DEPTH = 4
 ) (
 	input                  clock,
 	input                  in_shift,
