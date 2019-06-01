@@ -16,6 +16,7 @@ module dispatch (
       input clock,
       input reset,
       //input from fifo and trigger
+      output in_fifo_out_clock,
       input in_fifo_out_nempty,
       output in_fifo_out_pop,
       input      [16-1:0] in_fifo_out_data, //16bits!
@@ -58,11 +59,14 @@ module dispatch (
       bp_aux0
 
     );*/
-  reg in_fifo_out_pop;
+  //reg in_fifo_out_pop;
   //assign in_fifo_out_pop=(in_fifo_out_nempty&&count[N]);
 
   reg aux_pin_state;
   assign bp_aux0=aux_pin_state;
+  //reg in_fifo_out_clock;
+  assign in_fifo_out_clock=clock; //this will be a divided clock eventually
+
   reg nready;
   reg in_data_ready;
   reg in_fifo_out_nempty_d, dispatch_go;
@@ -71,40 +75,42 @@ module dispatch (
 
 localparam  N = 6;
   reg [N:0] count;
-`define RESET 2'b00
-`define POP 2'b01
-`define ACTION 2'b10
-`define DELAY 2'b11
-reg [1:0] state_f;
-
+`define RESET 3'b000
+`define ACTION 3'b001
+`define DELAY 3'b010
+`define WAIT 3'b011
+reg [2:0] state_f;
 
   initial begin
     count<=6'b111111;
     state_f<=`RESET;
-    in_fifo_out_pop<=1'b0;
   end
+
+  assign in_fifo_out_pop=(state_f===`RESET && in_fifo_out_nempty);
 
   always @(posedge clock)
   begin
     case(state_f)
       `RESET: begin
         count<=0;
-        if(in_fifo_out_nempty) begin
-          in_fifo_out_pop<=1'b1;
-          state_f<=`POP;
+        if(in_fifo_out_pop) begin
+          state_f=`ACTION;
         end
-      end
-      `POP: begin //idle and wait to pop data
-          in_fifo_out_pop<=1'b0;
-          state_f<=`ACTION;
       end
       `ACTION: begin
         case(dispatch_command)
           //AUX (0/1/hiz/read/pwm/freqmeasure)
-          8'h01:	count<=dispatch_data; //aux_pin_state <= 0;
+          //TODO: how to pre/post delay on dispatch commands
+          8'h01:	aux_pin_state <= 0;
           8'h02:	aux_pin_state <= 1;
+
           //delays
-          //pass [] /\!._-^ and data to SPI
+          8'h03:	count<=dispatch_data;
+
+          //pass bitwise commands {}[] /\!._-^ to facade
+          //pass data to facade
+          //TODO: wait for done signal from facade
+
         endcase
         state_f=`DELAY;
       end
@@ -114,6 +120,12 @@ reg [1:0] state_f;
         end else begin
           state_f<=`RESET;
         end
+      end
+      `WAIT: begin
+        //if(!spi_state) begin
+        //  spi_go<=0;
+          //state_f<=`DELAY;
+        //end //TODO: get data out and back into the FIFO_OUT
       end
     endcase
   end

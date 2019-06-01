@@ -23,12 +23,13 @@ module fifo #(
 	parameter WIDTH = 16,
 	parameter DEPTH = 4
 ) (
-	input                  clock,
+	input                  in_clock,
 	input                  in_shift,
 	input      [WIDTH-1:0] in_data,
 	output reg             in_full,
 	output reg             in_nempty,
 
+	input 								out_clock,
 	input                  out_pop,
 	output     [WIDTH-1:0] out_data,
 	output reg             out_nempty
@@ -52,8 +53,7 @@ module fifo #(
 	wire [ABITS-1:0] next_out_pos = (out_pos == DEPTH-1) ? 0 : out_pos + 1;
 	reg [WIDTH-1:0] out_data_d = 0;
 
-	always @(posedge clock) begin
-
+	always @(posedge in_clock) begin
 		if (in_shift && !in_full) begin
 			memory[in_pos] <= in_data;
 			in_full <= (next_next_in_pos == out_pos);
@@ -63,7 +63,9 @@ module fifo #(
 			in_full <= (next_in_pos == out_pos);
 			in_nempty <= (in_pos != out_pos);
 		end
+	end
 
+	always @(posedge out_clock) begin
 		if (out_pop && out_nempty) begin
 			out_data_d <= memory[out_pos];
 			out_nempty <= (next_out_pos != in_pos);

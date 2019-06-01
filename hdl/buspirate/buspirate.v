@@ -67,25 +67,27 @@ module top (clock, reset,
       wire in_fifo_in_nempty, in_fifo_in_full, in_fifo_out_nempty,in_fifo_in_shift,in_fifo_out_pop;
       wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty;
       wire [MC_DATA_WIDTH-1:0] out_fifo_out_data, out_fifo_in_data, in_fifo_out_data;
-      wire out_fifo_in_shift;
+      wire out_fifo_in_shift, in_fifo_out_clock, out_fifo_in_clock;
 
       fifo FIFO_IN (
-      	.clock(clock),
+      	.in_clock(clock),
       	.in_shift(in_fifo_in_shift),
       	.in_data(mc_din),
       	.in_full(in_fifo_in_full),
       	.in_nempty(in_fifo_in_nempty),
 
+        .out_clock(in_fifo_out_clock),
       	.out_pop(in_fifo_out_pop),
       	.out_data(in_fifo_out_data),
       	.out_nempty(in_fifo_out_nempty)
       ), FIFO_OUT (
-        .clock(clock),
+        .in_clock(out_fifo_in_clock),
       	.in_shift(out_fifo_in_shift), //???
       	.in_data(out_fifo_in_data), // in data
       	.in_full(out_fifo_in_full), //output
       	.in_nempty(out_fifo_in_nempty), //output
 
+        .out_clock(clock),
       	.out_pop(out_fifo_out_pop), //input out_pop,
       	.out_data(out_fifo_out_data), //out data,
       	.out_nempty(out_fifo_out_nempty) //output reg out_nempty
@@ -95,6 +97,7 @@ module top (clock, reset,
           clock,
           reset,
           //input from fifo and trigger
+          in_fifo_out_clock,
           in_fifo_out_nempty,
           in_fifo_out_pop,
           in_fifo_out_data, //16bits!
