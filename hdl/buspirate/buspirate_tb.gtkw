@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.77 (w)1999-2016 BSI
-[*] Sat Jun 01 09:06:26 2019
+[*] Sat Jun 01 10:56:06 2019
 [*]
 [dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.vcd"
-[dumpfile_mtime] "Fri May 31 17:43:20 2019"
-[dumpfile_size] 41656
+[dumpfile_mtime] "Sat Jun 01 10:54:51 2019"
+[dumpfile_size] 44863
 [savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.gtkw"
-[timestart] 0
+[timestart] 1059500
 [size] 1920 1017
-[pos] -9 -9
-*-19.301805 1190000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] -1 -1
+*-16.301805 1177400 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] buspirate_tb.
 [treeopen] buspirate_tb.buspirate.
 [sst_width] 211
@@ -41,10 +41,13 @@ buspirate_tb.aux.iopin_state
 @200
 -SPI
 @28
+buspirate_tb.buspirate.DISPATCH.go
+@29
+buspirate_tb.buspirate.DISPATCH.state
+@28
 buspirate_tb.buspirate.DISPATCH.in_fifo_out_pop
-@23
-buspirate_tb.buspirate.DISPATCH.dispatch_command[7:0]
 @22
+buspirate_tb.buspirate.DISPATCH.dispatch_command[7:0]
 buspirate_tb.buspirate.DISPATCH.dispatch_data[7:0]
 @28
 buspirate_tb.buspirate.DISPATCH.state_f[2:0]
