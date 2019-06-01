@@ -169,7 +169,7 @@ module buspirate_tb();
       repeat(6)@(posedge clk);
       mc_we=1;
       repeat(6)@(posedge clk);
-      mc_data_reg <= 16'h0103;
+      mc_data_reg <= 16'h0303;
       repeat(6)@(posedge clk);
       mc_we=0;
       repeat(6)@(posedge clk);

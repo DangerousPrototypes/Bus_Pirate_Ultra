@@ -54,7 +54,7 @@ module dispatch (
   wire [7:0] dispatch_command = in_fifo_out_data[15:8];
   wire [7:0] dispatch_data = in_fifo_out_data[7:0];
 
-  localparam  N = 6;
+  localparam  N = 3;
   reg [N:0] count;
   `define RESET 3'b000
   `define ACTION 3'b001
@@ -83,57 +83,33 @@ module dispatch (
     );
 
   initial begin
-    count<=6'b111111;
+    count<=4'b1111;
     state_f<=`RESET;
+    in_fifo_out_pop<=0;
   end
 
-  assign in_fifo_out_pop=(state_f===`RESET && in_fifo_out_nempty);
+reg in_fifo_out_pop;
 
   always @(posedge clock)
   begin
-    case(state_f)
-      `RESET: begin
-      //add delay timer and other stuff here, we can just have two states!!!!
-        count<=0;
-        if(in_fifo_out_pop) begin //use falling edge detection for when to do nothing instead of pause and wait....
-          state_f=`ACTION;
-        end
-      end
-      `ACTION: begin
-
+      go<=0;
+      if(!count[N]) count<=count+1;
+      else if(!state && count[N] && in_fifo_out_nempty) begin
+        in_fifo_out_pop<=1;
+      end else if(in_fifo_out_pop) begin
+        in_fifo_out_pop<=0;
         case(dispatch_command)
+          //pass data to facade
+          //pass bitwise commands {}[] /\!._-^ to facade
+          //TODO: wait for done signal from facade, get SPI byte
+          8'h00:  begin go<=1; end
           //AUX (0/1/hiz/read/pwm/freqmeasure)
-          //TODO: how to pre/post delay on dispatch commands
-          8'h00:  begin
-                  go<=1;
-                  state_f<=`WAIT;
-                  end
-          8'h01:	begin aux_pin_state <= 0; state_f<=`DELAY; end
-          8'h02:	begin aux_pin_state <= 1; state_f<=`DELAY; end
-
+          8'h01:	begin aux_pin_state <= 0; end
+          8'h02:	begin aux_pin_state <= 1; end
           //delays
           8'h03:	count<=dispatch_data;
-
-          //pass bitwise commands {}[] /\!._-^ to facade
-          //pass data to facade
-          //TODO: wait for done signal from facade
-
         endcase
       end
-      `DELAY: begin
-        if(!count[N]) begin
-          count<=count+1;
-        end else begin
-          state_f<=`RESET;
-        end
-      end
-      `WAIT: begin
-          go<=0;
-        if(!state) begin
-          state_f<=`RESET;
-        end //TODO: get data out and back into the FIFO_OUT
-      end
-    endcase
   end
 
 endmodule
