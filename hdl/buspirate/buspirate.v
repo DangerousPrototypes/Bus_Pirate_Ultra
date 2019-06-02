@@ -142,7 +142,8 @@ module top #(
         );
 
         dispatch #(
-          .FIFO_WIDTH(FIFO_WIDTH)
+          .FIFO_WIDTH(FIFO_WIDTH),
+          .BP_PINS(BP_PINS)
         ) DISPATCH (
           clock,
           reset,

@@ -25,9 +25,9 @@ module spimaster (
 	data_i,				// data in (will get transmitted)
 	data_o,				// data out (will get received)
 // spi signals
-	miso,				// master in slave out
 	mosi,				// master out slave in
 	sclk,				// SPI clock (= clkin/2)
+	miso,				// master in slave out
 	cs					// chip select
 	);
 

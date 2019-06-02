@@ -15,7 +15,6 @@
 module dispatch #(
     parameter FIFO_WIDTH = 16,
     parameter BP_PINS = 5
-
   )(
       input clock,
       input reset,
@@ -53,18 +52,20 @@ module dispatch #(
   reg aux_pin_state;
   //assign bp_aux0=aux_pin_state;
 
-  facade FACADE (
-      clock,
-      reset,
+  facade  #(
+    .BP_PINS(BP_PINS)
+    )FACADE(
+      .clock(clock),
+      .reset(reset),
       //configuration_register,
-      dispatch_data,
-      out_data,
-      go,
-      state,
-      out_fifo_in_shift,
+      .in_data(dispatch_data),
+      .out_data(out_data),
+      .go(go),
+      .state(state),
+      .data_ready(out_fifo_in_shift),
       // pins
-      bp_din,
-      bp_dout
+      .bp_din(bp_din),
+      .bp_dout(bp_dout)
 
     );
 
