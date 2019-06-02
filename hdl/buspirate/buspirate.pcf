@@ -8,21 +8,21 @@ set_io clock 20 # friendly name, fpga pin
 set_io reset 55 #wrong pin, just holder
 
 # Bus Pirate buffer control pins
-set_io bufdir_mosi 75 #74LVC1T45 DIR
-set_io bufod_mosi 73 #74LVC1G07 A
-set_io bufio_mosi 74 #74LVC1T45 A
-set_io bufdir_clock 79
-set_io bufod_clock 76
-set_io bufio_clock 78
-set_io bufdir_miso 82
-set_io bufod_miso 80
-set_io bufio_miso 81
-set_io bufdir_cs 104
-set_io bufod_cs 101
-set_io bufio_cs 102
-set_io bufdir_aux 107
-set_io bufod_aux 105
-set_io bufio_aux 106
+set_io bufdir[0] 75 #74LVC1T45 DIR
+set_io bufod[0] 73 #74LVC1G07 A
+set_io bufio[0] 74 #74LVC1T45 A
+set_io bufdir[1] 79
+set_io bufod[1] 76
+set_io bufio[1] 78
+set_io bufdir[2] 82
+set_io bufod[2] 80
+set_io bufio[2] 81
+set_io bufdir[3] 104
+set_io bufod[3] 101
+set_io bufio[3] 102
+set_io bufdir[4] 107
+set_io bufod[4] 105
+set_io bufio[4] 106
 
 # Peek-behind buffer/latch (74AC573)
 set_io lat_oe 91 #latch output enable

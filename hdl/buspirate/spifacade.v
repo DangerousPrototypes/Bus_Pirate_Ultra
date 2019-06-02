@@ -5,7 +5,9 @@
 
 `ifndef __facade__
 `define __facade__
-module facade (
+module facade #(
+    parameter BP_PINS = 5
+  )(
     input wire clock,
     input wire reset,
     //input wire [15:0] configuration_register,
@@ -16,11 +18,8 @@ module facade (
     output wire state,
     output wire data_ready,
     // pins (directions???)
-    output wire bp_mosi,				// master in slave out
-    output wire bp_clock,				// master out slave in
-    input wire bp_miso,				// SPI clock (= clkin/2)
-    output wire bp_cs					// chip select
-    //bp_aux0
+    output wire [BP_PINS-1:0] bp_din,
+    input wire [BP_PINS-1:0] bp_dout
 
   );
 
@@ -45,10 +44,10 @@ module facade (
     in_data, 			// data in (will get transmitted)
     out_data,				// data out (will get received)
   // spi signals
-    bp_miso,				// master in slave out
-    bp_mosi,				// master out slave in
-    bp_clock,				// SPI clock (= clkin/2)
-    bp_cs					// chip select
+    bp_dout[2],				// master in slave out
+    bp_din[0],				// master out slave in
+    bp_din[1],				// SPI clock (= clkin/2)
+    bp_din[3]					// chip select
     );
 
     always @(posedge clock)

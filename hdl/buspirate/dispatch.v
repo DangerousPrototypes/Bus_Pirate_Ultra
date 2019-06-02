@@ -12,25 +12,26 @@
 
 `ifndef __dispatch__
 `define __dispatch__
-module dispatch (
+module dispatch #(
+    parameter FIFO_WIDTH = 16,
+    parameter BP_PINS = 5
+
+  )(
       input clock,
       input reset,
       //input from fifo and trigger
       output in_fifo_out_clock,
       input in_fifo_out_nempty,
       output in_fifo_out_pop,
-      input wire [16-1:0] in_fifo_out_data, //16bits!
+      input wire [FIFO_WIDTH-1:0] in_fifo_out_data, //16bits!
       //output to fifo and triggers
       output wire out_fifo_in_clock,
       input wire out_fifo_in_full,
       output wire out_fifo_in_shift,
-      output wire [16-1:0] out_fifo_in_data,
+      output wire [FIFO_WIDTH-1:0] out_fifo_in_data,
       // pins (directions???)
-      output bp_mosi,				// master in slave out
-      output bp_clock,				// master out slave in
-      input bp_miso,				// SPI clock (= clkin/2)
-      output bp_cs,					// chip select
-      output bp_aux0  //aux pin
+      output wire [BP_PINS-1:0] bp_din,
+      input wire [BP_PINS-1:0] bp_dout
       //error?
 
     //idle/busy?
@@ -38,6 +39,7 @@ module dispatch (
   );
 
   reg in_fifo_out_pop, go;
+  wire state;
   wire [7:0] dispatch_command = in_fifo_out_data[15:8];
   wire [7:0] dispatch_data = in_fifo_out_data[7:0];
   wire [7:0] out_data;
@@ -49,7 +51,7 @@ module dispatch (
   reg [N:0] count;
 
   reg aux_pin_state;
-  assign bp_aux0=aux_pin_state;
+  //assign bp_aux0=aux_pin_state;
 
   facade FACADE (
       clock,
@@ -60,12 +62,9 @@ module dispatch (
       go,
       state,
       out_fifo_in_shift,
-      // pins (directions???)
-      bp_mosi,				// master in slave out
-      bp_clock,				// master out slave in
-      bp_miso,				// SPI clock (= clkin/2)
-      bp_cs					// chip select
-      //bp_aux0
+      // pins
+      bp_din,
+      bp_dout
 
     );
 
@@ -86,9 +85,8 @@ module dispatch (
         in_fifo_out_pop<=0;
         case(dispatch_command)
           //pass data to facade
-          //pass bitwise commands {}[] /\!._-^ to facade
-          //TODO: wait for done signal from facade, get SPI byte
           8'h00:  begin go<=1; end
+          // TODO: pass bitwise commands {}[] /\!._-^ to facade
           //AUX (0/1/hiz/read/pwm/freqmeasure)
           8'h01:	begin aux_pin_state <= 0; end
           8'h02:	begin aux_pin_state <= 1; end

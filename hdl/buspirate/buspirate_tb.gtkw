@@ -1,18 +1,19 @@
 [*]
 [*] GTKWave Analyzer v3.3.77 (w)1999-2016 BSI
-[*] Sun Jun 02 09:16:27 2019
+[*] Sun Jun 02 12:17:50 2019
 [*]
 [dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.vcd"
-[dumpfile_mtime] "Sun Jun 02 09:07:47 2019"
-[dumpfile_size] 46958
+[dumpfile_mtime] "Sun Jun 02 12:17:07 2019"
+[dumpfile_size] 53301
 [savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.gtkw"
-[timestart] 700000
+[timestart] 0
 [size] 1920 1017
 [pos] -1 -1
-*-18.301805 2410000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-19.301805 2410000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] buspirate_tb.
 [treeopen] buspirate_tb.buspirate.
 [treeopen] buspirate_tb.buspirate.DISPATCH.
+[treeopen] buspirate_tb.buspirate.DISPATCH.FACADE.
 [sst_width] 211
 [signals_width] 218
 [sst_expanded] 1
@@ -34,15 +35,27 @@ buspirate_tb.buspirate.mc_dout[15:0]
 @200
 -BUFFER PINS
 @28
-buspirate_tb.mosi.iopin_state
-buspirate_tb.clock.iopin_state
-buspirate_tb.miso.iopin_state
-buspirate_tb.cs.iopin_state
-@29
-buspirate_tb.aux.iopin_state
+buspirate_tb.BP_BUF[0].iopin_state
+buspirate_tb.BP_BUF[1].iopin_state
+buspirate_tb.BP_BUF[2].iopin_state
+buspirate_tb.BP_BUF[3].iopin_state
+buspirate_tb.BP_BUF[4].iopin_state
 @200
 -SPI
+@23
+buspirate_tb.buspirate.DISPATCH.bp_dout[4:0]
 @22
+buspirate_tb.buspirate.DISPATCH.bp_din[4:0]
+buspirate_tb.buspirate.DISPATCH.FACADE.bp_din[4:0]
+buspirate_tb.buspirate.DISPATCH.FACADE.bp_dout[4:0]
+buspirate_tb.buspirate.DISPATCH.FACADE.bp_dout[4:0]
+@28
+buspirate_tb.buspirate.DISPATCH.FACADE.SPI_MASTER.miso
+buspirate_tb.buspirate.DISPATCH.FACADE.SPI_MASTER.mosi
+buspirate_tb.buspirate.DISPATCH.FACADE.SPI_MASTER.sclk
+@22
+buspirate_tb.buspirate.DISPATCH.FACADE.in_data[7:0]
+buspirate_tb.buspirate.DISPATCH.FACADE.out_data[7:0]
 buspirate_tb.buspirate.DISPATCH.out_fifo_in_data[15:0]
 @28
 buspirate_tb.buspirate.DISPATCH.go

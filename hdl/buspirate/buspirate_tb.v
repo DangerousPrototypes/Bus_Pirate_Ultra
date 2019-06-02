@@ -4,22 +4,16 @@
 module buspirate_tb();
 
   parameter DURATION = 10;
+  parameter BP_PINS = 5;
 
   localparam MC_DATA_WIDTH = 16;
   localparam MC_ADD_WIDTH = 6;
 
   reg clk, rst;
 
-  wire mosi_state, mosi_contention,bufdir_mosi,bufod_mosi,bufio_mosi;
-  reg mosi_input;
-  wire clock_state, clock_contention,bufdir_clock,bufod_clock,bufio_clock;
-  reg clock_input;
-  wire miso_state, miso_contention,bufdir_miso,bufod_miso,bufio_miso;
-  reg miso_input;
-  wire cs_state, cs_contention,bufdir_cs,bufod_cs,bufio_cs;
-  reg cs_input;
-  wire aux_state, aux_contention,bufdir_aux,bufod_aux,bufio_aux;
-  reg aux_input;
+  // PHY simulates the IO buffer hardware
+  wire [BP_PINS-1:0] bufio, bufdir, bufod, contention, state;
+  reg [BP_PINS-1:0] test_input; //load test input values here
 
   wire lat_oe;
   wire [7:0] lat;
@@ -36,21 +30,9 @@ module buspirate_tb();
   top buspirate(
     .clock(clk),
     .reset(rst),
-    .bufdir_mosi(bufdir_mosi),
-    .bufod_mosi(bufod_mosi),
-    .bufio_mosi(bufio_mosi),
-    .bufdir_clock(bufdir_clock),
-    .bufod_clock(bufod_clock),
-    .bufio_clock(bufio_clock),
-    .bufdir_miso(bufdir_miso),
-    .bufod_miso(bufod_miso),
-    .bufio_miso(bufio_miso),
-    .bufdir_cs(bufdir_cs),
-    .bufod_cs(bufod_cs),
-    .bufio_cs(bufio_cs),
-    .bufdir_aux(bufdir_aux),
-    .bufod_aux(bufod_aux),
-    .bufio_aux(bufio_aux),
+    .bufio(bufio),
+    .bufdir(bufdir),
+    .bufod(bufod),
     .lat_oe(lat_oe),
     .lat(lat),
     .mc_oe(mc_oe),
@@ -67,56 +49,17 @@ module buspirate_tb();
     .sram1_sio(sram1_sio)
     );
 
-
     //this simulates the 74LVC logic buffers so we can see the results in simulation
     //the output from the iobuff "hardware driver" goes into here instead of physical hardware
-    iobufphy mosi(
-        .iopin_state(mosi_state),
-        .iopin_contention(mosi_contention),
-        .iopin_input(mosi_input),
+    iobufphy BP_BUF[BP_PINS-1:0](
+        .iopin_state(state),
+        .iopin_contention(contention),
+        .iopin_input(test_input),
       //hardware driver (reversed input/outputs from above)
-        .bufdir(bufdir_mosi),
-        .bufod(bufod_mosi),
-        .bufio(bufio_mosi)
+        .bufdir(bufdir),
+        .bufod(bufod),
+        .bufio(bufio)
       );
-
-    iobufphy clock(
-        .iopin_state(clock_state),
-        .iopin_contention(clock_contention),
-        .iopin_input(clock_input),
-      //hardware driver (reversed input/outputs from above)
-        .bufdir(bufdir_clock),
-        .bufod(bufod_clock),
-        .bufio(bufio_clock)
-      );
-  iobufphy miso(
-      .iopin_state(miso_state),
-      .iopin_contention(miso_contention),
-      .iopin_input(miso_input),
-    //hardware driver (reversed input/outputs from above)
-      .bufdir(bufdir_miso),
-      .bufod(bufod_miso),
-      .bufio(bufio_miso)
-    );
-  iobufphy cs(
-      .iopin_state(cs_state),
-      .iopin_contention(cs_contention),
-      .iopin_input(cs_input),
-    //hardware driver (reversed input/outputs from above)
-      .bufdir(bufdir_cs),
-      .bufod(bufod_cs),
-      .bufio(bufio_cs)
-    );
-  iobufphy aux(
-      .iopin_state(aux_state),
-      .iopin_contention(aux_contention),
-      .iopin_input(aux_input),
-    //hardware driver (reversed input/outputs from above)
-      .bufdir(bufdir_aux),
-      .bufod(bufod_aux),
-      .bufio(bufio_aux)
-    );
-
 
     initial begin
       clk = 1'b0;
@@ -129,7 +72,7 @@ module buspirate_tb();
     initial begin
       $dumpfile(`DUMPSTR(`VCD_OUTPUT));
       $dumpvars(0, buspirate_tb);
-      miso_input=1'b1;
+      test_input=5'b11111;
       mc_we=1;
       mc_oe=1;
       @(negedge rst); // wait for reset
