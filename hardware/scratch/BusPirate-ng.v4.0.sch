@@ -28605,16 +28605,16 @@ H     X    L   :(  (contention)</text>
 <label x="0" y="360.68" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
-<net name="N$11" class="0">
-<segment>
-<pinref part="U3" gate="BANK0" pin="IOT_192"/>
-<wire x1="-2.54" y1="449.58" x2="0" y2="449.58" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$12" class="0">
+<net name="MCU_AUX6" class="0">
 <segment>
 <pinref part="U3" gate="BANK0" pin="IOT_191"/>
-<wire x1="-2.54" y1="447.04" x2="0" y2="447.04" width="0.1524" layer="91"/>
+<wire x1="-2.54" y1="447.04" x2="2.54" y2="447.04" width="0.1524" layer="91"/>
+<label x="2.54" y="447.04" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<pinref part="U2" gate="U" pin="TIM4_CH4('0')/I2C1_SDA('1')/FT/PB9"/>
+<wire x1="-142.24" y1="38.1" x2="-137.16" y2="38.1" width="0.1524" layer="91"/>
+<label x="-137.16" y="38.1" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$14" class="0">
@@ -28633,12 +28633,6 @@ H     X    L   :(  (contention)</text>
 <segment>
 <pinref part="U3" gate="BANK0" pin="IOT_179"/>
 <wire x1="-2.54" y1="439.42" x2="0" y2="439.42" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$26" class="0">
-<segment>
-<pinref part="U3" gate="BANK0" pin="IOT_178"/>
-<wire x1="-2.54" y1="436.88" x2="0" y2="436.88" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$29" class="0">
@@ -28663,18 +28657,6 @@ H     X    L   :(  (contention)</text>
 <segment>
 <pinref part="U2" gate="U" pin="PG2/FT/FSMC_A12"/>
 <wire x1="-248.92" y1="55.88" x2="-251.46" y2="55.88" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$32" class="0">
-<segment>
-<pinref part="U2" gate="U" pin="TIM4_CH3('0')/I2C1_SCL('1')/FT/PB8"/>
-<wire x1="-142.24" y1="40.64" x2="-139.7" y2="40.64" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$33" class="0">
-<segment>
-<pinref part="U2" gate="U" pin="TIM4_CH4('0')/I2C1_SDA('1')/FT/PB9"/>
-<wire x1="-142.24" y1="38.1" x2="-139.7" y2="38.1" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$36" class="0">
@@ -28755,18 +28737,6 @@ H     X    L   :(  (contention)</text>
 <wire x1="-38.1" y1="454.66" x2="-40.64" y2="454.66" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$48" class="0">
-<segment>
-<pinref part="U3" gate="BANK0" pin="IOT_174"/>
-<wire x1="-38.1" y1="439.42" x2="-40.64" y2="439.42" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$49" class="0">
-<segment>
-<pinref part="U3" gate="BANK0" pin="IOT_177"/>
-<wire x1="-38.1" y1="436.88" x2="-40.64" y2="436.88" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="SRAM0_SIO0" class="0">
 <segment>
 <wire x1="78.74" y1="574.04" x2="86.36" y2="574.04" width="0.1524" layer="91"/>
@@ -28815,21 +28785,17 @@ H     X    L   :(  (contention)</text>
 <label x="0" y="480.06" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
-<net name="SRAM_CLOCK" class="0">
+<net name="SRAM1_CLOCK" class="0">
 <segment>
-<wire x1="78.74" y1="561.34" x2="83.82" y2="561.34" width="0.1524" layer="91"/>
 <wire x1="78.74" y1="533.4" x2="83.82" y2="533.4" width="0.1524" layer="91"/>
 <wire x1="83.82" y1="533.4" x2="86.36" y2="533.4" width="0.1524" layer="91"/>
-<wire x1="83.82" y1="561.34" x2="83.82" y2="533.4" width="0.1524" layer="91"/>
-<junction x="83.82" y="533.4"/>
 <label x="86.36" y="533.4" size="1.778" layer="95" rot="MR0" align="center-right"/>
-<pinref part="IC1" gate="IC" pin="SCK"/>
 <pinref part="IC2" gate="IC" pin="SCK"/>
 </segment>
 <segment>
-<pinref part="U3" gate="BANK0" pin="IOT_219"/>
-<wire x1="-2.54" y1="474.98" x2="0" y2="474.98" width="0.1524" layer="91"/>
-<label x="0" y="474.98" size="1.778" layer="95" align="center-left"/>
+<pinref part="U3" gate="BANK0" pin="IOT_171"/>
+<wire x1="-38.1" y1="447.04" x2="-40.64" y2="447.04" width="0.1524" layer="91"/>
+<label x="-40.64" y="447.04" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="SRAM0_CS" class="0">
@@ -28853,9 +28819,9 @@ H     X    L   :(  (contention)</text>
 <pinref part="IC2" gate="IC" pin="!CS"/>
 </segment>
 <segment>
-<pinref part="U3" gate="BANK0" pin="IOT_173"/>
-<wire x1="-38.1" y1="441.96" x2="-40.64" y2="441.96" width="0.1524" layer="91"/>
-<label x="-40.64" y="441.96" size="1.778" layer="95" align="center-right"/>
+<pinref part="U3" gate="BANK0" pin="IOT_174"/>
+<wire x1="-38.1" y1="439.42" x2="-40.64" y2="439.42" width="0.1524" layer="91"/>
+<label x="-40.64" y="439.42" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="SRAM1_SIO0" class="0">
@@ -28877,9 +28843,9 @@ H     X    L   :(  (contention)</text>
 <label x="86.36" y="543.56" size="1.778" layer="95" align="center-left"/>
 </segment>
 <segment>
-<pinref part="U3" gate="BANK0" pin="IOT_171"/>
-<wire x1="-38.1" y1="447.04" x2="-40.64" y2="447.04" width="0.1524" layer="91"/>
-<label x="-40.64" y="447.04" size="1.778" layer="95" align="center-right"/>
+<pinref part="U3" gate="BANK0" pin="IOT_172"/>
+<wire x1="-38.1" y1="444.5" x2="-40.64" y2="444.5" width="0.1524" layer="91"/>
+<label x="-40.64" y="444.5" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="SRAM1_SIO2" class="0">
@@ -28901,9 +28867,9 @@ H     X    L   :(  (contention)</text>
 <label x="86.36" y="538.48" size="1.778" layer="95" align="center-left"/>
 </segment>
 <segment>
-<pinref part="U3" gate="BANK0" pin="IOT_172"/>
-<wire x1="-38.1" y1="444.5" x2="-40.64" y2="444.5" width="0.1524" layer="91"/>
-<label x="-40.64" y="444.5" size="1.778" layer="95" align="center-right"/>
+<pinref part="U3" gate="BANK0" pin="IOT_173"/>
+<wire x1="-38.1" y1="441.96" x2="-40.64" y2="441.96" width="0.1524" layer="91"/>
+<label x="-40.64" y="441.96" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="LAT_SWV50" class="0">
@@ -29077,13 +29043,151 @@ H     X    L   :(  (contention)</text>
 <net name="N$54" class="0">
 <segment>
 <pinref part="U2" gate="U" pin="PG9/FT/FSMC_NE2/FSMC_NCE3"/>
-<wire x1="-248.92" y1="38.1" x2="-251.46" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="-248.92" y1="38.1" x2="-254" y2="38.1" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$15" class="0">
 <segment>
 <pinref part="U2" gate="U" pin="FSMC_A8/FT/PF14"/>
 <wire x1="-142.24" y1="68.58" x2="-139.7" y2="68.58" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="MCU_AUX1" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="UART4_TX/USART3_TX('01')/FT/PC10"/>
+<wire x1="-142.24" y1="121.92" x2="-137.16" y2="121.92" width="0.1524" layer="91"/>
+<label x="-137.16" y="121.92" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U3" gate="BANK0" pin="IOT_215"/>
+<wire x1="-2.54" y1="467.36" x2="2.54" y2="467.36" width="0.1524" layer="91"/>
+<label x="2.54" y="467.36" size="1.778" layer="95" align="center-left"/>
+</segment>
+</net>
+<net name="MCU_AUX3" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="UART5_TX/USART3_CK('01')/FT/PC12"/>
+<wire x1="-142.24" y1="116.84" x2="-137.16" y2="116.84" width="0.1524" layer="91"/>
+<label x="-137.16" y="116.84" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U3" gate="BANK0" pin="IOT_213"/>
+<wire x1="-2.54" y1="462.28" x2="2.54" y2="462.28" width="0.1524" layer="91"/>
+<label x="2.54" y="462.28" size="1.778" layer="95" align="center-left"/>
+</segment>
+</net>
+<net name="MCU_AUX4" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PD6/FT/FSMC_NWAIT/USART2_RX('1')"/>
+<wire x1="-248.92" y1="132.08" x2="-254" y2="132.08" width="0.1524" layer="91"/>
+<label x="-266.7" y="132.08" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U3" gate="BANK0" pin="IOT_212"/>
+<wire x1="-2.54" y1="459.74" x2="2.54" y2="459.74" width="0.1524" layer="91"/>
+<label x="2.54" y="459.74" size="1.778" layer="95" align="center-left"/>
+</segment>
+</net>
+<net name="N$56" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PD7/FT/FSMC_NE1/FSMC_NCE2/USART2_CK('1')"/>
+<wire x1="-248.92" y1="129.54" x2="-254" y2="129.54" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$57" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PG11/FT/FSMC_NCE4_2"/>
+<wire x1="-248.92" y1="33.02" x2="-254" y2="33.02" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$58" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PG12/FT/FSMC_NE4"/>
+<wire x1="-248.92" y1="30.48" x2="-254" y2="30.48" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$59" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PG13/FT/FSMC_A24"/>
+<wire x1="-248.92" y1="27.94" x2="-254" y2="27.94" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$60" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PG14/FT/FSMC_A25"/>
+<wire x1="-248.92" y1="25.4" x2="-254" y2="25.4" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$61" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PG15/FT"/>
+<wire x1="-248.92" y1="22.86" x2="-254" y2="22.86" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="MCU_AUX2" class="0">
+<segment>
+<pinref part="U3" gate="BANK0" pin="IOT_214"/>
+<wire x1="-2.54" y1="464.82" x2="2.54" y2="464.82" width="0.1524" layer="91"/>
+<label x="2.54" y="464.82" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<pinref part="U2" gate="U" pin="UART4_RX/USART3_RX('01')/FT/PC11"/>
+<wire x1="-142.24" y1="119.38" x2="-137.16" y2="119.38" width="0.1524" layer="91"/>
+<label x="-137.16" y="119.38" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="MCU_AUX5" class="0">
+<segment>
+<pinref part="U3" gate="BANK0" pin="IOT_192"/>
+<wire x1="-2.54" y1="449.58" x2="2.54" y2="449.58" width="0.1524" layer="91"/>
+<label x="2.54" y="449.58" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<pinref part="U2" gate="U" pin="TIM4_CH3('0')/I2C1_SCL('1')/FT/PB8"/>
+<wire x1="-142.24" y1="40.64" x2="-137.16" y2="40.64" width="0.1524" layer="91"/>
+<label x="-137.16" y="40.64" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="N$21" class="0">
+<segment>
+<pinref part="U3" gate="BANK0" pin="IOT_206"/>
+<wire x1="-2.54" y1="457.2" x2="2.54" y2="457.2" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="SRAM0_CLOCK" class="0">
+<segment>
+<pinref part="U3" gate="BANK0" pin="IOT_219"/>
+<wire x1="-2.54" y1="474.98" x2="0" y2="474.98" width="0.1524" layer="91"/>
+<label x="0" y="474.98" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<wire x1="78.74" y1="561.34" x2="83.82" y2="561.34" width="0.1524" layer="91"/>
+<pinref part="IC1" gate="IC" pin="SCK"/>
+<label x="83.82" y="561.34" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="MCU_AUX8" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PE1/FT/FSMC_NBL1"/>
+<wire x1="-248.92" y1="101.6" x2="-254" y2="101.6" width="0.1524" layer="91"/>
+<label x="-266.7" y="101.6" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U3" gate="BANK0" pin="IOT_177"/>
+<wire x1="-38.1" y1="436.88" x2="-43.18" y2="436.88" width="0.1524" layer="91"/>
+<label x="-43.18" y="436.88" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="MCU_AUX7" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PE0/FT/TIM4_ETR/FSMC_NBL0"/>
+<wire x1="-248.92" y1="104.14" x2="-254" y2="104.14" width="0.1524" layer="91"/>
+<label x="-266.7" y="104.14" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U3" gate="BANK0" pin="IOT_178"/>
+<wire x1="-2.54" y1="436.88" x2="2.54" y2="436.88" width="0.1524" layer="91"/>
+<label x="2.54" y="436.88" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
