@@ -19,60 +19,47 @@ module dispatch (
       output in_fifo_out_clock,
       input in_fifo_out_nempty,
       output in_fifo_out_pop,
-      input      [16-1:0] in_fifo_out_data, //16bits!
-
+      input wire [16-1:0] in_fifo_out_data, //16bits!
       //output to fifo and triggers
-      //out_fifo_in_nempty,
-    //  out_fifo_in_full,
-    //  out_fifo_in_shift,
-    //  out_fifo_in_data,
-
+      output wire out_fifo_in_clock,
+      input wire out_fifo_in_full,
+      output wire out_fifo_in_shift,
+      output wire [16-1:0] out_fifo_in_data,
       // pins (directions???)
       output bp_mosi,				// master in slave out
       output bp_clock,				// master out slave in
       input bp_miso,				// SPI clock (= clkin/2)
       output bp_cs,					// chip select
       output bp_aux0  //aux pin
-
       //error?
 
-      //idle/busy?
+    //idle/busy?
 
   );
 
-  //reg in_fifo_out_pop;
-  //assign in_fifo_out_pop=(in_fifo_out_nempty&&count[N]);
+  reg in_fifo_out_pop, go;
+  wire [7:0] dispatch_command = in_fifo_out_data[15:8];
+  wire [7:0] dispatch_data = in_fifo_out_data[7:0];
+  wire [7:0] out_data;
+  assign in_fifo_out_clock=clock; //this will be a divided clock eventually
+  assign out_fifo_in_clock=clock;
+  assign out_fifo_in_data[15:8] = dispatch_command[7:0];
+  assign out_fifo_in_data[7:0] = out_data[7:0];
+  localparam  N = 3;
+  reg [N:0] count;
 
   reg aux_pin_state;
   assign bp_aux0=aux_pin_state;
-  //reg in_fifo_out_clock;
-  assign in_fifo_out_clock=clock; //this will be a divided clock eventually
-
-  reg nready;
-  reg in_data_ready;
-  reg in_fifo_out_nempty_d, dispatch_go;
-  wire [7:0] dispatch_command = in_fifo_out_data[15:8];
-  wire [7:0] dispatch_data = in_fifo_out_data[7:0];
-
-  localparam  N = 3;
-  reg [N:0] count;
-  `define RESET 3'b000
-  `define ACTION 3'b001
-  `define DELAY 3'b010
-  `define WAIT 3'b011
-  reg [2:0] state_f;
-  reg go;
 
   facade FACADE (
       clock,
       reset,
-
       //configuration_register,
       dispatch_data,
-      //out_data,
+      out_data,
       go,
       state,
-
+      out_fifo_in_shift,
       // pins (directions???)
       bp_mosi,				// master in slave out
       bp_clock,				// master out slave in
@@ -84,15 +71,14 @@ module dispatch (
 
   initial begin
     count<=4'b1111;
-    state_f<=`RESET;
     in_fifo_out_pop<=0;
   end
-
-reg in_fifo_out_pop;
 
   always @(posedge clock)
   begin
       go<=0;
+
+      //TODO: block until FIFO_OUT !full
       if(!count[N]) count<=count+1;
       else if(!state && count[N] && in_fifo_out_nempty) begin
         in_fifo_out_pop<=1;

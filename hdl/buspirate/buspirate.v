@@ -36,6 +36,8 @@ module top (clock, reset,
     inout wire [3:0] sram0_sio, sram1_sio;
 
     // Tristate pin handling
+    //TODO: turn this to array, assign names in the lower modules
+    //TODO: parameters and local parameters
     wire buftoe_mosi,buftoe_clock,buftoe_miso,buftoe_cs,buftoe_aux;
     wire buftdo_mosi,buftdo_clock,buftdo_miso,buftdo_cs,buftdo_aux;
     wire buftdi_mosi,buftdi_clock,buftdi_miso,buftdi_cs,buftdi_aux;
@@ -103,10 +105,11 @@ module top (clock, reset,
           in_fifo_out_data, //16bits!
 
           //output to fifo and triggers
+          out_fifo_in_clock,
           //out_fifo_in_nempty,
-          //out_fifo_in_full,
-          //out_fifo_in_shift,
-          //out_fifo_in_data,
+          out_fifo_in_full,
+          out_fifo_in_shift,
+          out_fifo_in_data,
 
           // pins (directions???)
           bp_mosi_din,				// master in slave out

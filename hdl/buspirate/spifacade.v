@@ -8,12 +8,13 @@
 module facade (
     input wire clock,
     input wire reset,
-
     //input wire [15:0] configuration_register,
     input wire [7:0] in_data,
+    output wire [7:0] out_data,
     //out_data,
     input wire go,
     output wire state,
+    output wire data_ready,
     // pins (directions???)
     output wire bp_mosi,				// master in slave out
     output wire bp_clock,				// master out slave in
@@ -25,17 +26,8 @@ module facade (
 
   // SPI master
   // sync signals
-  wire spi_go;					// starts a SPI transmission
-  wire spi_state;				// state of module (0=idle, 1=busy/transmitting)
-  reg spi_state_last;
-
-  // data in/out
-  wire [7:0] spi_dout;				// data out (will get received)
-
-  assign spi_din=in_data;
-  //assign in_fifo_out_pop=!spi_state;
-  //assign spi_go=(in_fifo_out_nempty && !spi_state)? 1'b1:1'b0; //if pending FIFO and SPI idle
-  //assign out_fifo_in_shift=((spi_state_last===1'b1)&&(spi_state===1'b0));
+  reg state_last;
+  assign data_ready=((state_last===1'b1)&&(state===1'b0));
 
   spimaster SPI_MASTER(
   // general control
@@ -48,10 +40,10 @@ module facade (
     1'b1, //autocs,				// assert CS automatically
   // sync signals
     go,					// starts a SPI transmission
-  state,				// state of module (0=idle, 1=busy/transmitting)
+    state,				// state of module (0=idle, 1=busy/transmitting)
   // data in/out
     in_data, 			// data in (will get transmitted)
-    spi_dout,				// data out (will get received)
+    out_data,				// data out (will get received)
   // spi signals
     bp_miso,				// master in slave out
     bp_mosi,				// master out slave in
@@ -61,7 +53,7 @@ module facade (
 
     always @(posedge clock)
     begin
-      spi_state_last<=spi_state;
+      state_last<=state;
     end
 endmodule
 
