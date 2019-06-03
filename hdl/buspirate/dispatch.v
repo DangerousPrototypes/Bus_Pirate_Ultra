@@ -10,6 +10,13 @@
 // aux pin 0/1/hiz(read) pwm/freq/etc
 //output enable
 
+//TODO:
+// aux pin 0/1/hiz/read/PWM/freq?
+// fifo full/data ready IRQ
+// operation complete IRQ
+// MUX freqmeasure and PWM??
+
+
 `ifndef __dispatch__
 `define __dispatch__
 module dispatch #(

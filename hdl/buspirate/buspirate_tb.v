@@ -22,7 +22,7 @@ module buspirate_tb();
   wire [MC_DATA_WIDTH-1:0] mc_data;
   reg [MC_DATA_WIDTH-1:0] mc_data_reg;
   wire irq0, irq1;
-  wire sram_clock, sram0_cs, sram1_cs;
+  wire sram0_clock, sram1_clock, sram0_cs, sram1_cs;
   wire [3:0] sram0_sio, sram1_sio;
 
   assign mc_data=(mc_oe)?mc_data_reg:16'hzzzz;
@@ -42,10 +42,11 @@ module buspirate_tb();
     .mc_data(mc_data),
     .irq0(irq0),
     .irq1(irq1),
-    .sram_clock(sram_clock),
+    .sram0_clock(sram0_clock),
+    .sram1_clock(sram0_clock),
     .sram0_cs(sram0_cs),
-    .sram0_sio(sram0_sio),
     .sram1_cs(sram1_cs),
+    .sram0_sio(sram0_sio),
     .sram1_sio(sram1_sio)
     );
 
@@ -77,6 +78,72 @@ module buspirate_tb();
       mc_oe=1;
       @(negedge rst); // wait for reset
       repeat(10) @(posedge clk);
+
+
+
+      mc_add = 6'h10;
+      mc_data_reg <= 16'b0000000001010000;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+      mc_add = 6'h10;
+      mc_data_reg <= 16'b0000000001000000;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+      mc_data_reg <= 16'b0000000001101010;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+      mc_data_reg <= 16'b0000000001001010;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+      mc_data_reg <= 16'b0000000001011010;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+      mc_data_reg <= 16'b0000000000001010;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+      @(posedge clk)
+      mc_oe=0;
+      repeat(6)@(posedge clk);
+      $display("%h",mc_data);
+      repeat(6)@(posedge clk);
+      mc_oe=1;
+      repeat(6)@(posedge clk);
+      @(posedge clk)
+      mc_oe=0;
+      repeat(6)@(posedge clk);
+      $display("%h",mc_data);
+      repeat(6)@(posedge clk);
+      mc_oe=1;
+      repeat(6)@(posedge clk); 
+
+
+
+
+
+
+
+
+
+
+
 
       mc_add = 6'h19;
       mc_data_reg <= 16'h0003;

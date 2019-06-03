@@ -69,14 +69,14 @@ set_io irq0 129
 set_io irq1 128
 
 # SRAM connectons (23LC1024/etc)
-set_io sram_clock 141 #shared
-
+set_io sram0_clock 141
 set_io sram0_cs 144
 set_io sram0_sio[0] 142
 set_io sram0_sio[1] 139
 set_io sram0_sio[2] 138
 set_io sram0_sio[3] 137
 
+set_io sram1_clock 70 
 set_io sram1_cs 130
 set_io sram1_sio[0] 136
 set_io sram1_sio[1] 135

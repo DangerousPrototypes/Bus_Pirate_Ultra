@@ -1,21 +1,21 @@
 [*]
 [*] GTKWave Analyzer v3.3.77 (w)1999-2016 BSI
-[*] Sun Jun 02 12:17:50 2019
+[*] Mon Jun 03 16:40:13 2019
 [*]
 [dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.vcd"
-[dumpfile_mtime] "Sun Jun 02 12:17:07 2019"
-[dumpfile_size] 53301
+[dumpfile_mtime] "Mon Jun 03 15:41:51 2019"
+[dumpfile_size] 69599
 [savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.gtkw"
 [timestart] 0
 [size] 1920 1017
 [pos] -1 -1
-*-19.301805 2410000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-19.301805 3066000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] buspirate_tb.
 [treeopen] buspirate_tb.buspirate.
 [treeopen] buspirate_tb.buspirate.DISPATCH.
 [treeopen] buspirate_tb.buspirate.DISPATCH.FACADE.
 [sst_width] 211
-[signals_width] 218
+[signals_width] 285
 [sst_expanded] 1
 [sst_vpaned_height] 478
 @28
@@ -33,6 +33,21 @@ buspirate_tb.buspirate.mc_data[15:0]
 buspirate_tb.buspirate.mc_din[15:0]
 buspirate_tb.buspirate.mc_dout[15:0]
 @200
+-SRAMs
+@28
+buspirate_tb.buspirate.sram0_clock
+buspirate_tb.buspirate.sram0_cs
+@22
+buspirate_tb.buspirate.sram1_sio_tdo[3:0]
+buspirate_tb.buspirate.sram0_sio_tdo[3:0]
+@23
+buspirate_tb.buspirate.sram0_sio_tdi[3:0]
+@22
+buspirate_tb.buspirate.sram1_sio[3:0]
+buspirate_tb.buspirate.sram0_sio[3:0]
+@28
+buspirate_tb.buspirate.sram0_sio_toe
+@200
 -BUFFER PINS
 @28
 buspirate_tb.BP_BUF[0].iopin_state
@@ -42,9 +57,8 @@ buspirate_tb.BP_BUF[3].iopin_state
 buspirate_tb.BP_BUF[4].iopin_state
 @200
 -SPI
-@23
-buspirate_tb.buspirate.DISPATCH.bp_dout[4:0]
 @22
+buspirate_tb.buspirate.DISPATCH.bp_dout[4:0]
 buspirate_tb.buspirate.DISPATCH.bp_din[4:0]
 buspirate_tb.buspirate.DISPATCH.FACADE.bp_din[4:0]
 buspirate_tb.buspirate.DISPATCH.FACADE.bp_dout[4:0]
