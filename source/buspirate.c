@@ -35,6 +35,8 @@ int main(void)
 {
 	char c;
 
+	uint8_t buff[256];
+
 	// init vars
 	usbflushtime=0;
 
@@ -89,6 +91,12 @@ int main(void)
 	// setup USB
 	cdcinit();
 
+	// setupflash
+	flashinit();
+
+	// init fpga 
+	fpgainit();
+
 	// LEDs
 	gpio_set_mode(BP_LED_MODE_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_MODE_PIN);
 	gpio_clear(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
@@ -107,7 +115,10 @@ int main(void)
 		{
 			c=cdcgetc();
 			cdcputc(c);
-			upload();
+			showID();
+			readflash(0x00000000, buff, 256);
+			printbuff(buff, 256);
+			uploadfpga();
 		}
 
 	}

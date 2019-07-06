@@ -27,10 +27,30 @@
 // flash storage
 #define BP_FS_SPI		SPI3
 #define BP_FS_SPI_CLK		RCC_SPI3
-#define BP_FS_PORT		GPIOB
 #define BP_FS_CLK_PIN		GPIO3
 #define BP_FS_MOSI_PIN		GPIO5
 #define BP_FS_MISO_PIN		GPIO4
+#define BP_FS_CS_PIN		GPIO7		// misuse RX pin on debug header?
+#define BP_FS_CLK_PORT		GPIOB
+#define BP_FS_MOSI_PORT		GPIOB
+#define BP_FS_MISO_PORT		GPIOB
+#define BP_FS_CS_PORT		GPIOB
 
 // FPGA
 #define BP_FPGA_SPI		SPI2
+#define BP_FPGA_SPI_CLK		RCC_SPI2
+#define BP_FPGA_CLK_PIN		GPIO13
+#define BP_FPGA_MOSI_PIN	GPIO15
+#define BP_FPGA_MISO_PIN	GPIO14
+#define BP_FPGA_CS_PIN		GPIO12
+#define BP_FPGA_CLK_PORT	GPIOB
+#define BP_FPGA_MOSI_PORT	GPIOB
+#define BP_FPGA_MISO_PORT	GPIOB
+#define BP_FPGA_CS_PORT		GPIOB
+
+#define BP_FPGA_CDONE_PIN	GPIO10
+#define BP_FPGA_CRESET_PIN	GPIO11
+#define BP_FPGA_CDONE_PORT	GPIOB
+#define BP_FPGA_CRESET_PORT	GPIOB
+
+
