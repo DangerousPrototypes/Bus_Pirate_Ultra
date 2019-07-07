@@ -34,7 +34,7 @@ void sys_tick_handler(void)
 int main(void)
 {
 	char c;
-
+	int i;
 	uint8_t buff[256];
 
 	// init vars
@@ -87,7 +87,6 @@ int main(void)
 	delayms(100);
 #endif
 
-
 	// setup USB
 	cdcinit();
 
@@ -101,6 +100,8 @@ int main(void)
 	gpio_set_mode(BP_LED_MODE_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_MODE_PIN);
 	gpio_clear(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
 
+	// buffer init
+	for(i=0; i<256; i++) buff[i]=i;
 
 	while (1)
 	{
@@ -115,9 +116,11 @@ int main(void)
 		{
 			c=cdcgetc();
 			cdcputc(c);
-			showID();
-			readflash(0x00000000, buff, 256);
-			printbuff(buff, 256);
+//			showFlashID();
+//			printbuff(buff, 256);
+//			writeFlash(0x00000000, buff);
+//			readFlash(0x00000000, buff, 256);
+//			printbuff(buff, 256);
 			uploadfpga();
 		}
 

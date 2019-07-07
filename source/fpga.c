@@ -50,7 +50,7 @@ int uploadfpga(void)
 	delayms(100);							// wait at lease 1200us or wait for miso is 1
 	gpio_set(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN);			// release cs
 
-	cdcprintf("CDONE=%d\r\n", (gpio_get(BP_FPGA_CDONE_PORT, BP_FPGA_CDONE_PIN)?'1':'0'));
+	cdcprintf("CDONE=%02X\r\n", gpio_get(BP_FPGA_CDONE_PORT, BP_FPGA_CDONE_PIN));
 
 	// start transfer
 	spi_xfer(BP_FPGA_SPI, (uint16_t)0x0000);			// 8 dummy clock cycles
@@ -61,9 +61,10 @@ int uploadfpga(void)
 //	for(i=0; i<=135183; i++)
 	for(i=0; i<135100; i++)
 	{
-		progressbar(i, 135183);
+		if((i&0x3FF)==0) progressbar(i, 135100);
 		spi_xfer(BP_FPGA_SPI, (uint16_t)bitstream[i]);	
 	}
+	progressbar(i, 135100);
 
 	gpio_set(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN);			// release cs
 	for(i=0; i<12; i++) spi_xfer(BP_FPGA_SPI, (uint16_t)0x0000);	// wait 100 clockcycles to cdone=1 (104 cycles)
@@ -74,6 +75,11 @@ int uploadfpga(void)
 	{
 		cdcprintf("CDONE=1 SUCCESS!!\r\n");
 		returnval=1;
+		rcc_set_mco(RCC_CFGR_MCO_PLL_DIV2);		// PLL/2
+//		rcc_set_mco(RCC_CFGR_MCO_HSI);			// internal oscillator
+//		rcc_set_mco(RCC_CFGR_MCO_HSE);			// external oscillator
+//		rcc_set_mco(RCC_CFGR_MCO_SYSCLK);		// sysclk
+
 	}
 	else
 	{
@@ -100,16 +106,20 @@ void fpgainit(void)
 	// control pins
 	gpio_set_mode(BP_FPGA_CDONE_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT,BP_FPGA_CDONE_PIN);
 	gpio_set_mode(BP_FPGA_CRESET_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_OPENDRAIN, BP_FPGA_CRESET_PIN);
+	gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO8);
 
-	// setup SPI (cpol=1, cpha=1) 
+	// setup SPI (cpol=1, cpha=1) +- 1MHz
 	spi_reset(BP_FPGA_SPI);
-	spi_init_master(BP_FPGA_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_128, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE, SPI_CR1_CPHA_CLK_TRANSITION_2, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
+	spi_init_master(BP_FPGA_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_32, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE, SPI_CR1_CPHA_CLK_TRANSITION_2, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
 	spi_set_full_duplex_mode(BP_FPGA_SPI);
 	spi_enable(BP_FPGA_SPI);
 
 	// put FPGA into reset and slavemode
 	gpio_clear(BP_FPGA_CRESET_PORT, BP_FPGA_CRESET_PIN);
 	gpio_clear(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN);
+
+	// disable clock
+	rcc_set_mco(RCC_CFGR_MCO_NOCLK);		// disable clock
 }
 
 

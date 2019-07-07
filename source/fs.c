@@ -6,10 +6,85 @@
 #include <libopencm3/stm32/rcc.h>
 #include "cdcacm.h"
 #include "fs.h" 
+#include "delay.h"
 
 #define FLCMD_REMS	0x90		// Read Electronic Manufacturer ID & Device ID (REMS) 
+#define FLCMD_RDID	0x9F		// Read Identification (RDID)  
 #define FLCMD_READ	0x0B		// Read Data Bytes (READ) 
+#define FLCMD_RUID	0x4B		// Read Unique ID (RUID)
+#define FLCMD_PE	0x81		// Page Erase (PE) 
+#define FLCMD_WREN	0x06		// Write Enable (WREN) 
+#define FLCMD_RDSR	0x05		// Read Status Register (RDSR) 
+#define FLCMD_PP	0x02		// Page Program (PP) 
 
+void writeFlash(uint32_t addr, uint8_t *buff) 
+{
+	uint8_t busy, status	;
+	int i;
+
+	busy=1;
+	addr&=0xFFFFFF00;		// page align
+
+	// write enable
+	gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);
+	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_WREN);
+	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+
+	// erase page
+	gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);
+	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_PE);
+	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>16)&0x000000FF));	// address
+	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>8)&0x000000FF));		// 
+	spi_xfer(BP_FS_SPI, (uint16_t) (addr&0x000000FF));		// 
+	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+
+	while(busy)
+	{
+		delayus(10);
+
+		// check WIP bit 
+		gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);
+		spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_RDSR);
+		status=(uint8_t) spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
+		gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+
+		busy=(status&0x01);
+	}
+
+	// write enable
+	gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);
+	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_WREN);
+	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+
+	// page write
+	gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);
+	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_PP);
+	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>16)&0x000000FF));	// address
+	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>8)&0x000000FF));		// 
+	spi_xfer(BP_FS_SPI, (uint16_t) (addr&0x000000FF));		// 
+
+	for(i=0; i<256; i++)
+	{
+		spi_xfer(BP_FS_SPI, (uint16_t) buff[i]);
+	}
+
+	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+
+	busy=1;
+
+	while(busy)
+	{
+		delayus(10);
+
+		// check WIP bit 
+		gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);
+		spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_RDSR);
+		status=(uint8_t) spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
+		gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+
+		busy=(status&0x01);
+	}
+}
 
 void flashinit(void)
 {
@@ -31,9 +106,11 @@ void flashinit(void)
 
 }
 
-void showID(void)
+void showFlashID(void)
 {
-	uint16_t manid, devid;
+	uint16_t manid, devid1, devid2;
+
+	cdcprintf("Flash info:\r\n");
 
 	gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);	// cs low
 	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_REMS);
@@ -41,14 +118,34 @@ void showID(void)
 	spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);		// dummy
 	spi_xfer(BP_FS_SPI, (uint16_t) 0x00);		// 00= manid, devid 01= devid, manid
 	manid=spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
-	devid=spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
+	devid1=spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
 	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
 
-	cdcprintf("Flash manufacturer=%02X device=%02X\r\n", (uint8_t) manid, (uint8_t)devid);
+	cdcprintf("REMS=%02X %02X\r\n", (uint8_t) manid, (uint8_t)devid1);
+
+	gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);	// cs low
+	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_RDID);
+	manid=spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
+	devid1=spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
+	devid2=spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
+	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+
+	cdcprintf("RDID=%02X %02X %02X\r\n", (uint8_t) manid, (uint8_t)devid1, (uint8_t)devid2);
+
+	gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);	// cs low
+	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_RUID);
+	spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);		// dummy
+	spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);		// dummy
+	spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);		// dummy
+	spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);		// dummy
+	manid=spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
+	devid1=spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
+	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+
 	
 }
 
-void readflash (uint32_t addr, uint8_t *buff, uint16_t buffsize)
+void readFlash (uint32_t addr, uint8_t *buff, uint16_t buffsize)
 {
 	int i;
 
@@ -60,7 +157,7 @@ void readflash (uint32_t addr, uint8_t *buff, uint16_t buffsize)
 
 	for(i=0; i<buffsize; i++)
 	{
-		*(buff+i)=spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
+		*(buff+i)=(uint8_t)spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
 	}
 
 	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
