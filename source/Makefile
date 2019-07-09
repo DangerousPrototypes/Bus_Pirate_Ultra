@@ -25,7 +25,9 @@ CFLAGS +=-DPRINTF_DISABLE_SUPPORT_LONG_LONG
 CFLAGS +=-DPRINTF_DISABLE_SUPPORT_PTRDIFF_T
 CFLAGS +=-I../printf
 
-OBJS += debug.o cdcacm.o delay.o fpga.o fs.o
+OBJS += debug.o cdcacm.o delay.o fpga.o fs.o UI.o
+OBJS += AUXpin.o ADC.o
+OBJS += protocols.o HiZ.o dummy1.o dummy2.o
 OBJS += ../printf/printf.o
 
 BINARY = buspirate

@@ -9,6 +9,8 @@
 #include "delay.h"
 #include "fpga.h"
 #include "fs.h"
+#include "UI.h"
+#include "ADC.h"
 
 
 //globals
@@ -33,10 +35,6 @@ void sys_tick_handler(void)
 // all the fun starts here
 int main(void)
 {
-	char c;
-	int i;
-	uint8_t buff[256];
-
 	// init vars
 	usbflushtime=0;
 
@@ -96,34 +94,35 @@ int main(void)
 	// init fpga 
 	fpgainit();
 
+	// init UI
+	initUI();
+
 	// LEDs
 	gpio_set_mode(BP_LED_MODE_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_MODE_PIN);
 	gpio_clear(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
+	gpio_set_mode(BP_LED_USB_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_USB_PIN);
+	gpio_clear(BP_LED_USB_PORT, BP_LED_USB_PIN);
 
-	// buffer init
-	for(i=0; i<256; i++) buff[i]=i;
+	//control lines
+	gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);								// active hi
+	gpio_set_mode(BP_PSUEN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_PSUEN_PIN);		// PSU disable
+
+	gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);								// active hi
+	gpio_set_mode(BP_VPUEN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPUEN_PIN);		// VPU disable
+
+	gpio_clear(BP_VPU50EN_PORT, BP_VPU50EN_PIN);								// active low
+	gpio_set_mode(BP_VPU50EN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPU50EN_PIN);	// VPU3v3 disable
+
+	gpio_clear(BP_VPU33EN_PORT, BP_VPU33EN_PIN);								// active low
+	gpio_set_mode(BP_VPU33EN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPU33EN_PIN);	// VPU5v0 disable
+
+
+	// ADC
+	initADC();
 
 	while (1)
 	{
-/*
-		delayms(1000);
-		gpio_clear(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
-		delayms(1000);
-		gpio_set(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
-*/
-
-		if(cdcbyteready())
-		{
-			c=cdcgetc();
-			cdcputc(c);
-//			showFlashID();
-//			printbuff(buff, 256);
-//			writeFlash(0x00000000, buff);
-//			readFlash(0x00000000, buff, 256);
-//			printbuff(buff, 256);
-			uploadfpga();
-		}
-
+		doUI();
 	}
 }
 

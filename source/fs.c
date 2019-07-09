@@ -10,17 +10,17 @@
 
 #define FLCMD_REMS	0x90		// Read Electronic Manufacturer ID & Device ID (REMS) 
 #define FLCMD_RDID	0x9F		// Read Identification (RDID)  
-#define FLCMD_READ	0x0B		// Read Data Bytes (READ) 
+#define FLCMD_READ	0x03		// Read Data Bytes (READ) 
+#define FLCMD_FREAD	0x0B		// Fast Read Data Bytes (FREAD) 
 #define FLCMD_RUID	0x4B		// Read Unique ID (RUID)
 #define FLCMD_PE	0x81		// Page Erase (PE) 
 #define FLCMD_WREN	0x06		// Write Enable (WREN) 
 #define FLCMD_RDSR	0x05		// Read Status Register (RDSR) 
 #define FLCMD_PP	0x02		// Page Program (PP) 
 
-void writeFlash(uint32_t addr, uint8_t *buff) 
+void eraseSector(uint32_t addr)
 {
-	uint8_t busy, status	;
-	int i;
+	uint8_t busy, status;
 
 	busy=1;
 	addr&=0xFFFFFF00;		// page align
@@ -50,6 +50,13 @@ void writeFlash(uint32_t addr, uint8_t *buff)
 
 		busy=(status&0x01);
 	}
+}
+
+
+void writeFlash(uint32_t addr, uint8_t *buff, uint8_t size) 
+{
+	uint8_t busy, status;
+	int i;
 
 	// write enable
 	gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);
@@ -63,7 +70,7 @@ void writeFlash(uint32_t addr, uint8_t *buff)
 	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>8)&0x000000FF));		// 
 	spi_xfer(BP_FS_SPI, (uint16_t) (addr&0x000000FF));		// 
 
-	for(i=0; i<256; i++)
+	for(i=0; i<(size); i++)
 	{
 		spi_xfer(BP_FS_SPI, (uint16_t) buff[i]);
 	}
@@ -100,7 +107,7 @@ void flashinit(void)
 	// setup SPI (cpol=1, cpha=1) 4Mhz
 	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
 	spi_reset(BP_FS_SPI);
-	spi_init_master(BP_FS_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_64, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE, SPI_CR1_CPHA_CLK_TRANSITION_2, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
+	spi_init_master(BP_FS_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_128, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE, SPI_CR1_CPHA_CLK_TRANSITION_2, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
 	spi_set_full_duplex_mode(BP_FS_SPI);
 	spi_enable(BP_FS_SPI);
 
@@ -154,6 +161,7 @@ void readFlash (uint32_t addr, uint8_t *buff, uint16_t buffsize)
 	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>16)&0x000000FF));	// address
 	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>8)&0x000000FF));		// 
 	spi_xfer(BP_FS_SPI, (uint16_t) (addr&0x000000FF));		// 
+//	spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);		// dummy
 
 	for(i=0; i<buffsize; i++)
 	{
@@ -181,7 +189,5 @@ void printbuff(uint8_t *buff, uint16_t buffsize)
 		cdcprintf("\r\n");
 	}
 }
-
-
 
 

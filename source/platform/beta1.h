@@ -2,6 +2,7 @@
 
 // development test platform
 #define BP_PLATFORM		"BPULTRA v1.0 may 2019"
+#define FIRMWARE_VERSION 	"v8"
 
 // LEDs
 #define BP_LED_MODE_PORT	GPIOA
@@ -52,5 +53,41 @@
 #define BP_FPGA_CRESET_PIN	GPIO11
 #define BP_FPGA_CDONE_PORT	GPIOB
 #define BP_FPGA_CRESET_PORT	GPIOB
+
+// pullups and poewrsupplies
+#define BP_VPU50EN_PORT		GPIOG
+#define BP_VPU50EN_PIN		GPIO1
+#define BP_VPU33EN_PORT		GPIOG
+#define BP_VPU33EN_PIN		GPIO0
+#define BP_VPUEN_PORT		GPIOF
+#define BP_VPUEN_PIN		GPIO15
+#define BP_PSUEN_PORT		GPIOF
+#define BP_PSUEN_PIN		GPIO14
+
+// adc
+#define BP_ADC			ADC1
+#define BP_ADC_CLK		RCC_ADC1
+#define BP_ADC_CHAN		9
+#define BP_VPU_CHAN		7	// 7= on pint Vext 14= before 4066	
+#define BP_3V3_CHAN		5
+#define BP_5V0_CHAN		4
+#define BP_USB_CHAN		3
+
+#define	BP_ADC_PORT		GPIOB
+#define	BP_ADC_PIN		GPIO1
+#define BP_3V3_PORT		GPIOA
+#define BP_3V3_PIN		GPIO5
+#define BP_5V0_PORT		GPIOA
+#define BP_5V0_PIN		GPIO4
+#define BP_VPU_PORT		GPIOA
+#define BP_VPU_PIN		GPIO7
+#define BP_VSUP_PORT		GPIOA
+#define BP_VSUP_PIN		GPIO3
+
+
+
+
+
+
 
 
