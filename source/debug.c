@@ -47,12 +47,12 @@ void dputs(char *s)
 static char  buf[BP_DEBUG_BUFLEN];
 
 // outputs a formatted string
-void dprintf(const char *fmt, ...)
+/*void dprintf(const char *fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
 	vsnprintf(buf, BP_DEBUG_BUFLEN, fmt, args);
 	dputs(buf);
 	va_end(args);
-}
+}*/
 

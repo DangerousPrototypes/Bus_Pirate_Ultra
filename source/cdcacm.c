@@ -1,5 +1,5 @@
 // most came from https://github.com/libopencm3/libopencm3-examples/tree/master/examples/stm32/f1/other/usb_cdcacm
-// altered to implement an UART type thing 
+// altered to implement an UART type thing
 //
 
 
@@ -88,7 +88,7 @@ static int cdcacm_control_request(usbd_device *usbd_dev, struct usb_setup_data *
 		// usbd_ep_write_packet(0x83, buf, 10);
 		return USBD_REQ_HANDLED;
 		}
-	case USB_CDC_REQ_SET_LINE_CODING: 
+	case USB_CDC_REQ_SET_LINE_CODING:
 		if(*len < sizeof(struct usb_cdc_line_coding))
 			return USBD_REQ_NOTSUPP;
 
@@ -160,7 +160,7 @@ uint8_t cdcgetc(void)
 
 	c=rxbuff1[rxtail1];
 	rxtail1=(rxtail1+1)&(RXBUFFSIZE-1);
-	return c;	
+	return c;
 }
 
 void cdcputc(char c)
@@ -202,7 +202,7 @@ uint8_t cdcgetc2(void)
 
 	c=rxbuff2[rxtail2];
 	rxtail2=(rxtail2+1)&(RXLABUFFSIZE-1);
-	return c;	
+	return c;
 }
 
 void cdcputc2(char c)

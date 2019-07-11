@@ -15,7 +15,7 @@
 uint32_t usbflushtime;				// usb poll timer
 volatile uint32_t systicks;
 
-// systick timer 
+// systick timer
 // handles the USB polling
 void sys_tick_handler(void)
 {
@@ -62,10 +62,8 @@ int main(void)
 	gpio_clear(BP_USB_PULLUP_PORT, BP_USB_PULLUP_PIN);							// pull down
 #endif
 
-	// enable debug
-	debuginit();
 
-	// setup systick 
+	// setup systick
 	systick_set_clocksource(STK_CSR_CLKSOURCE_AHB_DIV8);	// 9000000 Hz
 	systick_set_reload(89);					// 10us 89
 	systick_interrupt_enable();
@@ -77,7 +75,7 @@ int main(void)
 
 #ifdef BP_CONTROLS_USBPU
 	// enable USB pullup
-	
+
 	delayms(100);
 	gpio_set(BP_USB_PULLUP_PORT, BP_USB_PULLUP_PIN);
 #else
@@ -93,7 +91,7 @@ int main(void)
 	// setupflash
 	flashinit();
 
-	// init fpga 
+	// init fpga
 	fpgainit();
 
 	// LEDs
