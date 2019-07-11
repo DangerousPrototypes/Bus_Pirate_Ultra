@@ -16,6 +16,8 @@
 #include "ADC.h"
 #include "delay.h"
 
+#include "fpga.h"
+
 // globals
 uint32_t cmdhead, cmdtail, cursor;		// TODO swap head an tail?
 char cmdbuff[CMDBUFFSIZE];
@@ -594,7 +596,13 @@ void doUI(void)
 						modeConfig.bitorder^=1;
 						modeConfig.numbits=temp3;
 						break;
-				case '~': 	selftest();
+				case '~': 	//selftest();
+						uploadfpga();
+						delayms(1000);
+						cdcprintf("FPGA reg 0: %04X\r\n", FPGA_REG_00);
+						cdcprintf("FPGA reg 1: %04X\r\n", FPGA_REG_01);
+						FPGA_REG_01=0xAA55;
+						cdcprintf("FPGA reg 1: %04X\r\n", FPGA_REG_01);
 						break;
 				default:	cdcprintf("Unknown command: %c", c);
 						modeConfig.error=1;
