@@ -54,6 +54,8 @@
 #define BP_FPGA_CDONE_PORT	GPIOB
 #define BP_FPGA_CRESET_PORT	GPIOB
 
+
+
 /*
 mcu_aux1	pc10
 mcu_aux2	pc11
@@ -129,6 +131,8 @@ mcu_int1	pe3
 #define BP_FSMC_NWE_PIN		GPIO5
 #define BP_FSMC_NCE_PORT	GPIOG
 #define BP_FSMC_NCE_PIN		GPIO10
+
+
 
 
 // pullups and poewrsupplies

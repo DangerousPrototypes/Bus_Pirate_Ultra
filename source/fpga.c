@@ -36,7 +36,7 @@ void upload(void)
 	}
 }
 
-#include "sram.h"
+#include "bitstream.h"
 
 int uploadfpga(void)
 {
@@ -89,6 +89,10 @@ int uploadfpga(void)
 	}
 
 	for(i=0; i<7; i++) spi_xfer(BP_FPGA_SPI, (uint16_t)0x0000);	// wait 49 clockcycles to enable pinio's (56 cycles)
+
+	// reset fpga  bitstream
+	// TODO: fpga needs a reset!
+
 
 	return returnval;
 }
@@ -194,6 +198,7 @@ https://github.com/leaflabs/libmaple/blob/master/libmaple/include/libmaple/fsmc.
 	//           WREN     SRAM     16b     MBKEN   EXTMOD
 	FSMC_BCR3=((1<<12) | (0<<2) | (1<<4) | (1<<0) | (1<<14));
 	FSMC_BTR3=(DATAST << 8) | ADDSET;
+	FSMC_BWTR3=(DATAST << 8) | ADDSET;
 	
 }
 
