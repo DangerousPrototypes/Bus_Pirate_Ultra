@@ -4,3 +4,5 @@ bin/*
 *.d
 *.o
 *.map
+*.elay
+*.depend
