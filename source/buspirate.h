@@ -18,5 +18,10 @@ extern volatile uint32_t systicks;
 // TODO we need some makefile tricks for this
 #include	"platform/beta1.h"				// BP Ultra may 2019
 
+// included protocols
+#define BP_USE_DUMMY1
+#define BP_USE_DUMMY2
+
+
 
 
