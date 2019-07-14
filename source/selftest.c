@@ -4,7 +4,7 @@
 
 #include "debug.h"
 #include "cdcacm.h"
-#include "buspirateNG.h"
+#include "buspirate.h"
 #include "UI.h"
 #include "ADC.h"
 #include "selftest.h"
@@ -77,7 +77,7 @@ void selftest(void)
 	volt=voltage(BP_3V3_CHAN, 1);
 	cdcprintf(" 3V3=%d.%02dV ", volt / 1000, (volt % 1000) / 10);
 	if((volt<3200)||(volt>3400))
-	{	
+	{
 		cdcprintf("NOK\r\n");
 		errors++;
 	}
@@ -89,7 +89,7 @@ void selftest(void)
 	volt=voltage(BP_5V0_CHAN, 1);;
 	cdcprintf(" 5V0=%d.%03dV ", volt / 1000, (volt % 1000) / 10);
 	if((volt<4900)||(volt>5100))
-	{	
+	{
 		cdcprintf("NOK\r\n");
 		errors++;
 	}
@@ -102,7 +102,7 @@ void selftest(void)
 	volt=voltage(BP_VPU_CHAN, 1); 		// voltage on resistor
 	cdcprintf(" Vpu=%d.%02dV ", volt / 1000, (volt % 1000) / 10);
 	if((volt<3200)||(volt>3400)) 		// TODO: which voltages are ok?
-	{	
+	{
 		cdcprintf("NOK\r\n");
 		errors++;
 	}
@@ -114,7 +114,7 @@ void selftest(void)
 	volt=voltage(BP_VEXT_CHAN, 1); 		// voltage on Vpu pin
 	cdcprintf(" Vext=%d.%02dV ", volt / 1000, (volt % 1000) / 10);
 	if((volt<3200)||(volt>3400)) 		// TODO: whihc voltages are ok?
-	{	
+	{
 		cdcprintf("NOK\r\n");
 		errors++;
 	}
@@ -126,7 +126,7 @@ void selftest(void)
 	volt=voltage(BP_ADC_CHAN, 1);
 	cdcprintf(" ADC=%d.%02dV ", volt / 1000, (volt % 1000) / 10);
 	if((volt<3200)||(volt>3400)) 		// TODO: which votlage are ok?
-	{	
+	{
 		cdcprintf("NOK\r\n");
 		errors++;
 	}
@@ -222,37 +222,37 @@ void selftest(void)
 		return;
 
 	cdcprintf("HiZ test on CS\r\n");
-	
+
 	gpio_set(BP_VPUEN_PORT, BP_VPUEN_PIN);			// enable pullups
 
 	gpio_set_mode(GPIOB, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT, GPIO12);
 	cdcprintf("input-float\r\n");
 	cdcgetc();
-	
+
 	gpio_set_mode(GPIOB, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN, GPIO12);
 	gpio_set(GPIOB, GPIO12);
 	cdcprintf("input-pull-up\r\n");
 	cdcgetc();
-	
+
 	gpio_set_mode(GPIOB, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN, GPIO12);
 	gpio_clear(GPIOB, GPIO12);
 	cdcprintf("input-pull-down\r\n");
 	cdcgetc();
-	
+
 	gpio_set_mode(GPIOB, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, GPIO12);
 	cdcprintf("input-analog\r\n");
 	cdcgetc();
-	
+
 	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_OPENDRAIN, GPIO12);
 	gpio_set(GPIOB, GPIO12);
 	cdcprintf("output-od-high\r\n");
 	cdcgetc();
-	
+
 	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_OPENDRAIN, GPIO12);
 	gpio_clear(GPIOB, GPIO12);
 	cdcprintf("output-od-low\r\n");
 	cdcgetc();
-	
+
 	gpio_set_mode(GPIOB, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT, GPIO12);
 	gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);			// disable pullups
 }
@@ -311,12 +311,12 @@ int checksram(uint8_t fillbyte)
 
 	//quad mode
 	setup_spix1rw();
-	BP_LA_SRAM_SELECT();  
+	BP_LA_SRAM_SELECT();
 	spiWx1(CMDQUADMODE);
 	BP_LA_SRAM_DESELECT();
 
  	setup_spix4w();
-	BP_LA_SRAM_SELECT();  
+	BP_LA_SRAM_SELECT();
 	spiWx4(CMDWRITE); //write command
 	spiWx4(0);
 	spiWx4(0);
@@ -336,7 +336,7 @@ int checksram(uint8_t fillbyte)
 
 	// read back result and compare it
 // 	setup_spix4w();
-	BP_LA_SRAM_SELECT();  
+	BP_LA_SRAM_SELECT();
 	spiWx4(CMDREAD); //read command
 	spiWx4(0);
 	spiWx4(0);
@@ -359,9 +359,9 @@ int checksram(uint8_t fillbyte)
 
 	//send mode reset command just in case
 	setup_spix4w(); //write
-	BP_LA_SRAM_SELECT();  
+	BP_LA_SRAM_SELECT();
 	spiWx4(CMDRESETSPI); //write command
-	BP_LA_SRAM_DESELECT();  
+	BP_LA_SRAM_DESELECT();
 
 	cdcprintf("\r\n");
 

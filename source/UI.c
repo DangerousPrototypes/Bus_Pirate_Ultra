@@ -72,26 +72,26 @@ uint32_t getint(void)
 	{
 		number=cmdbuff[cmdtail]-0x30;
 		i=1;
-		
+
 		while((cmdbuff[((cmdtail+i)&(CMDBUFFSIZE-1))]>=0x30)&&(cmdbuff[((cmdtail+i)&(CMDBUFFSIZE-1))]<=0x39))
 		{
 			number*=10;
 			number+=cmdbuff[((cmdtail+i)&(CMDBUFFSIZE-1))]-0x30;
 			i++;
-		} 
+		}
 	}
 	else if(cmdbuff[cmdtail]==0x30)
 	{
 		if((cmdbuff[((cmdtail+1)&(CMDBUFFSIZE-1))]>=0x30)&&(cmdbuff[((cmdtail+1)&(CMDBUFFSIZE-1))]<=0x39))		// 0-9 decimal
 		{
 			i=2;
-		
+
 			while((cmdbuff[((cmdtail+i)&(CMDBUFFSIZE-1))]>=0x30)&&(cmdbuff[((cmdtail+i)&(CMDBUFFSIZE-1))]<=0x39))
 			{
 				number*=10;
 				number+=cmdbuff[((cmdtail+i)&(CMDBUFFSIZE-1))]-0x30;
 				i++;
-			} 
+			}
 
 		}
 		else if((cmdbuff[((cmdtail+1)&(CMDBUFFSIZE-1))]=='x')||(cmdbuff[((cmdtail+1)&(CMDBUFFSIZE-1))]=='X'))		// 0x hexadecimal
@@ -125,7 +125,7 @@ uint32_t getint(void)
 				number<<=1;
 				number+=cmdbuff[((cmdtail+i)&(CMDBUFFSIZE-1))]-0x30;
 				i++;
-			} 
+			}
 		}
 		else									// not perse wrong assume user entered 0
 		{
@@ -186,7 +186,7 @@ int isbuscmd(char c)
 	{
 		case '[':	// start
 		case ']':	// stop
-		case '{':	// start 
+		case '{':	// start
 		case '}':	// stop
 		case '/':	// clk h
 		case '\\':	// clk l
@@ -196,7 +196,7 @@ int isbuscmd(char c)
 		case '.':	// dat s
 		case '!':	// read bit
 		case 'r':	// read
-		case '0':	
+		case '0':
 		case '1':
 		case '2':
 		case '3':
@@ -237,7 +237,7 @@ void doUI(void)
 	while(1)
 	{
 		getuserinput();
-		
+
 		//command received, start logic capture
 		//TODO: destinguish between bus and non-bus commands
 //		logicAnalyzerCaptureStart();
@@ -274,7 +274,7 @@ void doUI(void)
 
 			switch (c)
 			{
-				case '(':	
+				case '(':
 						cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);		// advance 1 position
 						temp=getint();
 						cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);		// advance 1
@@ -418,7 +418,7 @@ void doUI(void)
 							temp=askint(PWMMENUPERIOD, 1, 0xFFFFFFFF, 1000);
 							temp2=askint(PWMMENUOC, 1, 0xFFFFFFFF, 200);
 							setPWM(temp, temp2);			// enable PWM
-							if(modeConfig.pwm)							
+							if(modeConfig.pwm)
 								cdcprintf("\r\nPWM on");
 							else
 								cdcprintf("\r\nPWM off");
@@ -445,7 +445,7 @@ void doUI(void)
 						break;
 				case 'o':	changedisplaymode();
 						break;
-				case 'p':	gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);	// always permitted 
+				case 'p':	gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);	// always permitted
 						cdcprintf("pullups: disabled");
 						modeConfig.pullups=0;
 						break;
@@ -456,7 +456,7 @@ void doUI(void)
 							delayms(10);
 							uint16_t vpu = voltage(BP_VPU_CHAN, 1);
 							cdcprintf("Vpu=%d.%02dV (mode=%s)", vpu/1000, (vpu%1000)/10, vpumodes[modeConfig.vpumode]);
-							modeConfig.pullups=1; 
+							modeConfig.pullups=1;
 						}
 						else
 						{
@@ -481,15 +481,15 @@ void doUI(void)
 						break;
 				case 'W':	if(modeConfig.mode!=0)
 						{
-							gpio_set(BP_PSUEN_PORT, BP_PSUEN_PIN); 
+							gpio_set(BP_PSUEN_PORT, BP_PSUEN_PIN);
 							cdcprintf("PSU: enabled\r\n");
 							delayms(10);
 							uint16_t v33 = voltage(BP_3V3_CHAN, 1);
 							uint16_t v50 = voltage(BP_5V0_CHAN, 1);
-							cdcprintf("V33=%d.%02dV, V50=%d.%02dV", v33/100, (v33%1000)/10, v50/1000, (v50%1000)/10); 
+							cdcprintf("V33=%d.%02dV, V50=%d.%02dV", v33/100, (v33%1000)/10, v50/1000, (v50%1000)/10);
 							if((voltage(BP_3V3_CHAN, 1)<3000)||(voltage(BP_5V0_CHAN, 1)<4500))
 							{
-								cdcprintf("\r\nShort circuit!");								
+								cdcprintf("\r\nShort circuit!");
 								gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);
 							}
 							else
@@ -522,7 +522,7 @@ void doUI(void)
 							printnum(temp);
 							cdcprintf(" ");
 							received=protocols[modeConfig.mode].protocol_send(orderbits(temp));		// reshuffle bits if necessary
-							if(modeConfig.wwr) 
+							if(modeConfig.wwr)
 							{
 								cdcprintf(", RX: ");
 								printnum(received);
@@ -547,7 +547,7 @@ void doUI(void)
 								printnum(cmdbuff[cmdtail]);
 								cdcprintf(" ");
 								received=protocols[modeConfig.mode].protocol_send(orderbits(cmdbuff[cmdtail])); // reshuffle bits if necessary
-								if(modeConfig.wwr) 
+								if(modeConfig.wwr)
 								{
 									cdcprintf(", RX: ");
 									printnum(received);
@@ -600,7 +600,7 @@ void doUI(void)
 						modeConfig.error=1;
 						//go=0;
 						//cmdtail=cmdhead-1;
-						break;	
+						break;
 			}
 			cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);	// advance to next char/command
 			if((c!=' ')&&(c!=0x00)&&(c!=',')) cdcprintf("\r\n");
@@ -618,11 +618,11 @@ void doUI(void)
 		//TODO:destinguish between bus activity and other commands
 		//only dump if bus command executed
 //		logicAnalyzerCaptureStop();
-		
+
 //		if(modeConfig.logicanalyzerstop==0xff){
 //			cdcprintf("\x07Logic analyzer full before end of command!\r\n");
-//		}	
-		
+//		}
+
 		if(modeConfig.subprotocolname)
 			cdcprintf("%s-(%s)> ", protocols[modeConfig.mode].protocol_name, modeConfig.subprotocolname);
 		else
@@ -657,6 +657,10 @@ void versioninfo(void)
 	else if(flashsize<=512) ramsize=64;
 	else ramsize=96;
 
+	#ifndef FWVER
+        #define FWVER 0
+    #endif
+
 	cdcprintf("Bus Pirate ULTRA %s\r\n", BP_PLATFORM);
 	cdcprintf("Firmware %s (%s), bootloader N/A\r\n", FIRMWARE_VERSION, FWVER);
 	cdcprintf("STM32 with %dK FLASH, %dK SRAM ", flashsize, ramsize);
@@ -688,16 +692,16 @@ void versioninfo(void)
 			pwmperiod=TIM_ARR(BP_PWM_TIMER);
 
 // TODO is there a better way to do this?
-#if(BP_PWM_CHANCHAN==1)	
+#if(BP_PWM_CHANCHAN==1)
 			pwmoc=TIM_CCR1(BP_PWM_TIMER);
 #endif
-#if(BP_PWM_CHANCHAN==2)	
+#if(BP_PWM_CHANCHAN==2)
 			pwmoc=TIM_CCR2(BP_PWM_TIMER);
 #endif
-#if(BP_PWM_CHANCHAN==3)	
+#if(BP_PWM_CHANCHAN==3)
 			pwmoc=TIM_CCR3(BP_PWM_TIMER);
 #endif
-#if(BP_PWM_CHANCHAN==4)	
+#if(BP_PWM_CHANCHAN==4)
 			pwmoc=TIM_CCR4(BP_PWM_TIMER);
 #endif
 			cdcprintf("PWM clock %d Hz, dutycycle %d.%02d\r\n", (36000000/pwmperiod), pwmoc == pwmperiod ? 1 : 0, ((pwmoc*100)/pwmperiod)%100);
@@ -723,7 +727,7 @@ const char pinmodes[][5] ={
 "O-OD\0",		// output opendrain
 "O PP\0",		// output pushpull peripheral
 "O OD\0",		// output opendrain peripheral
-"----\0"		// pin is not used 	
+"----\0"		// pin is not used
 };
 
 
@@ -831,7 +835,7 @@ void changemode(void)
 	uint32_t mode;
 	int i;
 
-	
+
 	cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);	// pointer is set to 'm' we should advance 1
 	consumewhitechars();			// eat whitechars
 	mode=getint();
@@ -853,7 +857,7 @@ void changemode(void)
 		cdcprintf("Mode> ");
 		cmdtail=cmdhead;	// flush all input
 		getuserinput();
-		consumewhitechars(); 
+		consumewhitechars();
 		mode=getint();
 
 		if((mode>MAXPROTO)||(mode==0))
@@ -861,14 +865,14 @@ void changemode(void)
 			cdcprintf("\r\nIllegal mode!\r\n");
 			modeConfig.error=1;
 		}
-	}	
+	}
 
 	protocols[modeConfig.mode].protocol_cleanup();		// switch to HiZ
 	protocols[0].protocol_setup_exc();			// disables powersuppy etc.
 	modeConfig.mode=mode-1;
 	protocols[modeConfig.mode].protocol_setup();		// setup the new mode
-	
-	if(modeConfig.mode!=0)					// postphone the setup, this allows the user to setup the powersupply first 
+
+	if(modeConfig.mode!=0)					// postphone the setup, this allows the user to setup the powersupply first
 	{
 		cdcprintf("Postphoning HWinit()\r\n");
 	}
@@ -878,7 +882,7 @@ void changemode(void)
 
 }
 
-// set display mode  (hex, bin, octa, dec) 
+// set display mode  (hex, bin, octa, dec)
 void changedisplaymode(void)
 {
 	uint32_t displaymode;
@@ -914,7 +918,7 @@ void changedisplaymode(void)
 			cdcprintf("\r\nIllegal displaymode!\r\n");
 			modeConfig.error=1;
 		}
-	}	
+	}
 
 	modeConfig.displaymode=displaymode-1;
 }
@@ -952,7 +956,7 @@ int cmdhistory(int ptr)
 {
 	int i;
 	uint32_t temp;
-	
+
 	i=1;
 
 	for (temp=(cmdtail-2)&(CMDBUFFSIZE-1); temp!=cmdhead; temp=(temp-1)&(CMDBUFFSIZE-1))
@@ -990,7 +994,7 @@ int cmdhistory(int ptr)
 }
 
 
-// handles the userinput 
+// handles the userinput
 void getuserinput(void)
 {
 	int go, histptr;
@@ -1006,7 +1010,7 @@ void getuserinput(void)
 		if(cdcbyteready())
 		{
 			c=cdcgetc();
-		
+
 			switch(c)
 			{
 				case 0x08:							// backspace
@@ -1115,7 +1119,7 @@ void getuserinput(void)
 							}
 						}
 						else cdcputc('\x07');
-						break;	
+						break;
 			}
 		}
 
@@ -1171,7 +1175,7 @@ uint32_t getrepeat(void)
 	uint32_t tail, repeat;
 
 	repeat=1;				// do at least one round :D
-	
+
 	tail=(cmdtail+1)&(CMDBUFFSIZE-1);	// advance one
 	if(tail!=cmdhead)			// did we reach the end?
 	{
@@ -1190,7 +1194,7 @@ uint32_t getnumbits(void)
 	uint32_t tail, numbits;
 
 	numbits=0;
-	
+
 	tail=(cmdtail+1)&(CMDBUFFSIZE-1);	// advance one
 	if(tail!=cmdhead)			// did we reach the end?
 	{
@@ -1203,7 +1207,7 @@ uint32_t getnumbits(void)
 	return numbits;
 }
 
-// represent d in the current display mode. If numbits=8 also display the ascii representation 
+// represent d in the current display mode. If numbits=8 also display the ascii representation
 void printnum(uint32_t d)
 {
 	uint32_t mask, i;
@@ -1272,13 +1276,13 @@ uint32_t orderbits(uint32_t d)
 	else
 	{
 		mask=0x80000000;
-		result=0;	
+		result=0;
 
 		for(i=0; i<32; i++)
 		{
 			if(d&mask)
 			{
-				result|=(1<<(i));	
+				result|=(1<<(i));
 			}
 			mask>>=1;
 		}

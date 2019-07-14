@@ -72,7 +72,7 @@ void writeFlash(uint32_t addr, uint8_t *buff, uint8_t size)
 
 	for(i=0; i<256; i++)
 	{
-		spi_xfer(BP_FS_SPI, (uint16_t) page[i]);
+		spi_xfer(BP_FS_SPI, (uint16_t) buff[i]);
 	}
 
 	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
@@ -141,7 +141,7 @@ void writePage(uint32_t addr, uint8_t *page)
 
 	for(i=0; i<(256); i++)
 	{
-		spi_xfer(BP_FS_SPI, (uint16_t) buff[i]);
+		spi_xfer(BP_FS_SPI, (uint16_t) page[i]);
 	}
 
 	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
