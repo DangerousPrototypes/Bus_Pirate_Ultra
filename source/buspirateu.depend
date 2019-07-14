@@ -2,17 +2,17 @@
 1562674471 source:c:\msys64\home\ian\buspirate\source\src\main.c
 	"stm32f10x.h"
 
-1562674471 c:\msys64\home\ian\buspirate\source\inc\stm32f10x.h
+1562855234 c:\msys64\home\ian\buspirate\source\inc\stm32f10x.h
 	"core_cm3.h"
 	"system_stm32f10x.h"
 	<stdint.h>
 	"stm32f10x_conf.h"
 
-1562674471 c:\msys64\home\ian\buspirate\source\inc\system_stm32f10x.h
+1562855234 c:\msys64\home\ian\buspirate\source\inc\system_stm32f10x.h
 
-1562679477 source:c:\msys64\home\ian\buspirate\source\src\startup_stm32f10x_hd.s
+1562855308 source:c:\msys64\home\ian\buspirate\source\src\startup_stm32f10x_hd.s
 
-1562674471 source:c:\msys64\home\ian\buspirate\source\src\system_stm32f10x.c
+1562855234 source:c:\msys64\home\ian\buspirate\source\src\system_stm32f10x.c
 	"stm32f10x.h"
 
 1562674022 source:r:\libopencm3\lib\cm3\assert.c
@@ -285,18 +285,20 @@
 
 1562674165 r:\libopencm3\lib\lm3s\vector_nvic.c
 
-1562678326 source:c:\msys64\home\ian\buspirate\source\buspirate.c
+1563023455 source:c:\msys64\home\ian\buspirate\source\buspirate.c
 	<stdlib.h>
 	<libopencm3/stm32/rcc.h>
 	<libopencm3/stm32/gpio.h>
 	<libopencm3/cm3/nvic.h>
 	<libopencm3/cm3/systick.h>
+	<libopencm3/stm32/spi.h>
 	"debug.h"
 	"cdcacm.h"
 	"buspirate.h"
 	"delay.h"
 	"fpga.h"
 	"fs.h"
+	"LA.h"
 
 1562674022 r:\libopencm3\include\libopencm3\stm32\rcc.h
 	<libopencm3/cm3/common.h>
@@ -481,13 +483,13 @@
 1562673744 c:\msys64\home\ian\buspirate\source\buspirate.h
 	"platform/beta1.h"
 
-1562673744 c:\msys64\home\ian\buspirate\source\platform\beta1.h
+1562936895 c:\msys64\home\ian\buspirate\source\platform\beta1.h
 
 1562673744 c:\msys64\home\ian\buspirate\source\delay.h
 
-1562673744 c:\msys64\home\ian\buspirate\source\fpga.h
+1562858529 c:\msys64\home\ian\buspirate\source\fpga.h
 
-1562673744 c:\msys64\home\ian\buspirate\source\fs.h
+1562860394 c:\msys64\home\ian\buspirate\source\fs.h
 
 1562673744 source:c:\msys64\home\ian\buspirate\source\delay.c
 	<stdlib.h>
@@ -1165,7 +1167,7 @@
 	<stdarg.h>
 	<stddef.h>
 
-1562673744 source:c:\msys64\home\ian\buspirate\source\fpga.c
+1562934258 source:c:\msys64\home\ian\buspirate\source\fpga.c
 	<stdint.h>
 	"cdcacm.h"
 	"delay.h"
@@ -1174,11 +1176,10 @@
 	<libopencm3/stm32/spi.h>
 	<libopencm3/stm32/gpio.h>
 	<libopencm3/stm32/rcc.h>
-	"bitstream.h"
 
 1562673744 c:\msys64\home\ian\buspirate\source\bitstream.h
 
-1562673744 source:c:\msys64\home\ian\buspirate\source\fs.c
+1562933458 source:c:\msys64\home\ian\buspirate\source\fs.c
 	<stdint.h>
 	"buspirate.h"
 	<libopencm3/stm32/spi.h>
@@ -1262,4 +1263,16 @@
 	<string.h>
 	<libopencm3/usb/usbd.h>
 	"usb_private.h"
+
+1563010776 c:\msys64\home\ian\buspirate\source\la.h
+
+1563098810 source:c:\msys64\home\ian\buspirate\source\la.c
+	<stdint.h>
+	<libopencm3/stm32/gpio.h>
+	<libopencm3/stm32/rcc.h>
+	<libopencm3/stm32/spi.h>
+	"buspirate.h"
+	"LA.h"
+	"cdcacm.h"
+	"delay.h"
 
