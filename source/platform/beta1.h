@@ -25,7 +25,7 @@
 #define BP_USB_PULLUP_PIN	GPIO4
 
 // flash storage
-#define BP_FS_SPI		SPI3
+#define BP_FS_SPI		    SPI3
 #define BP_FS_SPI_CLK		RCC_SPI3
 #define BP_FS_CLK_PIN		GPIO3
 #define BP_FS_MOSI_PIN		GPIO5
@@ -37,7 +37,7 @@
 #define BP_FS_CS_PORT		GPIOB
 
 // FPGA
-#define BP_FPGA_SPI		SPI2
+#define BP_FPGA_SPI		    SPI2
 #define BP_FPGA_SPI_CLK		RCC_SPI2
 #define BP_FPGA_CLK_PIN		GPIO13
 #define BP_FPGA_MOSI_PIN	GPIO15

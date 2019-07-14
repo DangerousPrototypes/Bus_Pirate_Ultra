@@ -81,7 +81,6 @@
 			<Add option="-eb_lib=n" />
 			<Add option="-eb_start_files" />
 		</Linker>
-		<Unit filename="bitstream.h" />
 		<Unit filename="buspirate.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -89,7 +88,6 @@
 		<Unit filename="cdcacm.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="cdcacm.d" />
 		<Unit filename="cdcacm.h" />
 		<Unit filename="delay.c">
 			<Option compilerVar="CC" />
@@ -105,6 +103,11 @@
 		<Unit filename="fs.h" />
 		<Unit filename="inc\stm32f10x.h" />
 		<Unit filename="inc\system_stm32f10x.h" />
+		<Unit filename="LA.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="LA.h" />
+		<Unit filename="platform\beta1.h" />
 		<Unit filename="src\startup_stm32f10x_hd.S">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -258,7 +261,7 @@
 		<Extensions>
 			<code_completion />
 			<debugger>
-				<target_debugging_settings target="Release" active_interface="J-link">
+				<target_debugging_settings target="Debug" active_interface="J-link">
 					<debug_interface interface_id="J-link" ip_address="localhost" ip_port="2331" path="%Software\SEGGER\J-Link:InstallPath%" executable="JLinkGDBServer.exe" description="S:\stm32\STM32F103xx.svd" dont_start_server="false" backoff_time="2000" options="2" reg_filter="0" active_family="STMicroelectronics" gdb_before_conn="" gdb_after_conn="">
 						<family_options family_id="STMicroelectronics">
 							<option opt_id="ID_DEVICE" opt_value="STM32F103ZE" />
@@ -282,7 +285,7 @@
 						</family_options>
 					</debug_interface>
 				</target_debugging_settings>
-				<target_debugging_settings target="Debug" active_interface="J-link">
+				<target_debugging_settings target="Release" active_interface="J-link">
 					<debug_interface interface_id="J-link" ip_address="localhost" ip_port="2331" path="%Software\SEGGER\J-Link:InstallPath%" executable="JLinkGDBServer.exe" description="S:\stm32\STM32F103xx.svd" dont_start_server="false" backoff_time="2000" options="2" reg_filter="0" active_family="STMicroelectronics" gdb_before_conn="" gdb_after_conn="">
 						<family_options family_id="STMicroelectronics">
 							<option opt_id="ID_DEVICE" opt_value="STM32F103ZE" />

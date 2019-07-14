@@ -3,12 +3,14 @@
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/cm3/systick.h>
+#include <libopencm3/stm32/spi.h>
 #include "debug.h"
 #include "cdcacm.h"
 #include "buspirate.h"
 #include "delay.h"
 #include "fpga.h"
 #include "fs.h"
+#include "LA.h"
 
 
 //globals
@@ -36,6 +38,8 @@ int main(void)
 	char c;
 	int i;
 	uint8_t buff[256];
+    char page[256];
+    unsigned char temp;
 
 	// init vars
 	usbflushtime=0;
@@ -53,6 +57,13 @@ int main(void)
 	rcc_periph_clock_enable(RCC_GPIOF);
 	rcc_periph_clock_enable(RCC_GPIOG);
 	rcc_periph_clock_enable(RCC_AFIO);
+
+la_sram_mode_setup();
+la_sram_mode_spi();
+la_sram_quad_setup();
+la_sram_quad_output();
+la_sram_arm_setup();
+la_sram_arm_stop();
 
 	AFIO_MAPR |= AFIO_MAPR_SWJ_CFG_JTAG_OFF_SW_ON;		// disable jtag/enable swd
 
@@ -98,8 +109,21 @@ int main(void)
 	gpio_set_mode(BP_LED_MODE_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_MODE_PIN);
 	gpio_clear(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
 
+
+
 	// buffer init
-	for(i=0; i<256; i++) buff[i]=i;
+	for(i=0; i<8; i++) buff[i]=i;
+
+
+                if(uploadfpga()==1){
+                   gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
+                }else{
+                    gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
+                }
+
+//logicAnalyzerSetup();
+
+
 
 	while (1)
 	{
@@ -110,16 +134,59 @@ int main(void)
 		gpio_set(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
 */
 
+
 		if(cdcbyteready())
 		{
-			c=cdcgetc();
-			cdcputc(c);
-//			showFlashID();
-//			printbuff(buff, 256);
-//			writeFlash(0x00000000, buff);
-//			readFlash(0x00000000, buff, 256);
-//			printbuff(buff, 256);
-			uploadfpga();
+
+            int i=0;
+            uint32_t addr=0x00000000;
+            c=cdcgetc();
+        /*
+            cdcprintf("\r\nuploading\r\n");
+
+
+            for(i=0; i<=1000; i++)
+            {
+                progressbar(i, 1000);
+                delayms(10);
+            }*/
+
+            switch(c){
+        case 0x20:
+                logicAnalyzerSetup();
+                break;
+            case 0xc0:
+                    cdcputc(0x4B);
+                    break;
+            case 0x02: //write page
+
+                for(i=0;i<3;i++){
+                    while(!cdcbyteready());
+                    addr=addr<<8;
+                    addr|=cdcgetc();
+                }
+                for(i=0;i<256;i++){
+                    while(!cdcbyteready());
+                    page[i]=cdcgetc();
+                }
+                writePage(addr,page);
+                readFlash(addr,buff,256);
+                cdcputc(0x4B);
+                break;
+            case 0x03:
+                gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
+                fpgainit();
+                if(uploadfpga()==1){
+                    gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
+                   cdcputc(0x4B);
+                    logicAnalyzerSetup();
+                }else{
+                    gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
+                    cdcputc(0x00);
+                }
+
+                break;
+            }
 		}
 
 	}

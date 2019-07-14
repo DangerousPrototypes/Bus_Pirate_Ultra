@@ -21,10 +21,12 @@ void progressbar(uint32_t count, uint32_t maxcount)
 
 }
 
-void upload(void)
+void upload(char c)
 {
-	int i;
 
+	int i=0;
+
+/*
 	cdcprintf("\r\nuploading\r\n");
 
 
@@ -32,48 +34,69 @@ void upload(void)
 	{
 		progressbar(i, 1000);
 		delayms(10);
-	}
-}
+	}*/
 
-#include "bitstream.h"
+
+
+}
 
 int uploadfpga(void)
 {
-	uint32_t i, returnval;
+	uint32_t i, returnval, bitstream_length=0, addr=0;
 
 	// reset FPGA+program FPGA
-	cdcprintf("Resetting FPGA..\r\n");
+	//cdcprintf("Resetting FPGA..\r\n");
 	gpio_clear(BP_FPGA_CRESET_PORT, BP_FPGA_CRESET_PIN);		// go into reset
 	gpio_clear(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN);			// if CS is low during reset, fpga becomes spi slave
-	delayms(10);							// wait at least 200ns 
+	delayms(10);							// wait at least 200ns
 	gpio_set(BP_FPGA_CRESET_PORT, BP_FPGA_CRESET_PIN);		// out of reset
 	delayms(100);							// wait at lease 1200us or wait for miso is 1
+
+
+
+	//setup flash
+	#define FLCMD_READ	0x0B		// Read Data Bytes (READ)
+    gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);	// cs low
+	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_READ);
+	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>16)&0x000000FF));	// address
+	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>8)&0x000000FF));		//
+	spi_xfer(BP_FS_SPI, (uint16_t) (addr&0x000000FF));		//
+
+	spi_xfer(BP_FS_SPI, (uint16_t) 0xFF); //read dummy byte
+
+    //first three bytes are length of bitstream
+    bitstream_length|=((spi_xfer(BP_FS_SPI, 0xff)<<0)&0x000000FF);
+	bitstream_length|=((spi_xfer(BP_FS_SPI, 0xff)<<8)&0x0000FF00);
+	bitstream_length|=((spi_xfer(BP_FS_SPI, 0xff)<<16)&0x00FF0000);
+
+    //release FPGA into program mode
 	gpio_set(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN);			// release cs
 
-	cdcprintf("CDONE=%02X\r\n", gpio_get(BP_FPGA_CDONE_PORT, BP_FPGA_CDONE_PIN));
+	//cdcprintf("CDONE=%02X\r\n", gpio_get(BP_FPGA_CDONE_PORT, BP_FPGA_CDONE_PIN));
 
 	// start transfer
 	spi_xfer(BP_FPGA_SPI, (uint16_t)0x0000);			// 8 dummy clock cycles
 	gpio_clear(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN);			// assert cs
-	
+
 	// send image (msb first)
-	cdcprintf("Uploading FPGA bitstream..\r\n");
+	//cdcprintf("Uploading FPGA bitstream..\r\n");
 //	for(i=0; i<=135183; i++)
-	for(i=0; i<135100; i++)
+	for(i=0; i<bitstream_length; i++)
 	{
-		if((i&0x3FF)==0) progressbar(i, 135100);
-		spi_xfer(BP_FPGA_SPI, (uint16_t)bitstream[i]);	
+		//if((i&0x3FF)==0) progressbar(i, 135100);
+		spi_xfer(BP_FPGA_SPI, (uint16_t)spi_xfer(BP_FS_SPI, (uint16_t) 0xFF));
 	}
-	progressbar(i, 135100);
+	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+	//progressbar(i, 135100);
 
 	gpio_set(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN);			// release cs
 	for(i=0; i<12; i++) spi_xfer(BP_FPGA_SPI, (uint16_t)0x0000);	// wait 100 clockcycles to cdone=1 (104 cycles)
 
-	cdcprintf("\r\n");
+	//cdcprintf("\r\n");
 
 	if(gpio_get(BP_FPGA_CDONE_PORT, BP_FPGA_CDONE_PIN))
 	{
-		cdcprintf("CDONE=1 SUCCESS!!\r\n");
+		//cdcprintf("CDONE=1 SUCCESS!!\r\n");
 		returnval=1;
 		rcc_set_mco(RCC_CFGR_MCO_PLL_DIV2);		// PLL/2
 //		rcc_set_mco(RCC_CFGR_MCO_HSI);			// internal oscillator
@@ -83,7 +106,7 @@ int uploadfpga(void)
 	}
 	else
 	{
-		cdcprintf("CDONE=0 ERROR uploading!!\r\n");
+		//cdcprintf("CDONE=0 ERROR uploading!!\r\n");
 		returnval=0;
 	}
 
@@ -110,7 +133,7 @@ void fpgainit(void)
 
 	// setup SPI (cpol=1, cpha=1) +- 1MHz
 	spi_reset(BP_FPGA_SPI);
-	spi_init_master(BP_FPGA_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_32, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE, SPI_CR1_CPHA_CLK_TRANSITION_2, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
+	spi_init_master(BP_FPGA_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_8, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE, SPI_CR1_CPHA_CLK_TRANSITION_2, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
 	spi_set_full_duplex_mode(BP_FPGA_SPI);
 	spi_enable(BP_FPGA_SPI);
 
