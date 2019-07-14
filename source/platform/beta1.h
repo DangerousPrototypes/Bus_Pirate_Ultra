@@ -126,7 +126,7 @@ mcu_int1	pe3
 #define BP_FSMC_D15_PIN		GPIO10
 
 #define BP_FSMC_NOE_PORT	GPIOD
-#define BP_FSMC_NOE_PIN		GPIO3
+#define BP_FSMC_NOE_PIN		GPIO4
 #define BP_FSMC_NWE_PORT	GPIOD
 #define BP_FSMC_NWE_PIN		GPIO5
 #define BP_FSMC_NCE_PORT	GPIOG
@@ -149,7 +149,7 @@ mcu_int1	pe3
 #define BP_ADC			ADC1
 #define BP_ADC_CLK		RCC_ADC1
 #define BP_ADC_CHAN		9
-#define BP_VPU_CHAN		7	// 7= on pint Vext 14= before 4066	
+#define BP_VPU_CHAN		7	// 7= on pint Vext 14= before 4066
 #define BP_3V3_CHAN		5
 #define BP_5V0_CHAN		4
 #define BP_USB_CHAN		3

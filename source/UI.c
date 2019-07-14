@@ -225,6 +225,8 @@ void doUI(void)
 	uint32_t temp, temp2, temp3, repeat, received, bits;
 	int i;
 
+
+
 	go=0;
 
 	// wait for usb ready
@@ -597,11 +599,15 @@ void doUI(void)
 						modeConfig.numbits=temp3;
 						break;
 				case '~': 	//selftest();
-						uploadfpga();
-						delayms(1000);
+						//uploadfpga();
+						//delayms(1000);
 						cdcprintf("FPGA reg 0: %04X\r\n", FPGA_REG_00);
 						cdcprintf("FPGA reg 1: %04X\r\n", FPGA_REG_01);
 						FPGA_REG_01=0xAA55;
+						FPGA_REG_01=0xAA55;
+						FPGA_REG_01=0xAA55;
+						FPGA_REG_00=0xAA55;
+						cdcprintf("FPGA reg 0: %04X\r\n", FPGA_REG_00);
 						cdcprintf("FPGA reg 1: %04X\r\n", FPGA_REG_01);
 						break;
 				default:	cdcprintf("Unknown command: %c", c);
@@ -1013,8 +1019,67 @@ void getuserinput(void)
 	cursor=cmdhead;
 	histptr=0;
 
+    //binmode stuff
+    char page[256];
+
 	while(!go)
 	{
+
+		//binmode
+
+        if(cdcbyteready2())
+		{
+
+            int i=0;
+            uint32_t addr=0x00000000;
+            c=cdcgetc2();
+            switch(c){
+                case 0x20:
+                    logicAnalyzerSetup();
+                    break;
+                case 0xc0:
+                        cdcputc2(0x4B);
+                        break;
+                case 0x02: //write page
+
+                    for(i=0;i<3;i++){
+                        while(!cdcbyteready2());
+                        addr=addr<<8;
+                        addr|=cdcgetc2();
+                    }
+                    for(i=0;i<256;i++){
+                        while(!cdcbyteready2());
+                        page[i]=cdcgetc2();
+                    }
+                    writePage(addr,page);
+                    //readFlash(addr,buff,256);
+                    cdcputc2(0x4B);
+                    break;
+                case 0x03:
+                    gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
+                    fpgainit();
+                    cdcputs("FPGA update in progress...");
+                    if(uploadfpga()==1){
+                        gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
+                       cdcputc2(0x4B);
+                       //
+                        //logicAnalyzerSetup();
+                        cdcputs("done.\n");
+                    }else{
+                        gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
+                        cdcputc2(0x00);
+                        cdcputs("error.\n");
+                    }
+
+                    break;
+            }//switch
+		}//cdc
+
+
+
+
+
+		//UI
 		if(cdcbyteready())
 		{
 			c=cdcgetc();

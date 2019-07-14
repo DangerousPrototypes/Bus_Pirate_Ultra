@@ -41,7 +41,7 @@ int main(void)
 	char c;
 	int i;
 	uint8_t buff[256];
-    char page[256];
+
     unsigned char temp;
 
 	// init vars
@@ -136,67 +136,17 @@ int main(void)
 	// ADC
 	initADC();
 
-	while (1)
-	{
-		doUI();
-
-	}
-
-	// buffer init
-	for(i=0; i<8; i++) buff[i]=i;
-
     if(uploadfpga()==1){
        gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
     }else{
         gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
     }
 
+
 	while (1)
 	{
+		doUI();
 
-		if(cdcbyteready())
-		{
-
-            int i=0;
-            uint32_t addr=0x00000000;
-            c=cdcgetc();
-            switch(c){
-                case 0x20:
-                    logicAnalyzerSetup();
-                    break;
-                case 0xc0:
-                        cdcputc(0x4B);
-                        break;
-                case 0x02: //write page
-
-                    for(i=0;i<3;i++){
-                        while(!cdcbyteready());
-                        addr=addr<<8;
-                        addr|=cdcgetc();
-                    }
-                    for(i=0;i<256;i++){
-                        while(!cdcbyteready());
-                        page[i]=cdcgetc();
-                    }
-                    writePage(addr,page);
-                    readFlash(addr,buff,256);
-                    cdcputc(0x4B);
-                    break;
-                case 0x03:
-                    gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
-                    fpgainit();
-                    if(uploadfpga()==1){
-                        gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
-                       cdcputc(0x4B);
-                        logicAnalyzerSetup();
-                    }else{
-                        gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
-                        cdcputc(0x00);
-                    }
-
-                    break;
-            }//switch
-		}//cdc
 
 	}//while
 }
