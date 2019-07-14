@@ -113,6 +113,10 @@ int uploadfpga(void)
 
 	for(i=0; i<7; i++) spi_xfer(BP_FPGA_SPI, (uint16_t)0x0000);	// wait 49 clockcycles to enable pinio's (56 cycles)
 
+	// reset fpga  bitstream
+	// TODO: fpga needs a reset!
+
+
 	return returnval;
 }
 
@@ -176,8 +180,7 @@ void fpgainit(void)
 
 
 	// enable fsmc
-	RCC_AHBENR|=RCC_AHBENR_FSMCEN;
-
+	rcc_periph_clock_enable(RCC_FSMC);
 
 /*
 from https://www.stm32duino.com/viewtopic.php?t=1637
@@ -215,9 +218,10 @@ https://github.com/leaflabs/libmaple/blob/master/libmaple/include/libmaple/fsmc.
 #define ADDSET   0x1
 
 	// fsmc setup (bank3 is used) 0x6c000000
-	//           WREN     SRAM     16b     MBKEN
-	FSMC_BCR3=((1<<12) | (0<<2) | (1<<4) | (1<<0));
+	//           WREN     SRAM     16b     MBKEN   EXTMOD
+	FSMC_BCR3=((1<<12) | (0<<2) | (1<<4) | (1<<0) | (1<<14));
 	FSMC_BTR3=(DATAST << 8) | ADDSET;
+	FSMC_BWTR3=(DATAST << 8) | ADDSET;
 
 }
 
