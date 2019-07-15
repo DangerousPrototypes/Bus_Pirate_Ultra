@@ -131,7 +131,7 @@
 <text x="81.8007" y="11.9606" size="0.8128" layer="22" ratio="12" rot="SMR270" align="center">www.seeedstudio.com</text>
 <text x="78.7019" y="11.9606" size="1.27" layer="22" ratio="12" rot="SMR270" align="center">Fulfillment by</text>
 <text x="0.87" y="27.54" size="1.27" layer="27" ratio="10" rot="R90">vimark</text>
-<text x="26.035" y="23.114" size="1.016" layer="21" font="vector" ratio="12" align="center">v.trocio</text>
+<text x="26.035" y="21.463" size="1.016" layer="21" font="vector" ratio="12" align="center">v.trocio</text>
 <text x="6.985" y="20.32" size="1.1684" layer="22" font="vector" ratio="12" rot="SMR270" align="center">MAY 2019</text>
 <text x="66.62" y="-7.07" size="1.6764" layer="49" ratio="10">BUS PIRATE Ultra</text>
 <text x="66.675" y="-13.335" size="1.6764" layer="49" ratio="10">CC-0</text>
@@ -210,6 +210,9 @@ CLK</text>
 <vertex x="5.08" y="22.352"/>
 <vertex x="3.81" y="22.352"/>
 </polygon>
+<text x="26.035" y="23.114" size="1.016" layer="21" font="vector" ratio="12" align="center">SMDPRUTSER</text>
+<text x="21.3233" y="25.0842" size="1.27" layer="22" font="vector" ratio="12" rot="SMR270" align="center">http://dangerousprototypes.com</text>
+<text x="23.8633" y="25.0842" size="1.27" layer="22" font="vector" ratio="12" rot="SMR270" align="center">https://smdprutser.nl</text>
 </plain>
 <libraries>
 <library name="rcl">
@@ -36452,10 +36455,10 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <approved hash="23,1,6dd1bbbfbbba6dd4"/>
 <approved hash="23,1,0c402c2e2c2a0c44"/>
 <approved hash="23,1,1623bfcdbaf0131e"/>
-<approved hash="4,1,61db66a0c7a75fb9"/>
 <approved hash="4,1,dccef1a488fe1080"/>
-<approved hash="4,1,c9b4c62b5d80e3b0"/>
 <approved hash="4,1,476196ce6a892a40"/>
+<approved hash="4,1,ac1e1bd3f524dd8c"/>
+<approved hash="4,1,e603ac63a65e5d91"/>
 </errors>
 </board>
 </drawing>
