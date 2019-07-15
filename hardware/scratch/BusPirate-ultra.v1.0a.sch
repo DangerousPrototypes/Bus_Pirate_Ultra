@@ -26998,10 +26998,6 @@ H     X    L   :(  (contention)</text>
 <wire x1="-276.86" y1="330.2" x2="-276.86" y2="332.74" width="0.1524" layer="91"/>
 <junction x="-276.86" y="332.74"/>
 <label x="-287.02" y="332.74" size="1.778" layer="95" align="center-right"/>
-<pinref part="U1" gate="U" pin="!CS"/>
-<wire x1="-274.32" y1="327.66" x2="-276.86" y2="327.66" width="0.1524" layer="91"/>
-<wire x1="-276.86" y1="327.66" x2="-276.86" y2="330.2" width="0.1524" layer="91"/>
-<junction x="-276.86" y="330.2"/>
 </segment>
 <segment>
 <pinref part="U1" gate="U" pin="VCC"/>
@@ -29093,12 +29089,6 @@ H     X    L   :(  (contention)</text>
 <wire x1="-248.92" y1="25.4" x2="-254" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$61" class="0">
-<segment>
-<pinref part="U2" gate="U" pin="PG15/FT"/>
-<wire x1="-248.92" y1="22.86" x2="-254" y2="22.86" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="MCU_AUX2" class="0">
 <segment>
 <pinref part="U3" gate="BANK0" pin="IOT_214"/>
@@ -29211,6 +29201,18 @@ H     X    L   :(  (contention)</text>
 <pinref part="U2" gate="U" pin="PA6/SPI1_MISO('0')/TIM8_BKIN/ADC12_IN6/TIM3_CH1('00')/TIM1_BKIN('01')"/>
 <wire x1="-248.92" y1="175.26" x2="-251.46" y2="175.26" width="0.1524" layer="91"/>
 <label x="-251.46" y="175.26" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="FLASH_CS" class="0">
+<segment>
+<pinref part="U1" gate="U" pin="!CS"/>
+<wire x1="-274.32" y1="327.66" x2="-276.86" y2="327.66" width="0.1524" layer="91"/>
+<label x="-276.86" y="327.66" size="1.778" layer="95" align="center-right"/>
+</segment>
+<segment>
+<pinref part="U2" gate="U" pin="PG15/FT"/>
+<wire x1="-248.92" y1="22.86" x2="-251.46" y2="22.86" width="0.1524" layer="91"/>
+<label x="-251.46" y="22.86" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 </nets>

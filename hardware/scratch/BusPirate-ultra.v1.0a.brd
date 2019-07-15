@@ -7,7 +7,7 @@
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="25" unitdist="mil" unit="mil" style="lines" multiple="1" display="no" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="25" unitdist="mil" unit="mil" style="lines" multiple="1" display="no" altdistance="1" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -33543,7 +33543,7 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <via x="8.2296" y="48.7906" extent="1-16" drill="0.508"/>
 <via x="3.2766" y="41.2976" extent="1-16" drill="0.508"/>
 <via x="18.8976" y="45.7426" extent="1-16" drill="0.508"/>
-<via x="23.622" y="37.719" extent="1-16" drill="0.508"/>
+<via x="23.9522" y="37.8206" extent="1-16" drill="0.508"/>
 <via x="29.972" y="40.132" extent="1-16" drill="0.4064"/>
 <via x="25.654" y="39.751" extent="1-16" drill="0.4064"/>
 <via x="32.766" y="40.132" extent="1-16" drill="0.4064"/>
@@ -33633,7 +33633,7 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <via x="29.718" y="36.83" extent="1-16" drill="0.4064"/>
 <via x="54.0004" y="32.8422" extent="1-16" drill="0.4064"/>
 <via x="26.67" y="34.29" extent="1-16" drill="0.4064"/>
-<via x="22.733" y="41.275" extent="1-16" drill="0.508"/>
+<via x="23.241" y="41.402" extent="1-16" drill="0.508"/>
 <via x="26.289" y="45.847" extent="1-16" drill="0.508"/>
 <via x="13.208" y="37.338" extent="1-16" drill="0.508"/>
 <via x="52.832" y="44.45" extent="1-16" drill="0.4064"/>
@@ -34074,8 +34074,6 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="25.36" y1="41.87" x2="24.765" y2="41.275" width="0.4064" layer="1"/>
 <wire x1="26.67" y1="41.87" x2="26.71" y2="41.91" width="0.4064" layer="1"/>
 <wire x1="26.71" y1="41.91" x2="27.94" y2="41.91" width="0.4064" layer="1"/>
-<contactref element="U1" pad="1"/>
-<wire x1="24.765" y1="44.6878" x2="24.765" y2="46.1706" width="0.254" layer="1"/>
 </signal>
 <signal name="N$7">
 <contactref element="LED2" pad="A"/>
@@ -35678,12 +35676,11 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 </signal>
 <signal name="FLASH_SCK">
 <contactref element="U2" pad="133"/>
-<wire x1="22.785" y1="35.75" x2="22.785" y2="37.715" width="0.254" layer="1"/>
-<wire x1="22.785" y1="37.715" x2="22.3125" y2="38.1875" width="0.254" layer="1"/>
+<wire x1="22.785" y1="35.75" x2="22.785" y2="37.6896" width="0.254" layer="1"/>
+<wire x1="22.785" y1="37.6896" x2="22.3633" y2="38.1113" width="0.254" layer="1"/>
 <contactref element="U1" pad="6"/>
-<wire x1="22.3125" y1="38.1875" x2="22.225" y2="38.275" width="0.254" layer="1"/>
-<wire x1="22.3125" y1="38.1875" x2="22.225" y2="38.275" width="0.254" layer="1"/>
-<wire x1="22.225" y1="38.275" x2="22.225" y2="39.4878" width="0.254" layer="1"/>
+<wire x1="22.3633" y1="38.1113" x2="22.225" y2="38.2496" width="0.254" layer="1"/>
+<wire x1="22.225" y1="38.2496" x2="22.225" y2="39.4878" width="0.254" layer="1"/>
 </signal>
 <signal name="FLASH_MISO">
 <contactref element="U2" pad="134"/>
@@ -35697,10 +35694,9 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <signal name="FLASH_MOSI">
 <contactref element="U2" pad="135"/>
 <wire x1="21.785" y1="35.75" x2="21.785" y2="37.44039375" width="0.254" layer="1"/>
-<wire x1="21.785" y1="37.44039375" x2="21.040196875" y2="38.185196875" width="0.254" layer="1"/>
+<wire x1="21.785" y1="37.44039375" x2="21.065596875" y2="38.159796875" width="0.254" layer="1"/>
 <contactref element="U1" pad="5"/>
-<wire x1="21.040196875" y1="38.185196875" x2="20.955" y2="38.27039375" width="0.254" layer="1"/>
-<wire x1="21.040196875" y1="38.185196875" x2="20.955" y2="38.27039375" width="0.254" layer="1"/>
+<wire x1="21.065596875" y1="38.159796875" x2="20.955" y2="38.27039375" width="0.254" layer="1"/>
 <wire x1="20.955" y1="38.27039375" x2="20.955" y2="39.4878" width="0.254" layer="1"/>
 </signal>
 <signal name="FSMC_D8">
@@ -36172,9 +36168,6 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <signal name="N$60">
 <contactref element="U2" pad="129"/>
 </signal>
-<signal name="N$61">
-<contactref element="U2" pad="132"/>
-</signal>
 <signal name="MCU_AUX2">
 <contactref element="U3" pad="136"/>
 <contactref element="U2" pad="112"/>
@@ -36343,6 +36336,19 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="20.751796875" y1="20.4978" x2="20.701" y2="20.447" width="0.254" layer="16"/>
 <wire x1="46.736" y1="16.002" x2="46.736" y2="16.04066875" width="0.254" layer="16"/>
 </signal>
+<signal name="FLASH_CS">
+<contactref element="U1" pad="1"/>
+<contactref element="U2" pad="132"/>
+<wire x1="22.5552" y1="41.68606875" x2="22.5552" y2="41.11793125" width="0.254" layer="1"/>
+<wire x1="24.765" y1="44.6878" x2="24.765" y2="43.89586875" width="0.254" layer="1"/>
+<wire x1="22.86" y1="40.81313125" x2="22.5552" y2="41.11793125" width="0.254" layer="1"/>
+<wire x1="24.765" y1="43.89586875" x2="22.5552" y2="41.68606875" width="0.254" layer="1"/>
+<wire x1="23.285" y1="35.75" x2="23.285" y2="37.41633125" width="0.254" layer="1"/>
+<wire x1="23.285" y1="37.41633125" x2="23.2156" y2="37.48573125" width="0.254" layer="1"/>
+<wire x1="23.2156" y1="37.48573125" x2="23.2156" y2="37.97206875" width="0.254" layer="1"/>
+<wire x1="23.2156" y1="37.97206875" x2="22.86" y2="38.32766875" width="0.254" layer="1"/>
+<wire x1="22.86" y1="38.32766875" x2="22.86" y2="40.81313125" width="0.254" layer="1"/>
+</signal>
 </signals>
 <mfgpreviewcolors>
 <mfgpreviewcolor name="soldermaskcolor" color="0xC8008000"/>
@@ -36458,7 +36464,7 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <approved hash="4,1,dccef1a488fe1080"/>
 <approved hash="4,1,476196ce6a892a40"/>
 <approved hash="4,1,ac1e1bd3f524dd8c"/>
-<approved hash="4,1,e603ac63a65e5d91"/>
+<approved hash="4,1,c9b4c62b5d80e3b0"/>
 </errors>
 </board>
 </drawing>
