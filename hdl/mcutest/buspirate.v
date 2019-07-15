@@ -14,7 +14,8 @@ module top #(
   input wire reset,
   input wire mc_oe, mc_ce, mc_we,
   input wire [MC_ADD_WIDTH-1:0] mc_add,
-  inout [MC_DATA_WIDTH-1:0] mc_data
+  inout wire [MC_DATA_WIDTH-1:0] mc_data
+
 );
 
 	// Tristate pin handling
@@ -23,6 +24,7 @@ module top #(
   reg [MC_DATA_WIDTH-1:0] mc_dout_d;
   wire [MC_DATA_WIDTH-1:0] mc_dout;
   assign mc_dout=mc_dout_d;
+
 
 	// memory regs
 	reg [MC_DATA_WIDTH-1:0] SRAM [32:0];

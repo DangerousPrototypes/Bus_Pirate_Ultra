@@ -26,18 +26,18 @@ void logicAnalyzerDumpSamples(uint32_t numSamples);
 #define CMDRESETSPI	0xF5
 #define CMDWRITERREG	0x05
 
-#define la_sram_mode_setup() gpio_set_mode(GPIOF,GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,GPIO3);
-#define la_sram_mode_quad() gpio_set(GPIOF,GPIO3)
-#define la_sram_mode_spi() gpio_clear(GPIOF,GPIO3)
-#define la_sram_quad_setup() gpio_set_mode(GPIOF,GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,GPIO2);
-#define la_sram_quad_output() gpio_set(GPIOF, GPIO2)
-#define la_sram_quad_input() gpio_clear(GPIOF, GPIO2)
+#define la_sram_mode_setup() gpio_set_mode(GPIOE,GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,GPIO2);
+#define la_sram_mode_quad() gpio_set(GPIOE,GPIO2)
+#define la_sram_mode_spi() gpio_clear(GPIOE,GPIO2)
+#define la_sram_quad_setup() gpio_set_mode(GPIOE,GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,GPIO3);
+#define la_sram_quad_output() gpio_set(GPIOE, GPIO3)
+#define la_sram_quad_input() gpio_clear(GPIOE, GPIO3)
 
-#define la_sram_arm_setup() gpio_set_mode(GPIOF,GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,GPIO4);
-#define la_sram_arm_start() gpio_set(GPIOF, GPIO4)
-#define la_sram_arm_stop() gpio_clear(GPIOF, GPIO4)
+#define sram_select() gpio_clear(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN)
+#define sram_deselect() gpio_set(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN)
 
-
+#define sram_clock_high() gpio_set(GPIOB,GPIO13)
+#define sram_clock_low() gpio_clear(GPIOB,GPIO13)
 
 
 

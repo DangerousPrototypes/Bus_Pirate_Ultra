@@ -1063,7 +1063,7 @@ void getuserinput(void)
                         gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
                        cdcputc2(0x4B);
                        //
-                        //logicAnalyzerSetup();
+                        logicAnalyzerSetup();
                         cdcputs("done.\n");
                     }else{
                         gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
