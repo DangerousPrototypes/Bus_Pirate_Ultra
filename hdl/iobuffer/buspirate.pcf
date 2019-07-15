@@ -40,22 +40,26 @@ set_io mc_ce 22
 set_io mc_oe 11
 set_io mc_we 12
 
-#set_io mc_add[0] 3
-#set_io mc_add[1] 4
-#set_io mc_add[2] 7
-#set_io mc_add[3] 8
-#set_io mc_add[4] 9
+set_io mc_add[0] 3
+set_io mc_add[1] 4
+set_io mc_add[2] 7
+set_io mc_add[3] 8
+set_io mc_add[4] 9
 set_io mc_add[5] 10
 
 set_io mcu_clock 70 #B13
-set_io mcu_cs 71
-set_io mcu_sio[0] 68 #MOSI B15
-set_io mcu_sio[1] 67 #MISO B14
-set_io mcu_sio[2] 3 #F0
-set_io mcu_sio[3] 4 #F1
-set_io mcu_quadmode 8 #F3
-set_io mcu_direction 7 #F2
-set_io mcu_arm 9 #F4
+set_io mcu_cs 71 #B12
+set_io mcu_mosi 68 #MOSI B15
+set_io mcu_miso 67 #MISO B14
+
+set_io mcu_quadmode 129 #C10 aux1 137 #E2
+set_io mcu_direction 128 #C11 aux2 136 #E3
+set_io mcu_aux3 135 #C12
+set_io mcu_aux4 134 #
+set_io mcu_aux5 125 #B8
+set_io mcu_aux6 124 #B9
+set_io mcu_aux7 119 #
+
 
 set_io mc_data[0] 24
 set_io mc_data[1] 23
@@ -85,12 +89,6 @@ set_io sram0_sio[0] 138
 set_io sram0_sio[1] 142
 set_io sram0_sio[2] 139
 set_io sram0_sio[3] 143
-# temp
-#set_io sram0_si 138
-#set_io sram0_so 142
-#set_io sram0_sio2 139
-#set_io sram0_sio3 143
-
 
 set_io sram1_clock 114
 set_io sram1_cs 117
