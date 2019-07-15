@@ -7,6 +7,7 @@
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/fsmc.h>
 
 void progressbar(uint32_t count, uint32_t maxcount)
 {
@@ -55,9 +56,9 @@ int uploadfpga(void)
 
 
 	//setup flash
-	#define FLCMD_READ	0x0B		// Read Data Bytes (READ)
+	#define FLCMD_FREAD	0x0B		// Read Data Bytes (READ)
     gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);	// cs low
-	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_READ);
+	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_FREAD);
 	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>16)&0x000000FF));	// address
 	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>8)&0x000000FF));		//
 	spi_xfer(BP_FS_SPI, (uint16_t) (addr&0x000000FF));		//
@@ -112,6 +113,10 @@ int uploadfpga(void)
 
 	for(i=0; i<7; i++) spi_xfer(BP_FPGA_SPI, (uint16_t)0x0000);	// wait 49 clockcycles to enable pinio's (56 cycles)
 
+	// reset fpga  bitstream
+	// TODO: fpga needs a reset!
+
+
 	return returnval;
 }
 
@@ -143,6 +148,81 @@ void fpgainit(void)
 
 	// disable clock
 	rcc_set_mco(RCC_CFGR_MCO_NOCLK);		// disable clock
+
+	// memory interface
+	gpio_set_mode(BP_FSMC_A0_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_A0_PIN);
+	gpio_set_mode(BP_FSMC_A1_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_A1_PIN);
+	gpio_set_mode(BP_FSMC_A2_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_A2_PIN);
+	gpio_set_mode(BP_FSMC_A3_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_A3_PIN);
+	gpio_set_mode(BP_FSMC_A4_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_A4_PIN);
+	gpio_set_mode(BP_FSMC_A5_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_A5_PIN);
+
+	gpio_set_mode(BP_FSMC_D0_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D0_PIN);
+	gpio_set_mode(BP_FSMC_D1_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D1_PIN);
+	gpio_set_mode(BP_FSMC_D2_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D2_PIN);
+	gpio_set_mode(BP_FSMC_D3_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D3_PIN);
+	gpio_set_mode(BP_FSMC_D4_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D4_PIN);
+	gpio_set_mode(BP_FSMC_D5_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D5_PIN);
+	gpio_set_mode(BP_FSMC_D6_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D6_PIN);
+	gpio_set_mode(BP_FSMC_D7_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D7_PIN);
+	gpio_set_mode(BP_FSMC_D8_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D8_PIN);
+	gpio_set_mode(BP_FSMC_D9_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D9_PIN);
+	gpio_set_mode(BP_FSMC_D10_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D10_PIN);
+	gpio_set_mode(BP_FSMC_D11_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D11_PIN);
+	gpio_set_mode(BP_FSMC_D12_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D12_PIN);
+	gpio_set_mode(BP_FSMC_D13_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D13_PIN);
+	gpio_set_mode(BP_FSMC_D14_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D14_PIN);
+	gpio_set_mode(BP_FSMC_D15_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_D15_PIN);
+
+	gpio_set_mode(BP_FSMC_NOE_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_NOE_PIN);
+	gpio_set_mode(BP_FSMC_NWE_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_NWE_PIN);	// bank 3
+	gpio_set_mode(BP_FSMC_NCE_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FSMC_NCE_PIN);
+
+
+	// enable fsmc
+	rcc_periph_clock_enable(RCC_FSMC);
+
+/*
+from https://www.stm32duino.com/viewtopic.php?t=1637
+
+timing for 55ns sram:
+
+#define DATAST   0x4
+#define ADDSET   0x1
+
+
+fsmc registers set to:
+
+        *bcrs[i] = (FSMC_BCR_WREN |
+                    FSMC_BCR_MTYP_SRAM |
+                    FSMC_BCR_MWID_16BITS |
+                    FSMC_BCR_MBKEN);
+        *btrs[i] = (DATAST << 8) | ADDSET;
+
+https://github.com/leaflabs/libmaple/blob/master/libmaple/include/libmaple/fsmc.h defines:
+
+#define FSMC_BCR_MWID_8BITS             (0x0 << 4)
+#define FSMC_BCR_MWID_16BITS            (0x1 << 4)
+#define FSMC_BCR_WREN_BIT               12
+#define FSMC_BCR_WREN                   (1U << FSMC_BCR_WREN_BIT)
+#define FSMC_BCR_MTYP_SRAM              (0x0 << 2)
+#define FSMC_BCR_MBKEN_BIT              0
+#define FSMC_BCR_MBKEN                  (1U << FSMC_BCR_MBKEN_BIT)
+
+#define FSMC_BTR_DATAST                 (0xFF << 8)
+#define FSMC_BTR_ADDSET                 0xF
+*/
+
+// 55ns SRAM timings?
+#define DATAST   0x4
+#define ADDSET   0x1
+
+	// fsmc setup (bank3 is used) 0x6c000000
+	//           WREN     SRAM     16b     MBKEN   EXTMOD
+	FSMC_BCR3=((1<<12) | (0<<2) | (1<<4) | (1<<0) | (1<<14));
+	FSMC_BTR3=(DATAST << 8) | ADDSET;
+	FSMC_BWTR3=(DATAST << 8) | ADDSET;
+
 }
 
 

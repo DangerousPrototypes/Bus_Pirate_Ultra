@@ -11,6 +11,9 @@
 #include "fpga.h"
 #include "fs.h"
 #include "LA.h"
+#include "UI.h"
+#include "ADC.h"
+
 
 
 //globals
@@ -38,7 +41,7 @@ int main(void)
 	char c;
 	int i;
 	uint8_t buff[256];
-    char page[256];
+
     unsigned char temp;
 
 	// init vars
@@ -58,12 +61,14 @@ int main(void)
 	rcc_periph_clock_enable(RCC_GPIOG);
 	rcc_periph_clock_enable(RCC_AFIO);
 
-la_sram_mode_setup();
-la_sram_mode_spi();
-la_sram_quad_setup();
-la_sram_quad_output();
-la_sram_arm_setup();
-la_sram_arm_stop();
+    /*
+    la_sram_mode_setup();
+    la_sram_mode_spi();
+    la_sram_quad_setup();
+    la_sram_quad_output();
+    la_sram_arm_setup();
+    la_sram_arm_stop();
+    */
 
 	AFIO_MAPR |= AFIO_MAPR_SWJ_CFG_JTAG_OFF_SW_ON;		// disable jtag/enable swd
 
@@ -105,91 +110,46 @@ la_sram_arm_stop();
 	// init fpga
 	fpgainit();
 
+	// init UI
+	initUI();
+
 	// LEDs
 	gpio_set_mode(BP_LED_MODE_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_MODE_PIN);
 	gpio_clear(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
+	gpio_set_mode(BP_LED_USB_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_USB_PIN);
+	gpio_clear(BP_LED_USB_PORT, BP_LED_USB_PIN);
+
+	//control lines
+	gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);								// active hi
+	gpio_set_mode(BP_PSUEN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_PSUEN_PIN);		// PSU disable
+
+	gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);								// active hi
+	gpio_set_mode(BP_VPUEN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPUEN_PIN);		// VPU disable
+
+	gpio_clear(BP_VPU50EN_PORT, BP_VPU50EN_PIN);								// active low
+	gpio_set_mode(BP_VPU50EN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPU50EN_PIN);	// VPU3v3 disable
+
+	gpio_clear(BP_VPU33EN_PORT, BP_VPU33EN_PIN);								// active low
+	gpio_set_mode(BP_VPU33EN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPU33EN_PIN);	// VPU5v0 disable
 
 
+	// ADC
+	initADC();
 
-	// buffer init
-	for(i=0; i<8; i++) buff[i]=i;
+    if(uploadfpga()==1){
+       gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
+    }else{
+        gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
+    }
 
-
-                if(uploadfpga()==1){
-                   gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
-                }else{
-                    gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
-                }
-
-//logicAnalyzerSetup();
-
-
+logicAnalyzerSetup();
 
 	while (1)
 	{
-/*
-		delayms(1000);
-		gpio_clear(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
-		delayms(1000);
-		gpio_set(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
-*/
+		doUI();
 
 
-		if(cdcbyteready())
-		{
-
-            int i=0;
-            uint32_t addr=0x00000000;
-            c=cdcgetc();
-        /*
-            cdcprintf("\r\nuploading\r\n");
-
-
-            for(i=0; i<=1000; i++)
-            {
-                progressbar(i, 1000);
-                delayms(10);
-            }*/
-
-            switch(c){
-        case 0x20:
-                logicAnalyzerSetup();
-                break;
-            case 0xc0:
-                    cdcputc(0x4B);
-                    break;
-            case 0x02: //write page
-
-                for(i=0;i<3;i++){
-                    while(!cdcbyteready());
-                    addr=addr<<8;
-                    addr|=cdcgetc();
-                }
-                for(i=0;i<256;i++){
-                    while(!cdcbyteready());
-                    page[i]=cdcgetc();
-                }
-                writePage(addr,page);
-                readFlash(addr,buff,256);
-                cdcputc(0x4B);
-                break;
-            case 0x03:
-                gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
-                fpgainit();
-                if(uploadfpga()==1){
-                    gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
-                   cdcputc(0x4B);
-                    logicAnalyzerSetup();
-                }else{
-                    gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
-                    cdcputc(0x00);
-                }
-
-                break;
-            }
-		}
-
-	}
+	}//while
 }
 
 
