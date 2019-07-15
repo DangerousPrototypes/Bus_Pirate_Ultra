@@ -2,17 +2,17 @@
 1562674471 source:c:\msys64\home\ian\buspirate\source\src\main.c
 	"stm32f10x.h"
 
-1563109320 c:\msys64\home\ian\buspirate\source\inc\stm32f10x.h
+1563125504 c:\msys64\home\ian\buspirate\source\inc\stm32f10x.h
 	"core_cm3.h"
 	"system_stm32f10x.h"
 	<stdint.h>
 	"stm32f10x_conf.h"
 
-1563109320 c:\msys64\home\ian\buspirate\source\inc\system_stm32f10x.h
+1563125504 c:\msys64\home\ian\buspirate\source\inc\system_stm32f10x.h
 
-1563109320 source:c:\msys64\home\ian\buspirate\source\src\startup_stm32f10x_hd.s
+1563125504 source:c:\msys64\home\ian\buspirate\source\src\startup_stm32f10x_hd.s
 
-1563109320 source:c:\msys64\home\ian\buspirate\source\src\system_stm32f10x.c
+1563125504 source:c:\msys64\home\ian\buspirate\source\src\system_stm32f10x.c
 	"stm32f10x.h"
 
 1562674022 source:r:\libopencm3\lib\cm3\assert.c
@@ -285,7 +285,7 @@
 
 1562674165 r:\libopencm3\lib\lm3s\vector_nvic.c
 
-1563115684 source:c:\msys64\home\ian\buspirate\source\buspirate.c
+1563202824 source:c:\msys64\home\ian\buspirate\source\buspirate.c
 	<stdlib.h>
 	<libopencm3/stm32/rcc.h>
 	<libopencm3/stm32/gpio.h>
@@ -478,20 +478,20 @@
 1562674022 r:\libopencm3\include\libopencm3\stm32\l4\gpio.h
 	<libopencm3/stm32/common/gpio_common_f24.h>
 
-1563109320 c:\msys64\home\ian\buspirate\source\debug.h
+1563125503 c:\msys64\home\ian\buspirate\source\debug.h
 
 1563106674 c:\msys64\home\ian\buspirate\source\cdcacm.h
 
 1563106957 c:\msys64\home\ian\buspirate\source\buspirate.h
 	"platform/beta1.h"
 
-1563125137 c:\msys64\home\ian\buspirate\source\platform\beta1.h
+1563195092 c:\msys64\home\ian\buspirate\source\platform\beta1.h
 
 1563106674 c:\msys64\home\ian\buspirate\source\delay.h
 
-1563122525 c:\msys64\home\ian\buspirate\source\fpga.h
+1563125503 c:\msys64\home\ian\buspirate\source\fpga.h
 
-1563109320 c:\msys64\home\ian\buspirate\source\fs.h
+1563125503 c:\msys64\home\ian\buspirate\source\fs.h
 
 1563106674 source:c:\msys64\home\ian\buspirate\source\delay.c
 	<stdlib.h>
@@ -1143,7 +1143,7 @@
 1562674023 source:r:\libopencm3\lib\stm32\f1\usart.c
 	<libopencm3/stm32/usart.h>
 
-1563109320 source:c:\msys64\home\ian\buspirate\source\cdcacm.c
+1563125503 source:c:\msys64\home\ian\buspirate\source\cdcacm.c
 	<stdint.h>
 	<stdlib.h>
 	<stdarg.h>
@@ -1169,7 +1169,7 @@
 	<stdarg.h>
 	<stddef.h>
 
-1563122562 source:c:\msys64\home\ian\buspirate\source\fpga.c
+1563125503 source:c:\msys64\home\ian\buspirate\source\fpga.c
 	<stdint.h>
 	"cdcacm.h"
 	"delay.h"
@@ -1182,7 +1182,7 @@
 
 1562673744 c:\msys64\home\ian\buspirate\source\bitstream.h
 
-1563109320 source:c:\msys64\home\ian\buspirate\source\fs.c
+1563125503 source:c:\msys64\home\ian\buspirate\source\fs.c
 	<stdint.h>
 	"buspirate.h"
 	<libopencm3/stm32/spi.h>
@@ -1267,17 +1267,20 @@
 	<libopencm3/usb/usbd.h>
 	"usb_private.h"
 
-1563109320 c:\msys64\home\ian\buspirate\source\la.h
+1563202569 c:\msys64\home\ian\buspirate\source\la.h
 
-1563109320 source:c:\msys64\home\ian\buspirate\source\la.c
+1563203739 source:c:\msys64\home\ian\buspirate\source\la.c
 	<stdint.h>
 	<libopencm3/stm32/gpio.h>
 	<libopencm3/stm32/rcc.h>
 	<libopencm3/stm32/spi.h>
+	<libopencm3/stm32/f1/bkp.h>
+	<libopencm3/cm3/scb.h>
 	"buspirate.h"
 	"LA.h"
 	"cdcacm.h"
 	"delay.h"
+	"fpga.h"
 
 1563106957 source:c:\msys64\home\ian\buspirate\source\adc.c
 	<stdint.h>
@@ -1357,7 +1360,7 @@
 
 1563106957 c:\msys64\home\ian\buspirate\source\protocols.h
 
-1563120853 source:c:\msys64\home\ian\buspirate\source\ui.c
+1563190364 source:c:\msys64\home\ian\buspirate\source\ui.c
 	<stdlib.h>
 	<stdint.h>
 	<libopencm3/stm32/gpio.h>

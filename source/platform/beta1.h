@@ -92,7 +92,7 @@ mcu_int1	pe3
 #define BP_FSMC_D0_PORT		GPIOD
 #define BP_FSMC_D0_PIN		GPIO14
 #define BP_FSMC_D1_PORT		GPIOD
-#define BP_FSMC_D1_PIN		GPIO14
+#define BP_FSMC_D1_PIN		GPIO15
 #define BP_FSMC_D2_PORT		GPIOD
 #define BP_FSMC_D2_PIN		GPIO0
 #define BP_FSMC_D3_PORT		GPIOD
