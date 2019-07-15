@@ -16611,6 +16611,7 @@ http://dangerousprototypes.com</description>
 <rectangle x1="-0.285" y1="-1.45" x2="0.285" y2="-0.35" layer="29"/>
 <rectangle x1="0.365" y1="-1.45" x2="0.935" y2="-0.35" layer="29"/>
 <rectangle x1="-0.935" y1="-1.45" x2="-0.365" y2="-0.35" layer="29"/>
+<circle x="-1.27" y="-1.016" radius="0.179603125" width="0" layer="21"/>
 </package>
 <package name="M1X3">
 <wire x1="-1.27" y1="-1.27" x2="-1.27" y2="1.27" width="0.1524" layer="21"/>
@@ -16871,7 +16872,7 @@ http://dangerousprototypes.com</description>
 <wire x1="9.8984" y1="-9.8984" x2="9.8984" y2="9.8984" width="0.1524" layer="21"/>
 <wire x1="9.8984" y1="9.8984" x2="-9.8984" y2="9.8984" width="0.1524" layer="21"/>
 <wire x1="-9.8984" y1="9.8984" x2="-9.8984" y2="-9.8984" width="0.1524" layer="21"/>
-<circle x="-7.3025" y="6.985" radius="1.1447" width="0.1524" layer="27"/>
+<circle x="-7.3025" y="6.985" radius="1.1447" width="0.1524" layer="51"/>
 <smd name="1" x="-10.75" y="8.75" dx="0.9" dy="0.3" layer="1"/>
 <smd name="2" x="-10.75" y="8.25" dx="0.9" dy="0.3" layer="1"/>
 <smd name="3" x="-10.75" y="7.75" dx="0.9" dy="0.3" layer="1"/>
@@ -17162,6 +17163,7 @@ http://dangerousprototypes.com</description>
 <rectangle x1="-7.885" y1="10" x2="-7.615" y2="11" layer="51"/>
 <rectangle x1="-8.385" y1="10" x2="-8.115" y2="11" layer="51"/>
 <rectangle x1="-8.885" y1="10" x2="-8.615" y2="11" layer="51"/>
+<circle x="-10.795" y="9.652" radius="0.283978125" width="0" layer="21"/>
 </package>
 <package name="SOIC-8">
 <wire x1="2.4" y1="1.9" x2="2.4" y2="-1.4" width="0.2032" layer="51"/>
@@ -25271,7 +25273,6 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 <part name="C10" library="dp_devices.v6" deviceset="CAPACITOR_NPOL" device="-0402" value="0.1uF"/>
 <part name="CONN1" library="dp_devices.v6" deviceset="CON-USB-F-MICRO-B-2" device=""/>
 <part name="U1" library="dp_devices.v6" deviceset="IC_MEM_W25X40CL" device=""/>
-<part name="SUPPLY100" library="supply2" deviceset="GND" device=""/>
 <part name="SUPPLY101" library="supply2" deviceset="GND" device=""/>
 <part name="+3V1" library="dp_devices.v6" deviceset="SUPPLY_+3V3" device=""/>
 <part name="+3V2" library="dp_devices.v6" deviceset="SUPPLY_+3V3" device=""/>
@@ -26033,7 +26034,6 @@ H     X    L   :(  (contention)</text>
 </instance>
 <instance part="CONN1" gate="BGND" x="-350.52" y="452.12"/>
 <instance part="U1" gate="U" x="-264.16" y="335.28"/>
-<instance part="SUPPLY100" gate="GND" x="-276.86" y="325.12" smashed="yes"/>
 <instance part="SUPPLY101" gate="GND" x="-251.46" y="325.12" smashed="yes"/>
 <instance part="+3V1" gate="G$1" x="-279.4" y="332.74" smashed="yes" rot="R90"/>
 <instance part="+3V2" gate="G$1" x="-248.92" y="342.9" smashed="yes" rot="R270"/>
@@ -26614,11 +26614,6 @@ H     X    L   :(  (contention)</text>
 <pinref part="SUPPLY83" gate="GND" pin="GND"/>
 </segment>
 <segment>
-<pinref part="U1" gate="U" pin="!CS"/>
-<pinref part="SUPPLY100" gate="GND" pin="GND"/>
-<wire x1="-274.32" y1="327.66" x2="-276.86" y2="327.66" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="U1" gate="U" pin="GND"/>
 <pinref part="SUPPLY101" gate="GND" pin="GND"/>
 <wire x1="-251.46" y1="327.66" x2="-254" y2="327.66" width="0.1524" layer="91"/>
@@ -27003,6 +26998,10 @@ H     X    L   :(  (contention)</text>
 <wire x1="-276.86" y1="330.2" x2="-276.86" y2="332.74" width="0.1524" layer="91"/>
 <junction x="-276.86" y="332.74"/>
 <label x="-287.02" y="332.74" size="1.778" layer="95" align="center-right"/>
+<pinref part="U1" gate="U" pin="!CS"/>
+<wire x1="-274.32" y1="327.66" x2="-276.86" y2="327.66" width="0.1524" layer="91"/>
+<wire x1="-276.86" y1="327.66" x2="-276.86" y2="330.2" width="0.1524" layer="91"/>
+<junction x="-276.86" y="330.2"/>
 </segment>
 <segment>
 <pinref part="U1" gate="U" pin="VCC"/>
