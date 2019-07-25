@@ -15,8 +15,11 @@
 #include "AUXpin.h"
 #include "ADC.h"
 #include "delay.h"
-
+#include "LA.h"
+#include "fs.h"
 #include "fpga.h"
+
+#include <libopencm3/stm32/spi.h>
 
 // globals
 uint32_t cmdhead, cmdtail, cursor;		// TODO swap head an tail?
@@ -598,17 +601,33 @@ void doUI(void)
 						modeConfig.bitorder^=1;
 						modeConfig.numbits=temp3;
 						break;
-				case '~': 	//selftest();
-						//uploadfpga();
-						//delayms(1000);
-						cdcprintf("FPGA reg 0: %04X\r\n", FPGA_REG_00);
-						cdcprintf("FPGA reg 1: %04X\r\n", FPGA_REG_01);
-						FPGA_REG_01=0xAA55;
-						FPGA_REG_01=0xAA55;
-						FPGA_REG_01=0xAA55;
-						FPGA_REG_00=0xAA55;
-						cdcprintf("FPGA reg 0: %04X\r\n", FPGA_REG_00);
-						cdcprintf("FPGA reg 1: %04X\r\n", FPGA_REG_01);
+				case '~':
+				        //read from SRAM test
+    setup_spix1rw();
+    sram_select();	// cs low
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0x9F);
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    for(i=0;i<8;i++){
+        cdcprintf("SRAM0 ID: %01X\r\n",spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF)); //0d=MFID, 5d=KGD, + 6 bytes of density info
+    }
+    //release FPGA into program mode
+    sram_deselect();			// release cs
+
+
+    FPGA_REG_02|=1<<2;
+    sram_select();	// cs low
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0x9F);
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    for(i=0;i<8;i++){
+        cdcprintf("SRAM0 ID: %01X\r\n",spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF)); //0d=MFID, 5d=KGD, + 6 bytes of density info
+    }
+    //release FPGA into program mode
+    sram_deselect();			// release cs
+
 						break;
 				default:	cdcprintf("Unknown command: %c", c);
 						modeConfig.error=1;
@@ -1020,7 +1039,7 @@ void getuserinput(void)
 	histptr=0;
 
     //binmode stuff
-    char page[256];
+    uint8_t page[256];
 
 	while(!go)
 	{

@@ -214,8 +214,8 @@ https://github.com/leaflabs/libmaple/blob/master/libmaple/include/libmaple/fsmc.
 */
 
 // 55ns SRAM timings?
-#define DATAST   0x4
-#define ADDSET   0x1
+#define DATAST   0xff //4
+#define ADDSET   0xff //1
 
 	// fsmc setup (bank3 is used) 0x6c000000
 	//           WREN     SRAM     16b     MBKEN   EXTMOD

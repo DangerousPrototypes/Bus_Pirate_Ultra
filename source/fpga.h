@@ -14,3 +14,4 @@ void fpgainit(void);
 
 #define FPGA_REG_00	MMIO16(FPGA_BASE+0)
 #define FPGA_REG_01	MMIO16(FPGA_BASE+2)
+#define FPGA_REG_02	MMIO16(FPGA_BASE+4)

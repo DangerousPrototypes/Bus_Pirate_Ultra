@@ -46,7 +46,7 @@ int main(void)
 
 	// init vars
 	usbflushtime=0;
-
+//#define LADEBUG
 	// init clock
 	rcc_clock_setup_in_hse_8mhz_out_72mhz();
 //	rcc_clock_setup_in_hsi_out_48mhz();
@@ -141,9 +141,9 @@ int main(void)
     }else{
         gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
     }
-
+#ifdef LADEBUG
 logicAnalyzerSetup();
-
+#endif
 	while (1)
 	{
 		doUI();
