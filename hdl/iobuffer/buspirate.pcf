@@ -30,10 +30,10 @@ set_io lat[0] 93 #mosi
 set_io lat[1] 94 #clock
 set_io lat[2] 95 #miso
 set_io lat[3] 96 #cs
-#set_io lat[4] 97 #aux0
-#set_io lat[5] 98 #swv33
-#set_io lat[6] 99 #swv50
-#set_io lat[7] 91 # not currently attached!!!!, AUX1
+set_io lat[4] 97 #aux0
+set_io lat[5] 98 #swv33
+set_io lat[6] 99 #swv50
+set_io lat[7] 91 # not currently attached!!!!, AUX1
 
 # Memory controller interface address and data
 set_io mc_ce 22
@@ -83,16 +83,16 @@ set_io irq0 129
 set_io irq1 128
 
 # SRAM connectons (23LC1024/etc)
-set_io sram0_clock 141
-set_io sram0_cs 144
-set_io sram0_sio[0] 138
-set_io sram0_sio[1] 142
-set_io sram0_sio[2] 139
-set_io sram0_sio[3] 143
+set_io sram_clock[0] 141
+set_io sram_cs[0] 144
+set_io sram_sio[0] 138
+set_io sram_sio[1] 142
+set_io sram_sio[2] 139
+set_io sram_sio[3] 143
 
-set_io sram1_clock 114
-set_io sram1_cs 117
-set_io sram1_sio[0] 112
-set_io sram1_sio[1] 115
-set_io sram1_sio[2] 113
-set_io sram1_sio[3] 116
+set_io sram_clock[1] 114
+set_io sram_cs[1] 117
+set_io sram_sio[4] 112
+set_io sram_sio[5] 115
+set_io sram_sio[6] 113
+set_io sram_sio[7] 116
