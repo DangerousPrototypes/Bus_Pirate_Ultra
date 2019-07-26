@@ -29523,11 +29523,6 @@ TEST PADS</text>
 <wire x1="144.78" y1="370.84" x2="147.32" y2="370.84" width="0.1524" layer="91"/>
 <label x="147.32" y="370.84" size="1.778" layer="95" align="center-left"/>
 </segment>
-<segment>
-<pinref part="R48" gate="R" pin="2"/>
-<label x="307.34" y="292.1" size="1.778" layer="95" align="center-right"/>
-<wire x1="309.88" y1="292.1" x2="307.34" y2="292.1" width="0.1524" layer="91"/>
-</segment>
 </net>
 <net name="MCU_MCO" class="0">
 <segment>
@@ -30285,7 +30280,7 @@ TEST PADS</text>
 <junction x="396.24" y="314.96"/>
 </segment>
 </net>
-<net name="!SHDN" class="0">
+<net name="VREG_EN" class="0">
 <segment>
 <pinref part="IC23" gate="IC" pin="!SHDN"/>
 <wire x1="342.9" y1="322.58" x2="322.58" y2="322.58" width="0.1524" layer="91"/>
@@ -30839,6 +30834,13 @@ TEST PADS</text>
 <pinref part="J4" gate="J" pin="1"/>
 <wire x1="711.2" y1="119.38" x2="708.66" y2="119.38" width="0.1524" layer="91"/>
 <label x="708.66" y="119.38" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="VREG_PWM" class="0">
+<segment>
+<pinref part="R48" gate="R" pin="2"/>
+<label x="307.34" y="292.1" size="1.778" layer="95" align="center-right"/>
+<wire x1="309.88" y1="292.1" x2="307.34" y2="292.1" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
