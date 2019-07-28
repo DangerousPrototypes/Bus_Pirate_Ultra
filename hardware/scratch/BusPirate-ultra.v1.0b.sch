@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.1.3">
+<eagle version="9.4.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -26275,9 +26275,16 @@ TEST PADS</text>
 <attribute name="NAME" x="800.1" y="55.88" size="1.778" layer="95"/>
 <attribute name="VALUE" x="800.1" y="52.832" size="1.778" layer="96"/>
 </instance>
-<instance part="FRAME2" gate="G$1" x="-2.54" y="0"/>
-<instance part="FRAME2" gate="G$2" x="172.72" y="0"/>
-<instance part="VR1" gate="G$1" x="332.74" y="248.92"/>
+<instance part="FRAME2" gate="G$1" x="-2.54" y="0" smashed="yes"/>
+<instance part="FRAME2" gate="G$2" x="172.72" y="0" smashed="yes">
+<attribute name="LAST_DATE_TIME" x="185.42" y="1.27" size="2.54" layer="94" font="vector"/>
+<attribute name="SHEET" x="259.08" y="1.27" size="2.54" layer="94" font="vector"/>
+<attribute name="DRAWING_NAME" x="190.5" y="19.05" size="2.54" layer="94" font="vector"/>
+</instance>
+<instance part="VR1" gate="G$1" x="332.74" y="248.92" smashed="yes">
+<attribute name="VALUE" x="325.12" y="238.76" size="1.778" layer="96"/>
+<attribute name="NAME" x="325.12" y="257.81" size="1.778" layer="95"/>
+</instance>
 <instance part="R11" gate="G$1" x="622.3" y="154.94" smashed="yes" rot="MR0">
 <attribute name="NAME" x="617.22" y="157.48" size="1.778" layer="95" rot="MR180" align="center"/>
 <attribute name="VALUE" x="627.38" y="157.48" size="1.778" layer="96" rot="MR180" align="center"/>
@@ -26304,12 +26311,12 @@ TEST PADS</text>
 <attribute name="NAME" x="238.76" y="99.06" size="1.778" layer="95" align="center"/>
 <attribute name="VALUE" x="238.76" y="96.52" size="1.778" layer="96" align="center"/>
 </instance>
-<instance part="LOGO1" gate="LOGO" x="441.96" y="236.22"/>
+<instance part="LOGO1" gate="LOGO" x="441.96" y="236.22" smashed="yes"/>
 <instance part="IC2" gate="IC" x="312.42" y="147.32" smashed="yes" rot="MR0">
 <attribute name="VALUE" x="304.8" y="158.242" size="1.778" layer="96" font="vector"/>
 <attribute name="NAME" x="304.8" y="160.528" size="1.778" layer="96" font="vector"/>
 </instance>
-<instance part="IC2" gate="SUP" x="485.14" y="330.2"/>
+<instance part="IC2" gate="SUP" x="485.14" y="330.2" smashed="yes"/>
 <instance part="C50" gate="G$1" x="490.22" y="330.2" smashed="yes">
 <attribute name="NAME" x="490.22" y="322.58" size="1.778" layer="95" rot="R90"/>
 <attribute name="VALUE" x="490.22" y="332.74" size="1.778" layer="96" rot="R90"/>
@@ -26319,7 +26326,7 @@ TEST PADS</text>
 <attribute name="VALUE" x="304.546" y="186.182" size="1.778" layer="96" font="vector"/>
 <attribute name="NAME" x="304.546" y="188.468" size="1.778" layer="96" font="vector"/>
 </instance>
-<instance part="IC1" gate="SUP" x="495.3" y="330.2"/>
+<instance part="IC1" gate="SUP" x="495.3" y="330.2" smashed="yes"/>
 <instance part="C52" gate="G$1" x="500.38" y="330.2" smashed="yes">
 <attribute name="NAME" x="500.38" y="322.58" size="1.778" layer="95" rot="R90"/>
 <attribute name="VALUE" x="500.38" y="332.74" size="1.778" layer="96" rot="R90"/>
@@ -26328,7 +26335,7 @@ TEST PADS</text>
 <attribute name="NAME" x="314.96" y="117.348" size="1.778" layer="95" font="vector"/>
 <attribute name="VALUE" x="314.96" y="115.062" size="1.778" layer="96" font="vector"/>
 </instance>
-<instance part="IC3" gate="PWR" x="505.46" y="330.2"/>
+<instance part="IC3" gate="PWR" x="505.46" y="330.2" smashed="yes"/>
 <instance part="C54" gate="G$1" x="510.54" y="330.2" smashed="yes">
 <attribute name="NAME" x="510.54" y="322.58" size="1.778" layer="95" rot="R90"/>
 <attribute name="VALUE" x="510.54" y="332.74" size="1.778" layer="96" rot="R90"/>
@@ -26350,8 +26357,12 @@ TEST PADS</text>
 <attribute name="NAME" x="421.64" y="373.38" size="1.778" layer="95" rot="MR180" align="center"/>
 <attribute name="VALUE" x="421.64" y="370.84" size="1.778" layer="96" rot="MR180" align="center"/>
 </instance>
-<instance part="FRAME1" gate="G$1" x="-2.54" y="228.6"/>
-<instance part="FRAME1" gate="G$2" x="170.18" y="228.6"/>
+<instance part="FRAME1" gate="G$1" x="-2.54" y="228.6" smashed="yes"/>
+<instance part="FRAME1" gate="G$2" x="170.18" y="228.6" smashed="yes">
+<attribute name="LAST_DATE_TIME" x="182.88" y="229.87" size="2.54" layer="94" font="vector"/>
+<attribute name="SHEET" x="256.54" y="229.87" size="2.54" layer="94" font="vector"/>
+<attribute name="DRAWING_NAME" x="187.96" y="247.65" size="2.54" layer="94" font="vector"/>
+</instance>
 <instance part="R1" gate="R" x="617.22" y="170.18" smashed="yes">
 <attribute name="NAME" x="617.22" y="167.64" size="1.778" layer="95" font="vector" align="center"/>
 <attribute name="VALUE" x="624.84" y="167.64" size="1.778" layer="96" font="vector" align="center"/>
@@ -26364,13 +26375,18 @@ TEST PADS</text>
 <attribute name="NAME" x="624.84" y="172.72" size="1.778" layer="95" font="vector"/>
 <attribute name="VALUE" x="629.92" y="172.72" size="1.778" layer="96" font="vector"/>
 </instance>
-<instance part="SW2" gate="G$1" x="619.76" y="66.04"/>
+<instance part="SW2" gate="G$1" x="619.76" y="66.04" smashed="yes">
+<attribute name="NAME" x="617.22" y="73.66" size="1.778" layer="95" font="vector"/>
+<attribute name="VALUE" x="617.22" y="71.12" size="1.778" layer="96" font="vector"/>
+</instance>
 <instance part="R5" gate="R" x="154.94" y="414.02" smashed="yes">
 <attribute name="NAME" x="147.32" y="416.56" size="1.778" layer="95" font="vector"/>
 <attribute name="VALUE" x="147.32" y="414.02" size="1.778" layer="96" font="vector"/>
 </instance>
 <instance part="SUPPLY17" gate="1" x="160.02" y="416.56" smashed="yes"/>
-<instance part="J2" gate="J" x="708.66" y="177.8"/>
+<instance part="J2" gate="J" x="708.66" y="177.8" smashed="yes">
+<attribute name="NAME" x="707.39" y="184.15" size="1.778" layer="95"/>
+</instance>
 <instance part="RN3" gate="B" x="238.76" y="68.58" smashed="yes">
 <attribute name="NAME" x="238.76" y="66.04" size="1.778" layer="95" align="center"/>
 <attribute name="VALUE" x="238.76" y="63.5" size="1.778" layer="96" align="center"/>
@@ -26379,12 +26395,30 @@ TEST PADS</text>
 <attribute name="NAME" x="238.76" y="76.2" size="1.778" layer="95" align="center"/>
 <attribute name="VALUE" x="238.76" y="73.66" size="1.778" layer="96" align="center"/>
 </instance>
-<instance part="U3" gate="BANK3" x="396.24" y="43.18"/>
-<instance part="U3" gate="BANK0" x="393.7" y="132.08"/>
-<instance part="U3" gate="BANK1" x="495.3" y="129.54"/>
-<instance part="U3" gate="BANK2" x="495.3" y="43.18"/>
-<instance part="U3" gate="SPI" x="342.9" y="17.78"/>
-<instance part="U2" gate="U" x="91.44" y="345.44"/>
+<instance part="U3" gate="BANK3" x="396.24" y="43.18" smashed="yes">
+<attribute name="NAME" x="396.24" y="92.202" size="1.27" layer="95"/>
+<attribute name="VALUE" x="396.24" y="40.64" size="1.27" layer="96"/>
+</instance>
+<instance part="U3" gate="BANK0" x="393.7" y="132.08" smashed="yes">
+<attribute name="NAME" x="393.7" y="183.642" size="1.27" layer="95"/>
+<attribute name="VALUE" x="393.7" y="129.54" size="1.27" layer="96"/>
+</instance>
+<instance part="U3" gate="BANK1" x="495.3" y="129.54" smashed="yes">
+<attribute name="NAME" x="495.3" y="183.642" size="1.27" layer="95"/>
+<attribute name="VALUE" x="495.3" y="127" size="1.27" layer="96"/>
+</instance>
+<instance part="U3" gate="BANK2" x="495.3" y="43.18" smashed="yes">
+<attribute name="NAME" x="495.3" y="92.202" size="1.27" layer="95"/>
+<attribute name="VALUE" x="495.3" y="40.64" size="1.27" layer="96"/>
+</instance>
+<instance part="U3" gate="SPI" x="342.9" y="17.78" smashed="yes">
+<attribute name="NAME" x="342.9" y="38.862" size="1.27" layer="95"/>
+<attribute name="VALUE" x="342.9" y="15.24" size="1.27" layer="96"/>
+</instance>
+<instance part="U2" gate="U" x="91.44" y="345.44" smashed="yes">
+<attribute name="NAME" x="40.64" y="432.816" size="1.778" layer="95" font="vector"/>
+<attribute name="VALUE" x="40.64" y="256.032" size="1.778" layer="96" font="vector"/>
+</instance>
 <instance part="IC4" gate="A" x="35.56" y="175.26" smashed="yes">
 <attribute name="NAME" x="25.4" y="170.18" size="1.778" layer="95"/>
 <attribute name="VALUE" x="25.4" y="167.64" size="1.778" layer="96"/>
@@ -26571,7 +26605,10 @@ TEST PADS</text>
 </instance>
 <instance part="+3V316" gate="G$1" x="350.52" y="256.54" smashed="yes"/>
 <instance part="+3V34" gate="G$1" x="523.24" y="426.72" smashed="yes"/>
-<instance part="VR3" gate="G$1" x="396.24" y="248.92"/>
+<instance part="VR3" gate="G$1" x="396.24" y="248.92" smashed="yes">
+<attribute name="VALUE" x="388.62" y="238.76" size="1.778" layer="96"/>
+<attribute name="NAME" x="388.62" y="257.81" size="1.778" layer="95"/>
+</instance>
 <instance part="SUPPLY53" gate="GND" x="381" y="248.92" smashed="yes" rot="R270"/>
 <instance part="C38" gate="G$1" x="414.02" y="251.46" smashed="yes">
 <attribute name="NAME" x="406.4" y="251.46" size="1.778" layer="95"/>
@@ -26642,7 +26679,10 @@ TEST PADS</text>
 </instance>
 <instance part="+3V312" gate="G$1" x="474.98" y="170.18" smashed="yes"/>
 <instance part="SUPPLY35" gate="GND" x="474.98" y="157.48" smashed="yes"/>
-<instance part="U2" gate="PWR" x="497.84" y="391.16"/>
+<instance part="U2" gate="PWR" x="497.84" y="391.16" smashed="yes">
+<attribute name="NAME" x="515.62" y="381" size="1.778" layer="95"/>
+<attribute name="VALUE" x="515.62" y="378.46" size="1.778" layer="96"/>
+</instance>
 <instance part="+3V33" gate="G$1" x="510.54" y="408.94" smashed="yes"/>
 <instance part="C2" gate="G$1" x="256.54" y="294.64" smashed="yes" rot="R180">
 <attribute name="NAME" x="259.08" y="287.02" size="1.778" layer="95" rot="R90"/>
@@ -26697,7 +26737,9 @@ TEST PADS</text>
 <attribute name="NAME" x="165.1" y="309.88" size="1.778" layer="95"/>
 <attribute name="VALUE" x="165.1" y="307.34" size="1.778" layer="96"/>
 </instance>
-<instance part="J4" gate="J" x="711.2" y="106.68"/>
+<instance part="J4" gate="J" x="711.2" y="106.68" smashed="yes">
+<attribute name="NAME" x="709.93" y="122.555" size="1.778" layer="95"/>
+</instance>
 <instance part="C31" gate="G$1" x="469.9" y="71.12" smashed="yes" rot="R180">
 <attribute name="NAME" x="462.28" y="71.12" size="1.778" layer="95"/>
 <attribute name="VALUE" x="462.28" y="68.58" size="1.778" layer="96"/>
@@ -26705,7 +26747,7 @@ TEST PADS</text>
 <instance part="+3V313" gate="G$1" x="469.9" y="78.74" smashed="yes"/>
 <instance part="SUPPLY37" gate="GND" x="469.9" y="66.04" smashed="yes"/>
 <instance part="SUPPLY28" gate="GND" x="386.08" y="165.1" smashed="yes" rot="R270"/>
-<instance part="PCB1" gate="G$1" x="441.96" y="246.38"/>
+<instance part="PCB1" gate="G$1" x="441.96" y="246.38" smashed="yes"/>
 <instance part="RN3" gate="C" x="238.76" y="88.9" smashed="yes">
 <attribute name="NAME" x="238.76" y="86.36" size="1.778" layer="95" align="center"/>
 <attribute name="VALUE" x="238.76" y="83.82" size="1.778" layer="96" align="center"/>
@@ -26762,7 +26804,10 @@ TEST PADS</text>
 <attribute name="NAME" x="505.46" y="424.18" size="1.778" layer="95" rot="R90"/>
 <attribute name="VALUE" x="505.46" y="431.8" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="U1" gate="U" x="243.84" y="294.64"/>
+<instance part="U1" gate="U" x="243.84" y="294.64" smashed="yes">
+<attribute name="VALUE" x="236.22" y="305.435" size="1.778" layer="96" font="vector"/>
+<attribute name="NAME" x="236.22" y="307.6575" size="1.778" layer="95" font="vector"/>
+</instance>
 <instance part="+3V1" gate="G$1" x="226.06" y="292.1" smashed="yes"/>
 <instance part="+3V2" gate="G$1" x="256.54" y="304.8" smashed="yes"/>
 <instance part="IC17" gate="A" x="109.22" y="121.92" smashed="yes">
@@ -26876,7 +26921,10 @@ TEST PADS</text>
 <attribute name="VALUE" x="411.48" y="302.26" size="1.778" layer="96" font="vector"/>
 </instance>
 <instance part="GND6" gate="G$1" x="398.78" y="297.18" smashed="yes"/>
-<instance part="C61" gate="C" x="378.46" y="320.04"/>
+<instance part="C61" gate="C" x="378.46" y="320.04" smashed="yes">
+<attribute name="NAME" x="381" y="325.12" size="1.778" layer="95"/>
+<attribute name="VALUE" x="381" y="322.58" size="1.778" layer="96"/>
+</instance>
 <instance part="GND3" gate="G$1" x="325.12" y="276.86" smashed="yes"/>
 <instance part="GND5" gate="G$1" x="378.46" y="314.96" smashed="yes"/>
 <instance part="R45" gate="R" x="365.76" y="322.58" smashed="yes" rot="R90">
@@ -26975,14 +27023,18 @@ TEST PADS</text>
 <attribute name="NAME" x="609.6" y="190.5" size="1.9304" layer="95"/>
 <attribute name="VALUE" x="609.6" y="187.96" size="1.9304" layer="96"/>
 </instance>
-<instance part="USB1" gate="BODY" x="599.44" y="177.8"/>
+<instance part="USB1" gate="BODY" x="599.44" y="177.8" smashed="yes"/>
 <instance part="GND13" gate="G$1" x="607.06" y="162.56" smashed="yes"/>
 <instance part="GND14" gate="G$1" x="607.06" y="187.96" smashed="yes"/>
 <instance part="GND15" gate="G$1" x="256.54" y="284.48" smashed="yes"/>
 <instance part="GND16" gate="G$1" x="645.16" y="182.88" smashed="yes"/>
 <instance part="GND17" gate="G$1" x="632.46" y="182.88" smashed="yes" rot="R90"/>
-<instance part="FRAME3" gate="G$1" x="284.48" y="0"/>
-<instance part="FRAME3" gate="G$2" x="459.74" y="-2.54"/>
+<instance part="FRAME3" gate="G$1" x="284.48" y="0" smashed="yes"/>
+<instance part="FRAME3" gate="G$2" x="459.74" y="-2.54" smashed="yes">
+<attribute name="LAST_DATE_TIME" x="472.44" y="-1.27" size="2.54" layer="94" font="vector"/>
+<attribute name="SHEET" x="546.1" y="-1.27" size="2.54" layer="94" font="vector"/>
+<attribute name="DRAWING_NAME" x="477.52" y="16.51" size="2.54" layer="94" font="vector"/>
+</instance>
 <instance part="GND18" gate="G$1" x="55.88" y="162.56" smashed="yes"/>
 <instance part="GND19" gate="G$1" x="55.88" y="182.88" smashed="yes"/>
 <instance part="GND20" gate="G$1" x="60.96" y="200.66" smashed="yes"/>
@@ -27017,8 +27069,12 @@ TEST PADS</text>
 <instance part="GND49" gate="G$1" x="134.62" y="43.18" smashed="yes"/>
 <instance part="GND50" gate="G$1" x="129.54" y="25.4" smashed="yes"/>
 <instance part="GND51" gate="G$1" x="129.54" y="5.08" smashed="yes"/>
-<instance part="FRAME4" gate="G$1" x="284.48" y="228.6"/>
-<instance part="FRAME4" gate="G$2" x="457.2" y="228.6"/>
+<instance part="FRAME4" gate="G$1" x="284.48" y="228.6" smashed="yes"/>
+<instance part="FRAME4" gate="G$2" x="457.2" y="228.6" smashed="yes">
+<attribute name="LAST_DATE_TIME" x="469.9" y="229.87" size="2.54" layer="94" font="vector"/>
+<attribute name="SHEET" x="543.56" y="229.87" size="2.54" layer="94" font="vector"/>
+<attribute name="DRAWING_NAME" x="474.98" y="247.65" size="2.54" layer="94" font="vector"/>
+</instance>
 <instance part="GND52" gate="G$1" x="490.22" y="271.78" smashed="yes"/>
 <instance part="GND53" gate="G$1" x="495.3" y="271.78" smashed="yes"/>
 <instance part="GND54" gate="G$1" x="500.38" y="271.78" smashed="yes"/>
@@ -27075,12 +27131,18 @@ TEST PADS</text>
 <instance part="GND71" gate="G$1" x="480.06" y="91.44" smashed="yes"/>
 <instance part="GND72" gate="G$1" x="485.14" y="91.44" smashed="yes"/>
 <instance part="GND73" gate="G$1" x="490.22" y="91.44" smashed="yes"/>
-<instance part="U7" gate="U" x="386.08" y="378.46"/>
+<instance part="U7" gate="U" x="386.08" y="378.46" smashed="yes">
+<attribute name="NAME" x="388.62" y="383.54" size="1.778" layer="95"/>
+<attribute name="VALUE" x="388.62" y="381" size="1.778" layer="96"/>
+</instance>
 <instance part="R50" gate="G$1" x="368.3" y="381" smashed="yes" rot="MR180">
 <attribute name="NAME" x="368.3" y="378.46" size="1.778" layer="95" rot="MR180" align="center"/>
 <attribute name="VALUE" x="368.3" y="375.92" size="1.778" layer="96" rot="MR180" align="center"/>
 </instance>
-<instance part="D1" gate="D" x="373.38" y="386.08" rot="R90"/>
+<instance part="D1" gate="D" x="373.38" y="386.08" smashed="yes" rot="R90">
+<attribute name="NAME" x="372.8974" y="388.62" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="375.6914" y="388.62" size="1.778" layer="96" rot="R90"/>
+</instance>
 <instance part="SUPPLY3" gate="1" x="386.08" y="398.78" smashed="yes"/>
 <instance part="C14" gate="G$1" x="396.24" y="391.16" smashed="yes">
 <attribute name="NAME" x="393.7" y="396.24" size="1.778" layer="95"/>
@@ -27097,8 +27159,12 @@ TEST PADS</text>
 <attribute name="NAME" x="401.32" y="375.92" size="1.778" layer="95" rot="MR180" align="center"/>
 <attribute name="VALUE" x="401.32" y="373.38" size="1.778" layer="96" rot="MR180" align="center"/>
 </instance>
-<instance part="FRAME5" gate="G$1" x="571.5" y="0"/>
-<instance part="FRAME5" gate="G$2" x="746.76" y="-2.54"/>
+<instance part="FRAME5" gate="G$1" x="571.5" y="0" smashed="yes"/>
+<instance part="FRAME5" gate="G$2" x="746.76" y="-2.54" smashed="yes">
+<attribute name="LAST_DATE_TIME" x="759.46" y="-1.27" size="2.54" layer="94" font="vector"/>
+<attribute name="SHEET" x="833.12" y="-1.27" size="2.54" layer="94" font="vector"/>
+<attribute name="DRAWING_NAME" x="764.54" y="16.51" size="2.54" layer="94" font="vector"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -27490,7 +27556,6 @@ TEST PADS</text>
 </segment>
 <segment>
 <pinref part="C33" gate="G$1" pin="1"/>
-<pinref part="GND73" gate="G$1" pin="GND"/>
 <pinref part="GND73" gate="G$1" pin="GND"/>
 </segment>
 <segment>
@@ -28620,42 +28685,7 @@ TEST PADS</text>
 <label x="35.56" y="332.74" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BPIO_MOSI" class="0">
-<segment>
-<wire x1="50.8" y1="175.26" x2="53.34" y2="175.26" width="0.1524" layer="91"/>
-<pinref part="IC8" gate="G$1" pin="B"/>
-<wire x1="53.34" y1="175.26" x2="55.88" y2="175.26" width="0.1524" layer="91"/>
-<label x="58.42" y="175.26" size="1.778" layer="95" align="center-left"/>
-<pinref part="IC4" gate="A" pin="O"/>
-<wire x1="45.72" y1="175.26" x2="50.8" y2="175.26" width="0.1524" layer="91" style="longdash"/>
-<pinref part="R24" gate="G$1" pin="2"/>
-<junction x="55.88" y="175.26"/>
-<wire x1="55.88" y1="175.26" x2="58.42" y2="175.26" width="0.1524" layer="91"/>
-<wire x1="53.34" y1="195.58" x2="53.34" y2="175.26" width="0.1524" layer="91"/>
-<junction x="53.34" y="175.26"/>
-</segment>
-<segment>
-<wire x1="243.84" y1="111.76" x2="246.38" y2="111.76" width="0.1524" layer="91"/>
-<label x="246.38" y="111.76" size="1.778" layer="95" align="center-left"/>
-<pinref part="RN4" gate="A" pin="1"/>
-</segment>
-<segment>
-<pinref part="IC24" gate="IC" pin="Y0"/>
-<wire x1="350.52" y1="403.86" x2="353.06" y2="403.86" width="0.1524" layer="91"/>
-<label x="353.06" y="403.86" size="1.778" layer="95" align="center-left"/>
-</segment>
-<segment>
-<pinref part="IC3" gate="IC" pin="1D"/>
-<wire x1="332.74" y1="93.98" x2="335.28" y2="93.98" width="0.1524" layer="91"/>
-<label x="335.28" y="93.98" size="1.778" layer="95" align="center-left"/>
-</segment>
-<segment>
-<pinref part="J4" gate="J" pin="1"/>
-<wire x1="711.2" y1="119.38" x2="708.66" y2="119.38" width="0.1524" layer="91"/>
-<label x="708.66" y="119.38" size="1.778" layer="95" align="center-right"/>
-</segment>
-</net>
-<net name="BUFDIR_MOSI" class="0">
+<net name="BUFDIR0" class="0">
 <segment>
 <pinref part="IC8" gate="G$1" pin="DIR"/>
 <label x="58.42" y="198.12" size="1.778" layer="95" align="center-left"/>
@@ -28671,7 +28701,7 @@ TEST PADS</text>
 <label x="490.22" y="142.24" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BUFOD_MOSI" class="0">
+<net name="BUFOD0" class="0">
 <segment>
 <pinref part="IC4" gate="A" pin="I"/>
 <pinref part="R19" gate="G$1" pin="1"/>
@@ -28685,7 +28715,7 @@ TEST PADS</text>
 <label x="490.22" y="149.86" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BUFIO_MOSI" class="0">
+<net name="BUFIO0" class="0">
 <segment>
 <pinref part="IC8" gate="G$1" pin="A"/>
 <wire x1="22.86" y1="195.58" x2="20.32" y2="195.58" width="0.1524" layer="91"/>
@@ -28697,7 +28727,7 @@ TEST PADS</text>
 <label x="490.22" y="144.78" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BUFOD_CLOCK" class="0">
+<net name="BUFOD1" class="0">
 <segment>
 <pinref part="IC5" gate="A" pin="I"/>
 <pinref part="R20" gate="G$1" pin="1"/>
@@ -28711,7 +28741,7 @@ TEST PADS</text>
 <label x="490.22" y="157.48" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BPIO_CLOCK" class="0">
+<net name="BPIO1" class="0">
 <segment>
 <wire x1="48.26" y1="124.46" x2="53.34" y2="124.46" width="0.1524" layer="91"/>
 <pinref part="IC9" gate="G$1" pin="B"/>
@@ -28746,7 +28776,7 @@ TEST PADS</text>
 <label x="708.66" y="116.84" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BUFDIR_CLOCK" class="0">
+<net name="BUFDIR1" class="0">
 <segment>
 <pinref part="IC9" gate="G$1" pin="DIR"/>
 <label x="58.42" y="147.32" size="1.778" layer="95" align="center-left"/>
@@ -28761,7 +28791,7 @@ TEST PADS</text>
 <label x="490.22" y="152.4" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BUFIO_CLOCK" class="0">
+<net name="BUFIO1" class="0">
 <segment>
 <pinref part="IC9" gate="G$1" pin="A"/>
 <wire x1="22.86" y1="144.78" x2="20.32" y2="144.78" width="0.1524" layer="91"/>
@@ -28773,7 +28803,7 @@ TEST PADS</text>
 <label x="490.22" y="154.94" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BUFIO_MISO" class="0">
+<net name="BUFIO2" class="0">
 <segment>
 <pinref part="IC10" gate="G$1" pin="A"/>
 <wire x1="22.86" y1="91.44" x2="20.32" y2="91.44" width="0.1524" layer="91"/>
@@ -28785,7 +28815,7 @@ TEST PADS</text>
 <label x="490.22" y="137.16" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BUFDIR_MISO" class="0">
+<net name="BUFDIR2" class="0">
 <segment>
 <pinref part="IC10" gate="G$1" pin="DIR"/>
 <label x="58.42" y="93.98" size="1.778" layer="95" align="center-left"/>
@@ -28801,7 +28831,7 @@ TEST PADS</text>
 <label x="490.22" y="134.62" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BPIO_MISO" class="0">
+<net name="BPIO2" class="0">
 <segment>
 <pinref part="IC10" gate="G$1" pin="B"/>
 <label x="58.42" y="71.12" size="1.778" layer="95" align="center-left"/>
@@ -28835,7 +28865,7 @@ TEST PADS</text>
 <label x="708.66" y="114.3" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BUFOD_MISO" class="0">
+<net name="BUFOD2" class="0">
 <segment>
 <pinref part="IC6" gate="A" pin="I"/>
 <pinref part="R21" gate="G$1" pin="1"/>
@@ -28849,7 +28879,7 @@ TEST PADS</text>
 <label x="490.22" y="139.7" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BUFIO_CS" class="0">
+<net name="BUFIO3" class="0">
 <segment>
 <pinref part="IC13" gate="G$1" pin="A"/>
 <wire x1="22.86" y1="38.1" x2="20.32" y2="38.1" width="0.1524" layer="91"/>
@@ -28861,7 +28891,7 @@ TEST PADS</text>
 <label x="530.86" y="177.8" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
-<net name="BUFDIR_CS" class="0">
+<net name="BUFDIR3" class="0">
 <segment>
 <pinref part="IC13" gate="G$1" pin="DIR"/>
 <label x="58.42" y="40.64" size="1.778" layer="95" align="center-left"/>
@@ -28877,7 +28907,7 @@ TEST PADS</text>
 <label x="530.86" y="180.34" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
-<net name="BPIO_CS" class="0">
+<net name="BPIO3" class="0">
 <segment>
 <pinref part="IC13" gate="G$1" pin="B"/>
 <label x="58.42" y="17.78" size="1.778" layer="95" align="center-left"/>
@@ -28911,7 +28941,7 @@ TEST PADS</text>
 <label x="708.66" y="111.76" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BUFOD_CS" class="0">
+<net name="BUFOD3" class="0">
 <segment>
 <pinref part="IC12" gate="A" pin="I"/>
 <pinref part="R23" gate="G$1" pin="1"/>
@@ -29131,7 +29161,7 @@ TEST PADS</text>
 <segment>
 <pinref part="U3" gate="BANK3" pin="IOL_8A"/>
 <wire x1="393.7" y1="48.26" x2="391.16" y2="48.26" width="0.1524" layer="91"/>
-<label x="373.38" y="48.26" size="1.778" layer="95"/>
+<label x="391.16" y="48.26" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="FSMC_NWE_WE" class="0">
@@ -29143,7 +29173,7 @@ TEST PADS</text>
 <segment>
 <pinref part="U3" gate="BANK3" pin="IOL_8B"/>
 <wire x1="393.7" y1="45.72" x2="391.16" y2="45.72" width="0.1524" layer="91"/>
-<label x="373.38" y="45.72" size="1.778" layer="95"/>
+<label x="391.16" y="45.72" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="FSMC_D0" class="0">
@@ -29492,11 +29522,6 @@ TEST PADS</text>
 <pinref part="U2" gate="U" pin="TIM8_CH1/TIM3_CH1('11')/FT/PC6"/>
 <wire x1="144.78" y1="370.84" x2="147.32" y2="370.84" width="0.1524" layer="91"/>
 <label x="147.32" y="370.84" size="1.778" layer="95" align="center-left"/>
-</segment>
-<segment>
-<pinref part="R48" gate="R" pin="2"/>
-<label x="307.34" y="292.1" size="1.778" layer="95" align="center-right"/>
-<wire x1="309.88" y1="292.1" x2="307.34" y2="292.1" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="MCU_MCO" class="0">
@@ -30018,8 +30043,8 @@ TEST PADS</text>
 <net name="MCU_AUX9" class="0">
 <segment>
 <pinref part="U3" gate="BANK2" pin="IOB_56"/>
-<wire x1="492.76" y1="68.58" x2="487.68" y2="68.58" width="0.1524" layer="91"/>
-<label x="474.98" y="68.58" size="1.778" layer="95"/>
+<wire x1="492.76" y1="68.58" x2="490.22" y2="68.58" width="0.1524" layer="91"/>
+<label x="490.22" y="68.58" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
 <pinref part="U2" gate="U" pin="FSMC_A7/FT/PF13"/>
@@ -30030,8 +30055,8 @@ TEST PADS</text>
 <net name="MCU_AUX10" class="0">
 <segment>
 <pinref part="U3" gate="BANK2" pin="IOB_57"/>
-<wire x1="492.76" y1="66.04" x2="487.68" y2="66.04" width="0.1524" layer="91"/>
-<label x="474.98" y="66.04" size="1.778" layer="95"/>
+<wire x1="492.76" y1="66.04" x2="490.22" y2="66.04" width="0.1524" layer="91"/>
+<label x="490.22" y="66.04" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
 <pinref part="U2" gate="U" pin="ADC12_IN8/TIM3_CH3('00'OR'10')/TIM8_CH2N/TIM1_CH2N('01')/PB0"/>
@@ -30042,8 +30067,8 @@ TEST PADS</text>
 <net name="MCU_AUX11" class="0">
 <segment>
 <pinref part="U3" gate="BANK2" pin="IOB_61"/>
-<wire x1="492.76" y1="63.5" x2="487.68" y2="63.5" width="0.1524" layer="91"/>
-<label x="474.98" y="63.5" size="1.778" layer="95"/>
+<wire x1="492.76" y1="63.5" x2="490.22" y2="63.5" width="0.1524" layer="91"/>
+<label x="490.22" y="63.5" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
 <pinref part="U2" gate="U" pin="ADC12_IN15/PC5"/>
@@ -30054,8 +30079,8 @@ TEST PADS</text>
 <net name="MCU_AUX12" class="0">
 <segment>
 <pinref part="U3" gate="BANK2" pin="IOB_63"/>
-<wire x1="492.76" y1="60.96" x2="487.68" y2="60.96" width="0.1524" layer="91"/>
-<label x="474.98" y="60.96" size="1.778" layer="95"/>
+<wire x1="492.76" y1="60.96" x2="490.22" y2="60.96" width="0.1524" layer="91"/>
+<label x="490.22" y="60.96" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
 <pinref part="U2" gate="U" pin="PA6/SPI1_MISO('0')/TIM8_BKIN/ADC12_IN6/TIM3_CH1('00')/TIM1_BKIN('01')"/>
@@ -30255,7 +30280,7 @@ TEST PADS</text>
 <junction x="396.24" y="314.96"/>
 </segment>
 </net>
-<net name="!SHDN" class="0">
+<net name="VREG_EN" class="0">
 <segment>
 <pinref part="IC23" gate="IC" pin="!SHDN"/>
 <wire x1="342.9" y1="322.58" x2="322.58" y2="322.58" width="0.1524" layer="91"/>
@@ -30265,7 +30290,7 @@ TEST PADS</text>
 <label x="317.5" y="322.58" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BPIO_AUX1" class="0">
+<net name="BPIO5" class="0">
 <segment>
 <pinref part="IC18" gate="G$1" pin="B"/>
 <label x="132.08" y="121.92" size="1.778" layer="95" align="center-left"/>
@@ -30299,7 +30324,7 @@ TEST PADS</text>
 <label x="708.66" y="106.68" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BPIO_AUX2" class="0">
+<net name="BPIO6" class="0">
 <segment>
 <pinref part="IC24" gate="IC" pin="Y6"/>
 <wire x1="350.52" y1="388.62" x2="353.06" y2="388.62" width="0.1524" layer="91"/>
@@ -30334,7 +30359,7 @@ TEST PADS</text>
 <label x="708.66" y="104.14" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BPIO_AUX3" class="0">
+<net name="BPIO7" class="0">
 <segment>
 <pinref part="IC24" gate="IC" pin="Y7"/>
 <wire x1="350.52" y1="386.08" x2="353.06" y2="386.08" width="0.1524" layer="91"/>
@@ -30396,7 +30421,7 @@ TEST PADS</text>
 <label x="93.98" y="121.92" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BPIO_AUX0" class="0">
+<net name="BPIO4" class="0">
 <segment>
 <wire x1="124.46" y1="175.26" x2="127" y2="175.26" width="0.1524" layer="91"/>
 <pinref part="IC11" gate="G$1" pin="B"/>
@@ -30431,7 +30456,7 @@ TEST PADS</text>
 <label x="708.66" y="109.22" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="BUFDIR_AUX0" class="0">
+<net name="BUFDIR4" class="0">
 <segment>
 <pinref part="IC11" gate="G$1" pin="DIR"/>
 <label x="132.08" y="198.12" size="1.778" layer="95" align="center-left"/>
@@ -30447,7 +30472,7 @@ TEST PADS</text>
 <label x="530.86" y="172.72" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
-<net name="BUFOD_AUX0" class="0">
+<net name="BUFOD4" class="0">
 <segment>
 <pinref part="IC7" gate="A" pin="I"/>
 <pinref part="R22" gate="G$1" pin="1"/>
@@ -30461,7 +30486,7 @@ TEST PADS</text>
 <label x="530.86" y="167.64" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
-<net name="BUFIO_AUX0" class="0">
+<net name="BUFIO4" class="0">
 <segment>
 <pinref part="IC11" gate="G$1" pin="A"/>
 <wire x1="96.52" y1="195.58" x2="93.98" y2="195.58" width="0.1524" layer="91"/>
@@ -30774,6 +30799,48 @@ TEST PADS</text>
 <segment>
 <pinref part="R51" gate="G$1" pin="2"/>
 <pinref part="R9" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="BPIO0" class="0">
+<segment>
+<wire x1="50.8" y1="175.26" x2="53.34" y2="175.26" width="0.1524" layer="91"/>
+<pinref part="IC8" gate="G$1" pin="B"/>
+<wire x1="53.34" y1="175.26" x2="55.88" y2="175.26" width="0.1524" layer="91"/>
+<label x="58.42" y="175.26" size="1.778" layer="95" align="center-left"/>
+<pinref part="IC4" gate="A" pin="O"/>
+<wire x1="45.72" y1="175.26" x2="50.8" y2="175.26" width="0.1524" layer="91" style="longdash"/>
+<pinref part="R24" gate="G$1" pin="2"/>
+<junction x="55.88" y="175.26"/>
+<wire x1="55.88" y1="175.26" x2="58.42" y2="175.26" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="195.58" x2="53.34" y2="175.26" width="0.1524" layer="91"/>
+<junction x="53.34" y="175.26"/>
+</segment>
+<segment>
+<wire x1="243.84" y1="111.76" x2="246.38" y2="111.76" width="0.1524" layer="91"/>
+<label x="246.38" y="111.76" size="1.778" layer="95" align="center-left"/>
+<pinref part="RN4" gate="A" pin="1"/>
+</segment>
+<segment>
+<pinref part="IC24" gate="IC" pin="Y0"/>
+<wire x1="350.52" y1="403.86" x2="353.06" y2="403.86" width="0.1524" layer="91"/>
+<label x="353.06" y="403.86" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<pinref part="IC3" gate="IC" pin="1D"/>
+<wire x1="332.74" y1="93.98" x2="335.28" y2="93.98" width="0.1524" layer="91"/>
+<label x="335.28" y="93.98" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<pinref part="J4" gate="J" pin="1"/>
+<wire x1="711.2" y1="119.38" x2="708.66" y2="119.38" width="0.1524" layer="91"/>
+<label x="708.66" y="119.38" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="VREG_PWM" class="0">
+<segment>
+<pinref part="R48" gate="R" pin="2"/>
+<label x="307.34" y="292.1" size="1.778" layer="95" align="center-right"/>
+<wire x1="309.88" y1="292.1" x2="307.34" y2="292.1" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
