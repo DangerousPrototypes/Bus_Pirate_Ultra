@@ -54,18 +54,24 @@ module top #(
     //                  oe      od  dir din dout       bufdir bufod      the pins from the SB_IO block below
     iobuf MOSI_BUF(1'b1, 1'b0, 1'b0, count[N],dout,    bufdir,  bufod,  buf_data_oe,buf_data_dout,buf_data_din);
 
+
+    `define reg_la_io_quad register[2][0]
+    `define reg_la_io_quad_direction register[2][1]
+    `define reg_la_io_cs0 register[2][8] //reserve upper bits for more SRAMs
+    `define reg_la_io_cs1 register[2][9]
+
     //register test:
     //straight through SPI
     //reg [LA_WIDTH-1:0] sram_sio_tdo_d;
-    assign sram_clock[0]=register[2][0]?(register[2][1]?mc_we_sync:mc_oe_sync):mcu_clock;
-    assign sram_clock[1]=register[2][0]?(register[2][1]?mc_we_sync:mc_oe_sync):mcu_clock;
-    //assign sram_clock[0]=mcu_quadmode?(mcu_direction?mc_we_sync:mc_oe_sync):mcu_clock;
-    assign sram_cs[0]=register[2][0]||!register[2][2]?mcu_cs:1'b1;
-    assign sram_cs[1]=register[2][0]||register[2][2]?mcu_cs:1'b1;
-    assign sram_sio_tdo[0]=register[2][0]?register[1][0]:mcu_mosi;
-    assign sram_sio_tdo[4]=register[2][0]?register[1][4]:mcu_mosi;
+    wire sram_clock_source;
+    //assign sram_clock_source=`reg_la_io_quad?(`reg_la_io_quad_direction?mc_we_sync:mc_oe_sync):mcu_clock;
+    assign sram_clock_source=mcu_clock;
+    assign sram_clock={sram_clock_source,sram_clock_source};
+    assign sram_cs={`reg_la_io_cs0,`reg_la_io_cs1};
+    assign sram_sio_tdo[0]=`reg_la_io_quad?register[1][0]:mcu_mosi;
+    assign sram_sio_tdo[4]=`reg_la_io_quad?register[1][4]:mcu_mosi;
     assign {sram_sio_tdo[7:5],sram_sio_tdo[3:1]}={register[1][7:5],register[1][3:1]};
-    assign mcu_miso=register[2][2]?sram_sio_tdi[5]:sram_sio_tdi[1];
+    assign mcu_miso=`reg_la_io_cs1?sram_sio_tdi[5]:sram_sio_tdi[1]; //very hack dont like
 
     //LATCH OE
     assign lat_oe=1'b0;
@@ -83,18 +89,16 @@ module top #(
         begin
           if ((!mc_we))			// write (proper)
           begin
-            register [mc_add] <= mc_din; //16'hFFFF;
+            case(mc_add)
+              default:register [mc_add] <= mc_din; //16'hFFFF;
+            endcase
           end
           else if ((mc_we))		// read
           begin
-            mc_dout_d <= register [mc_add];
-          end
-        end
-        else if(register[2][0])
-        begin
-          if(!register[2][1])
-          begin
-            register[1][7:0]<=sram_sio_tdi;
+            case(mc_add)
+              16'h0001: register[1][7:0]<=sram_sio_tdi;
+              default: mc_dout_d <= register [mc_add];
+            endcase
           end
         end
       end
@@ -108,7 +112,7 @@ module top #(
       .PULLUP(1'b0)          //no pullup
     ) sram_mosi_sbio[LA_CHIPS-1:0] (
       .PACKAGE_PIN({sram_sio[4],sram_sio[0]}),//which pin
-      .OUTPUT_ENABLE(register[2][0]?register[2][1]:1'b1),   //output enable wire mcu_quadmode?mcu_direction:1'b1
+      .OUTPUT_ENABLE(`reg_la_io_quad?`reg_la_io_quad_direction:1'b1),   //output enable wire mcu_quadmode?mcu_direction:1'b1
       .D_OUT_0({sram_sio_tdo[4],sram_sio_tdo[0]}),        //data out wire
       .D_IN_0({sram_sio_tdi[4],sram_sio_tdi[0]})           //data in wire
     );
@@ -118,7 +122,7 @@ module top #(
 			.PULLUP(1'b0)          //no pullup
 		) sram_miso_sbio[LA_CHIPS-1:0](
 			.PACKAGE_PIN({sram_sio[5],sram_sio[1]}),//which pin
-			.OUTPUT_ENABLE(register[2][0]?register[2][1]:1'b0),   //output enable wire mcu_quadmode?mcu_direction:1'b0
+			.OUTPUT_ENABLE(`reg_la_io_quad?`reg_la_io_quad_direction:1'b0),   //output enable wire mcu_quadmode?mcu_direction:1'b0
 			.D_OUT_0({sram_sio_tdo[5],sram_sio_tdo[1]}),        //data out wire
 			.D_IN_0({sram_sio_tdi[5],sram_sio_tdi[1]})           //data in wire
 		);
@@ -128,7 +132,7 @@ module top #(
 			.PULLUP(1'b0)          //no pullup
 		) sram_sio_sbio[3:0] (
 			.PACKAGE_PIN({sram_sio[7:6],sram_sio[3:2]}),//which pin
-			.OUTPUT_ENABLE(register[2][0]&&register[2][1] ),   //quadmode = 1 and direction = 1
+			.OUTPUT_ENABLE(`reg_la_io_quad&&`reg_la_io_quad_direction),   //quadmode = 1 and direction = 1
 			.D_OUT_0({sram_sio_tdo[7:6],sram_sio_tdo[3:2]}),        //data out wire
 			.D_IN_0({sram_sio_tdi[7:6],sram_sio_tdi[3:2]})           //data in wire
 		);
