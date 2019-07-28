@@ -95,7 +95,7 @@ void writeFlash(uint32_t addr, uint8_t *buff, uint8_t size)
 
 void writePage(uint32_t addr, uint8_t *page)
 {
-	uint8_t busy, status	;
+	uint8_t busy, status;
 	int i;
 
 	busy=1;

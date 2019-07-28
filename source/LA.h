@@ -14,8 +14,6 @@ void logicAnalyzerCaptureStop(void);
 void logicAnalyzerCaptureStart(void);
 void logicAnalyzerDumpSamples(uint32_t numSamples);
 
-void setup_spix1rw(void);
-
 
 #define LATRIGGERMENU	"Trigger\r\n 1. Rising\r\n 2. Falling\r\n 3. Both\r\n 4. No trigger*\r\n> "
 #define LAPERIODMENU 	"period> "
@@ -36,8 +34,10 @@ void setup_spix1rw(void);
 #define la_sram_quad_output() gpio_set(GPIOE, GPIO3)
 #define la_sram_quad_input() gpio_clear(GPIOE, GPIO3)
 
-#define sram_select() gpio_clear(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN)
-#define sram_deselect() gpio_set(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN)
+#define sram_select() sram_select_0(); sram_select_1()
+#define sram_select_0() FPGA_REG_02&=~(0b1<<8)
+#define sram_select_1() FPGA_REG_02&=~(0b1<<9)
+#define sram_deselect() FPGA_REG_02|=0b11<<8
 
 #define sram_clock_high() gpio_set(GPIOB,GPIO13)
 #define sram_clock_low() gpio_clear(GPIOB,GPIO13)

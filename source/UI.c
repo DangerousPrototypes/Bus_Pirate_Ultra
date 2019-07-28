@@ -603,30 +603,7 @@ void doUI(void)
 						break;
 				case '~':
 				        //read from SRAM test
-    setup_spix1rw();
-    sram_select();	// cs low
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0x9F);
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
-    for(i=0;i<8;i++){
-        cdcprintf("SRAM0 ID: %01X\r\n",spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF)); //0d=MFID, 5d=KGD, + 6 bytes of density info
-    }
-    //release FPGA into program mode
-    sram_deselect();			// release cs
-
-
-    FPGA_REG_02|=1<<2;
-    sram_select();	// cs low
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0x9F);
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
-    for(i=0;i<8;i++){
-        cdcprintf("SRAM0 ID: %01X\r\n",spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF)); //0d=MFID, 5d=KGD, + 6 bytes of density info
-    }
-    //release FPGA into program mode
-    sram_deselect();			// release cs
+		// release cs
 
 						break;
 				default:	cdcprintf("Unknown command: %c", c);

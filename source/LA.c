@@ -12,13 +12,14 @@
 #include "delay.h"
 #include "fpga.h"
 
-//static void setup_spix1rw(void);
+static void setup_spix1rw(void);
 
 static void setup_spix4w(void);
 static void spiWx4(uint8_t d);
-
+static void spiWx8(uint8_t d);
 static void setup_spix4r(void);
 static uint8_t spiRx4(void);
+static uint8_t spiRx8(void);
 
 /*static enum _stop
         {
@@ -37,6 +38,7 @@ void logicAnalyzerSetup(void)
 
     //la_sram_mode_setup();
     //la_sram_quad_setup();
+    FPGA_REG_02=0b1100000000;
 
     sram_deselect();
     //delayus(100);
@@ -49,7 +51,7 @@ void logicAnalyzerSetup(void)
 
     //read from SRAM test
     setup_spix1rw();
-    sram_select();	// cs low
+    sram_select_0();	// cs low
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0x9F);
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
@@ -60,9 +62,7 @@ void logicAnalyzerSetup(void)
     //release FPGA into program mode
     sram_deselect();			// release cs
 
-
-    FPGA_REG_02|=1<<2;
-    sram_select();	// cs low
+    sram_select_1();	// cs low
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0x9F);
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
@@ -79,35 +79,23 @@ void logicAnalyzerSetup(void)
 
 
 	//quad mode
-	sram_select();
-	//delayms(1);
+	sram_select_0();
 	spi_xfer(BP_FPGA_SPI, (uint16_t)CMDQUADMODE);
 	sram_deselect();
 
-	//clear the sram for testing purposes
+    sram_select_1();
+	spi_xfer(BP_FPGA_SPI, (uint16_t)CMDQUADMODE);
+	sram_deselect();
+
 	setup_spix4w(); //write
 	sram_select();
-	//delayms(1);
 	spiWx4(CMDWRITE); //write command
 	spiWx4(0);
 	spiWx4(0);
 	spiWx4(0); //3 byte address
 	for(i=0;i<4;i++)
-		spiWx4(i);
-   /* la_sram_arm_start(); //attach SRAM to LATCH
-    for(i=0;i<500;i++){ //clock in some data to sram
-        delayms(4);
-        gpio_set(GPIOB,GPIO13); //BP_LA_SRAM_CLOCK_HIGH(); //CLOCK HIGH
-		delayms(4);
-		gpio_clear(GPIOB,GPIO13); //BP_LA_SRAM_CLOCK_LOW(); //CLOCK LOW
-        delayms(4);
-        gpio_set(GPIOB,GPIO13); //BP_LA_SRAM_CLOCK_HIGH(); //CLOCK HIGH
-		delayms(4);
-		gpio_clear(GPIOB,GPIO13); //BP_LA_SRAM_CLOCK_LOW(); //CLOCK LOW
-    }*/
-
+		spiWx8(i);
     sram_deselect();
-    //la_sram_arm_stop();
 
     setup_spix4w();
 	sram_select();
@@ -120,9 +108,7 @@ void logicAnalyzerSetup(void)
 	spiRx4(); //dummy byte
     spiRx4(); //dummy byte
     for(i=0;i<4;i++){
-        temp=spiRx4();
-        //cdcputc2(temp);
-
+        temp=spiRx8();
     }
     sram_deselect();
     temp=0xff;
@@ -131,11 +117,13 @@ void logicAnalyzerSetup(void)
 
 void setup_spix1rw(void)
 {
+    int i;
     	// enable peripheral
 	rcc_periph_clock_enable(BP_FPGA_SPI_CLK);
 
     //la_sram_mode_spi();
-    FPGA_REG_02=0x00;
+    FPGA_REG_02&=~(0b1);
+    i=FPGA_REG_02;
 
 	// SPI pins of FPGA
 	gpio_set_mode(BP_FPGA_MOSI_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FPGA_MOSI_PIN);
@@ -157,7 +145,7 @@ void setup_spix4w(void)
     spi_reset(BP_FPGA_SPI);
     //la_sram_mode_quad();
     //la_sram_quad_output();
-    FPGA_REG_02=0x3;
+    FPGA_REG_02|=0b11;
 
     //put clock under manual control and low
     gpio_set_mode(BP_FPGA_CLK_PORT,GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,BP_FPGA_CLK_PIN);
@@ -171,7 +159,9 @@ void setup_spix4r(void)
     //mcu_quadmode direction pin of FPGA
     //la_sram_mode_quad();
     //la_sram_quad_input();
-    FPGA_REG_02=0x1;
+    //FPGA_REG_02=0x1;
+    FPGA_REG_02|=0b1;
+    FPGA_REG_02&=~(0b10);
 
     //put clock under manual control and low
     gpio_set_mode(BP_FPGA_CLK_PORT,GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,BP_FPGA_CLK_PIN);
@@ -183,25 +173,50 @@ static uint8_t spiRx4(void)
 	uint8_t received;
 	int i;
 
-	//received=0;
-	//sram_clock_high();
-    received=((FPGA_REG_01&0x000f)<<4);
-    //sram_clock_low();
-    //sram_clock_high();
-    //received|=(FPGA_REG_01&0x000f);
-    //sram_clock_low();
+	received=0;
+	sram_clock_high();
+    received=((FPGA_REG_01&0x00ff)<<8);
+    sram_clock_low();
+    sram_clock_high();
+    received|=(FPGA_REG_01&0x00ff);
+    sram_clock_low();
 
 	return received;
+	//i=FPGA_REG_01;
+	//return (i<<8) | (FPGA_REG_01&0x00ff);
+}
+
+static uint8_t spiRx8(void)
+{
+	uint8_t received;
+	int i;
+
+	sram_clock_high();
+    received=((FPGA_REG_01));
+    sram_clock_low();
+	return received;
+	//i=FPGA_REG_01;
+	//return (i<<8) | (FPGA_REG_01&0x00ff);
 }
 
 static void spiWx4(uint8_t d)
 {
 
     FPGA_REG_01=(uint16_t) ( ((d)&0x00F0) | ((d>>4)&0x000F) );
-    //sram_clock_high();
-    //sram_clock_low();
+    sram_clock_high();
+    sram_clock_low();
     FPGA_REG_01=(uint16_t) ( ((d<<4)&0x00F0) | ((d)&0x000f)  );
-    //sram_clock_high();
-    //sram_clock_low();
+    sram_clock_high();
+    sram_clock_low();
 
 }
+
+static void spiWx8(uint8_t d)
+{
+
+    FPGA_REG_01=(uint16_t)d&0x00FF;
+    sram_clock_high();
+    sram_clock_low();
+
+}
+
