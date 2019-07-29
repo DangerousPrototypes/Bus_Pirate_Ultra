@@ -43,6 +43,7 @@ extern const char states[][4];
 
 
 //declarations
+void progressbar(uint32_t count, uint32_t maxcount);
 void consumewhitechars(void);
 uint32_t getint(void);
 void versioninfo(void);

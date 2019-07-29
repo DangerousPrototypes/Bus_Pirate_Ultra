@@ -4,23 +4,13 @@
 #include "delay.h"
 #include "fpga.h"
 #include "buspirate.h"
+#include "fs.h"
+#include "UI.h"
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/fsmc.h>
 
-void progressbar(uint32_t count, uint32_t maxcount)
-{
-	uint32_t i;
-	char bar[21];
-
-	for(i=0; i<=((count*20)/maxcount); i++) bar[i]='#';
-	for(i=((count*20)/maxcount)+1; i<21; i++) bar[i]='-';
-
-	cdcprintf("[%s] %d/%d\r", bar, count, maxcount);
-
-
-}
 
 void upload(void)
 {
@@ -36,11 +26,57 @@ void upload(void)
 	}
 }
 
-#include "bitstream.h"
-
-int uploadfpga(void)
+int uploadfpga(uint32_t addr, uint32_t size)
 {
-	uint32_t i, returnval;
+	uint32_t i, offset;
+	int returnval;
+	char header[532];
+	char description[256];
+	char capabilities[256];
+	char date[10], version[10];
+
+	// retrieve info from bitstream 
+	// info is embedded between 0xff, 0x00 <description>, 0x00, <capabilities>, 0x00, 0xFF <bitstream>
+	readflash(addr, (uint8_t *)header, 532);
+
+	i=0;
+	offset=2;
+	while((header[offset+i]!=0x00)&&(i<255))			// name/description
+	{
+		description[i]=header[offset+i];
+		i++;
+	}
+	description[i]=0x00;						// null terminate string
+	offset+=i+1;
+	i=0;
+	while((header[offset+i]!=0x00)&&(i<255))			// capabilities
+	{
+		capabilities[i]=header[offset+i];
+		i++;
+	}
+	capabilities[i]=0x00;
+	offset+=i+1;
+	i=0;
+	while((header[offset+i]!=0x00)&&(i<9))				// datecode
+	{
+		date[i]=header[offset+i];
+		i++;
+	}
+	date[i]=0x00;
+	offset+=i+1;
+	i=0;
+	while((header[offset+i]!=0x00)&&(i<9))				// version
+	{
+		version[i]=header[offset+i];
+		i++;
+	}
+	version[i]=0x00;
+	
+	cdcprintf("FPGA bitstream info:\r\n");
+	cdcprintf(" name: %s\r\n", description);
+	cdcprintf(" capabilities: %s\r\n", capabilities);
+	cdcprintf(" date: %s\r\n", date);
+	cdcprintf(" version: %s\r\n", version);
 
 	// reset FPGA+program FPGA
 	cdcprintf("Resetting FPGA..\r\n");
@@ -51,21 +87,28 @@ int uploadfpga(void)
 	delayms(100);							// wait at lease 1200us or wait for miso is 1
 	gpio_set(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN);			// release cs
 
-	cdcprintf("CDONE=%02X\r\n", gpio_get(BP_FPGA_CDONE_PORT, BP_FPGA_CDONE_PIN));
 
 	// start transfer
 	spi_xfer(BP_FPGA_SPI, (uint16_t)0x0000);			// 8 dummy clock cycles
 	gpio_clear(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN);			// assert cs
-	
+
+	// setup flash for retrieving bitstream
+	gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);			// cs flash low
+	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_READ);
+	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>16)&0x000000FF));	// address
+	spi_xfer(BP_FS_SPI, (uint16_t) ((addr>>8)&0x000000FF));		// 
+	spi_xfer(BP_FS_SPI, (uint16_t) (addr&0x000000FF));		// 
+
 	// send image (msb first)
 	cdcprintf("Uploading FPGA bitstream..\r\n");
-//	for(i=0; i<=135183; i++)
-	for(i=0; i<135100; i++)
+	for(i=0; i<size; i++)
 	{
-		if((i&0x3FF)==0) progressbar(i, 135100);
-		spi_xfer(BP_FPGA_SPI, (uint16_t)bitstream[i]);	
+		if((i&0x3FF)==0) progressbar(i, size);
+		spi_xfer(BP_FPGA_SPI, (uint16_t)spi_xfer(BP_FS_SPI, (uint16_t)0x00FF));	
 	}
-	progressbar(i, 135100);
+	progressbar(i, size);
+
+	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);				// cs flash high
 
 	gpio_set(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN);			// release cs
 	for(i=0; i<12; i++) spi_xfer(BP_FPGA_SPI, (uint16_t)0x0000);	// wait 100 clockcycles to cdone=1 (104 cycles)

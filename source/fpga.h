@@ -4,13 +4,12 @@
 
 
 void upload(void);
-void progressbar(uint32_t count, uint32_t maxcount);
-int uploadfpga(void);
+int uploadfpga(uint32_t addr, uint32_t size);
 void fpgainit(void);
 
 
 #define FPGA_BASE	0x68000000
+#define FPGA_REG(x)	MMIO16(FPGA_BASE+(2*x))
 
 
-#define FPGA_REG_00	MMIO16(FPGA_BASE+0)
-#define FPGA_REG_01	MMIO16(FPGA_BASE+2)
+

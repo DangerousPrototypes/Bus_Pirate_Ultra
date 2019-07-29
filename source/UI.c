@@ -15,8 +15,10 @@
 #include "AUXpin.h"
 #include "ADC.h"
 #include "delay.h"
-
 #include "fpga.h"
+#include "fs.h"
+
+#include "bitstream.h"
 
 // globals
 uint32_t cmdhead, cmdtail, cursor;		// TODO swap head an tail?
@@ -47,6 +49,21 @@ const char displaymodes[][4] ={
 "BIN\0"
 };
 
+
+void progressbar(uint32_t count, uint32_t maxcount)
+{
+	uint32_t i;
+	char bar[21];
+
+	for(i=0; i<=((count*20)/maxcount); i++) bar[i]='#';
+	for(i=((count*20)/maxcount)+1; i<21; i++) bar[i]='-';
+
+	bar[20]=0x00;
+
+	cdcprintf("[%s] %d/%d\r", bar, count, maxcount);
+
+
+}
 
 
 // eats up the spaces and comma's from the cmdline
@@ -224,6 +241,9 @@ void doUI(void)
 
 	uint32_t temp, temp2, temp3, repeat, received, bits;
 	int i;
+
+uint8_t testbuff[256];
+file_struct *file;
 
 	go=0;
 
@@ -488,7 +508,7 @@ void doUI(void)
 							delayms(10);
 							uint16_t v33 = voltage(BP_3V3_CHAN, 1);
 							uint16_t v50 = voltage(BP_5V0_CHAN, 1);
-							cdcprintf("V33=%d.%02dV, V50=%d.%02dV", v33/100, (v33%1000)/10, v50/1000, (v50%1000)/10); 
+							cdcprintf("V33=%d.%02dV, V50=%d.%02dV", v33/1000, (v33%1000)/10, v50/1000, (v50%1000)/10); 
 							if((voltage(BP_3V3_CHAN, 1)<3000)||(voltage(BP_5V0_CHAN, 1)<4500))
 							{
 								cdcprintf("\r\nShort circuit!");								
@@ -597,12 +617,32 @@ void doUI(void)
 						modeConfig.numbits=temp3;
 						break;
 				case '~': 	//selftest();
-						uploadfpga();
-						delayms(1000);
-						cdcprintf("FPGA reg 0: %04X\r\n", FPGA_REG_00);
-						cdcprintf("FPGA reg 1: %04X\r\n", FPGA_REG_01);
-						FPGA_REG_01=0xAA55;
-						cdcprintf("FPGA reg 1: %04X\r\n", FPGA_REG_01);
+
+//showflashID();
+showdir();
+file=findfile("SRAM TEST", 0x01);
+
+cdcprintf("found at %08X size %08x\r\n", file->addr, file->size);
+//formatflash();
+//addfile("SRAM TEST", 0x01, bitstream, 135159);
+//addfile("TESTS0R", 0x01, bitstream, 135159);
+//format();
+//showdir();
+
+//readflash(0x200, testbuff, 256);
+//printbuff(testbuff, 256);
+//cdcgetc();
+//uploadfpga(0x200, 135159);
+uploadfpga(file->addr, file->size);
+cdcprintf("00: %04X\r\n", FPGA_REG(0));
+cdcprintf("01: %04X\r\n", FPGA_REG(1));
+cdcprintf("02: %04X\r\n", FPGA_REG(2));
+cdcprintf("03: %04X\r\n", FPGA_REG(3));
+FPGA_REG(0)=0xFFFF;
+cdcprintf("00: %04X\r\n", FPGA_REG(0));
+FPGA_REG(0)=0x0000;
+cdcprintf("00: %04X\r\n", FPGA_REG(0));
+
 						break;
 				default:	cdcprintf("Unknown command: %c", c);
 						modeConfig.error=1;
