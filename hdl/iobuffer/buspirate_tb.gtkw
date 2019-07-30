@@ -1,19 +1,17 @@
 [*]
 [*] GTKWave Analyzer v3.3.77 (w)1999-2016 BSI
-[*] Mon Jun 03 16:40:13 2019
+[*] Tue Jul 30 15:53:50 2019
 [*]
-[dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.vcd"
-[dumpfile_mtime] "Mon Jun 03 15:41:51 2019"
-[dumpfile_size] 69599
-[savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\buspirate\buspirate_tb.gtkw"
-[timestart] 0
+[dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.vcd"
+[dumpfile_mtime] "Tue Jul 30 15:52:02 2019"
+[dumpfile_size] 48584
+[savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.gtkw"
+[timestart] 63000
 [size] 1920 1017
 [pos] -1 -1
-*-19.301805 3066000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-19.301805 2011000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] buspirate_tb.
 [treeopen] buspirate_tb.buspirate.
-[treeopen] buspirate_tb.buspirate.DISPATCH.
-[treeopen] buspirate_tb.buspirate.DISPATCH.FACADE.
 [sst_width] 211
 [signals_width] 285
 [sst_expanded] 1
@@ -34,19 +32,12 @@ buspirate_tb.buspirate.mc_din[15:0]
 buspirate_tb.buspirate.mc_dout[15:0]
 @200
 -SRAMs
-@28
-buspirate_tb.buspirate.sram0_clock
-buspirate_tb.buspirate.sram0_cs
 @22
-buspirate_tb.buspirate.sram1_sio_tdo[3:0]
-buspirate_tb.buspirate.sram0_sio_tdo[3:0]
-@23
-buspirate_tb.buspirate.sram0_sio_tdi[3:0]
-@22
-buspirate_tb.buspirate.sram1_sio[3:0]
-buspirate_tb.buspirate.sram0_sio[3:0]
-@28
-buspirate_tb.buspirate.sram0_sio_toe
+buspirate_tb.sram_sio_d[7:0]
+buspirate_tb.sram_sio[7:0]
+buspirate_tb.buspirate.sram_sio_tdi[7:0]
+buspirate_tb.buspirate.sram_sio_tdo[7:0]
+buspirate_tb.buspirate.sram_sio[7:0]
 @200
 -BUFFER PINS
 @28
@@ -57,46 +48,19 @@ buspirate_tb.BP_BUF[3].iopin_state
 buspirate_tb.BP_BUF[4].iopin_state
 @200
 -SPI
-@22
-buspirate_tb.buspirate.DISPATCH.bp_dout[4:0]
-buspirate_tb.buspirate.DISPATCH.bp_din[4:0]
-buspirate_tb.buspirate.DISPATCH.FACADE.bp_din[4:0]
-buspirate_tb.buspirate.DISPATCH.FACADE.bp_dout[4:0]
-buspirate_tb.buspirate.DISPATCH.FACADE.bp_dout[4:0]
-@28
-buspirate_tb.buspirate.DISPATCH.FACADE.SPI_MASTER.miso
-buspirate_tb.buspirate.DISPATCH.FACADE.SPI_MASTER.mosi
-buspirate_tb.buspirate.DISPATCH.FACADE.SPI_MASTER.sclk
-@22
-buspirate_tb.buspirate.DISPATCH.FACADE.in_data[7:0]
-buspirate_tb.buspirate.DISPATCH.FACADE.out_data[7:0]
-buspirate_tb.buspirate.DISPATCH.out_fifo_in_data[15:0]
-@28
-buspirate_tb.buspirate.DISPATCH.go
-buspirate_tb.buspirate.DISPATCH.state
-buspirate_tb.buspirate.DISPATCH.in_fifo_out_pop
-@22
-buspirate_tb.buspirate.DISPATCH.dispatch_command[7:0]
-buspirate_tb.buspirate.DISPATCH.dispatch_data[7:0]
-@200
 -FIFO_IN
-@28
-buspirate_tb.buspirate.FIFO_IN.in_nempty
-buspirate_tb.buspirate.FIFO_IN.in_shift
-buspirate_tb.buspirate.FIFO_IN.out_nempty
-buspirate_tb.buspirate.FIFO_IN.out_pop
-@22
-buspirate_tb.buspirate.FIFO_IN.out_data[15:0]
-@28
-buspirate_tb.buspirate.FIFO_IN.in_full
-@200
 -FIFO_OUT
-@28
-[color] 2
-buspirate_tb.buspirate.FIFO_OUT.in_shift
-buspirate_tb.buspirate.FIFO_OUT.in_full
-buspirate_tb.buspirate.FIFO_OUT.out_pop
 @22
-buspirate_tb.buspirate.DISPATCH.out_fifo_in_data[15:0]
+buspirate_tb.buspirate.register_peek[15:0]
+@28
+buspirate_tb.buspirate.pwm_out
+@22
+buspirate_tb.buspirate.sample_counter[22:0]
+@28
+buspirate_tb.buspirate.la_done
+buspirate_tb.buspirate.sram_clock_source
+buspirate_tb.buspirate.clock
+@29
+buspirate_tb.buspirate.sram_auto_clock
 [pattern_trace] 1
 [pattern_trace] 0

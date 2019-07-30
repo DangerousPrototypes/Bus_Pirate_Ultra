@@ -6,6 +6,7 @@
 `include "iobufphy.v"
 `include "synchronizer.v"
 `include "pwm.v"
+`include "pll.v"
 
 module top #(
   parameter MC_DATA_WIDTH = 16,
@@ -68,8 +69,10 @@ module top #(
     reg pwm_reset;
     `define reg_pwm_on register[25]
     `define reg_pwm_off register [26]
-    pwm AUX_PWM(pwm_reset, clock,pwm_out, `reg_pwm_on,`reg_pwm_off);
+    pwm AUX_PWM(pwm_reset, count[0],pwm_out, `reg_pwm_on,`reg_pwm_off);
 
+
+    //pll PLL_2F(clock,pll_clk,locked);
     assign bpio_do=pwm_out;
 
   	// Memory controller interface
@@ -78,29 +81,35 @@ module top #(
     wire [MC_DATA_WIDTH-1:0] mc_dout;
     assign mc_dout=mc_dout_d;
 
-    localparam N = 23;
+    localparam N = 3;
     reg [N:0] count;
     wire bpio_data_oe;
     wire bpio_data_dout;
     wire bpio_data_din;
     wire dout;
-
-    reg [9:0] sample_counter;
+    //1111 0100 0010 0100 0000 0000
+    reg [22:0] sample_counter;
 
     wire [LA_WIDTH-1:0] sram_sio_tdi;
     wire [LA_WIDTH-1:0] sram_sio_tdo;
 
     `define reg_la_io_quad register[2][0]
     `define reg_la_io_quad_direction register[2][1]
+    `define reg_la_io_spi register[2][2]
+    `define reg_la_start register[2][3]
     `define reg_la_io_cs0 register[2][8] //reserve upper bits for more SRAMs
     `define reg_la_io_cs1 register[2][9]
+    `define reg_la_samples_post register[4]
+
 
     //register test:
     //straight through SPI
     //reg [LA_WIDTH-1:0] sram_sio_tdo_d;
+    reg la_done;
     wire sram_clock_source;
-    //assign sram_clock_source=`reg_la_io_quad?(`reg_la_io_quad_direction?mc_we_sync:mc_oe_sync):mcu_clock;
-    assign sram_clock_source=mcu_clock;
+    reg sram_auto_clock;
+    assign sram_clock_source=(`reg_la_start&&!la_done)?clock:(`reg_la_io_quad&&sram_auto_clock)?clock:(`reg_la_io_spi)?mcu_clock:1'b0;
+    //assign sram_clock_source=(`reg_la_start&&!la_done)?clock:mcu_clock;
     assign sram_clock={sram_clock_source,sram_clock_source};
     assign sram_cs={`reg_la_io_cs0,`reg_la_io_cs1};
     assign sram_sio_tdo[0]=`reg_la_io_quad?register[1][0]:mcu_mosi;
@@ -111,6 +120,9 @@ module top #(
     //LATCH OE
     assign lat_oe=1'b0;
 
+    wire [15:0] register_peek;
+    assign register_peek=register[16'h0000];
+
     //wires tied to the memory controller WE and OE signals
     wire mc_we_sync,mc_oe_sync,mc_ce_sync;
     sync MC_WE_SYNC(clock, mc_we, mc_we_sync);
@@ -119,25 +131,49 @@ module top #(
 
     always @(posedge clock)
       begin
-        count <= count + 1;
+
         pwm_reset<=1'b0;
+        sram_auto_clock<=1'b0;
+        register[0][7:0]<=sram_sio_tdi;
+        count <= count + 1;
+
+        if(`reg_la_start)
+        begin
+          if(sample_counter<=`reg_la_samples_post)
+            begin
+              sample_counter<=sample_counter+1;
+              la_done<=1'b0;
+            end
+          else //stop the logic analyzer
+            begin
+              la_done<=1'b1;
+            end
+        end
+
         if(!mc_ce)
         begin
-          if ((!mc_we))			// write (proper)
+          if (mc_we_sync)			// write
           begin
             case(mc_add)
-              16'h0019,16'h001a:begin
+              16'h001a:begin
                 pwm_reset<=1'b1;
               end
             endcase
-            register [mc_add] <= mc_din;
-          end
-          else if ((mc_we))		// read
-          begin
             case(mc_add)
-              16'h0001: register[1][7:0]<=sram_sio_tdi; //this doesnt work... when does register get put on the outputs?>???
-              default: mc_dout_d <= register [mc_add];
+              16'h0000:begin
+                sram_auto_clock<=1'b1;
+              end
+              default:register [mc_add] <= mc_din;
             endcase
+          end
+          else if (mc_oe_sync)		// read
+          begin
+          case(mc_add)
+            16'h0000:begin
+              sram_auto_clock<=1'b1;
+            end
+          endcase
+            mc_dout_d <= register [mc_add];
           end
         end
       end
@@ -214,6 +250,9 @@ module top #(
 
 
     initial begin
+    sample_counter<=0;
+      count<=0;
+      la_done<=1;
       register[6'b00000] <= 16'b0000000000000000;				// test values
       register[6'b00001] <= 16'b0000000000000000;
       register[6'b00010] <= 16'b0000000000000000;

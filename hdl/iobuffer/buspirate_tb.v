@@ -34,6 +34,8 @@ module buspirate_tb();
 
   assign mc_data=(mc_oe)?mc_data_reg:16'hzzzz;
 
+  assign sram_sio=(!mc_oe)?sram_sio_d:8'hzz;
+
   top #(
     .MC_DATA_WIDTH(MC_DATA_WIDTH),
     .MC_ADD_WIDTH(MC_ADD_WIDTH),
@@ -89,11 +91,77 @@ module buspirate_tb();
       bpio_test_input=5'b11111;
       mc_we=1;
       mc_oe=1;
+      mc_ce=0;
       @(negedge rst); // wait for reset
       repeat(10) @(posedge clk);
 
 
 
+
+
+      //PWM
+      mc_add = 6'h19;
+      mc_data_reg <= 16'h0001;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+      mc_add = 6'h1a;
+      mc_data_reg <= 16'h0001;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+
+      //LA sample count
+      mc_add = 6'h04;
+      mc_data_reg=16'h0010;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+
+      //SRAM quad, read, CS low...
+      mc_add = 6'h02;
+      //mc_data_reg <= 16'h0003;
+      mc_data_reg=16'b0000000000000001;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+
+      mc_add = 6'h00;
+      //mc_data_reg = 16'hzzzz;
+      sram_sio_d=8'haa;
+      repeat(6)@(posedge clk);
+      mc_oe=0;
+      repeat(6)@(posedge clk);
+      mc_oe=1;
+      repeat(6)@(posedge clk);
+      sram_sio_d=8'h55;
+      repeat(6)@(posedge clk);
+      mc_oe=0;
+      repeat(6)@(posedge clk);
+      mc_oe=1;
+      repeat(12)@(posedge clk);
+      //start LA
+      mc_add = 6'h02;
+      //mc_data_reg <= 16'h0003;
+      mc_data_reg=16'b0000000000001001;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+
+
+
+
+
+
+
+/*
       mc_add = 6'h10;
       mc_data_reg <= 16'b0000000001010000;
       repeat(6)@(posedge clk);
@@ -207,7 +275,7 @@ module buspirate_tb();
       $display("%h",mc_data);
       repeat(6)@(posedge clk);
       mc_oe=1;
-
+*/
 
       repeat(100) @(posedge clk);
       $finish;
