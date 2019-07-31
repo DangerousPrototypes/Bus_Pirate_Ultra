@@ -17,7 +17,7 @@ module top #(
   parameter FIFO_WIDTH = 16,
   parameter FIFO_DEPTH = 4
 ) (
-  input clock_master,
+  input clock,
   inout wire [BP_PINS-1:0] bpio_io,
   output wire [BP_PINS-1:0] bpio_dir, bpio_od,
   output wire[LA_CHIPS-1:0] sram_clock,
@@ -60,8 +60,7 @@ module top #(
       .bufdat_tristate_dout(bpio_tdo), //tristate data pin data out
       .bufdat_tristate_din(bpio_tdi)  //tristate data pin data in
       );
-wire clock;
-assign clock=count[2];
+
     // PWM
     //TODO: move to pin module????
     //TODO: N:1 mux freq measure and PWM on IO pins?
@@ -131,18 +130,13 @@ assign clock=count[2];
 
 
 
-always @(posedge clock_master)
-begin
-  count <= count + 1;
-end
-
     always @(posedge clock)
       begin
 
         pwm_reset<=1'b0;
         sram_auto_clock<=1'b0;
         register[0][7:0]<=sram_sio_tdi;
-        //count <= count + 1;
+        count <= count + 1;
 
         if(`reg_la_start)
         begin
@@ -259,7 +253,7 @@ end
 
 
     initial begin
-    sample_counter<=0;
+      sample_counter<=0;
       count<=0;
       la_done<=1;
       register[6'b00000] <= 16'b0000000000000000;				// test values

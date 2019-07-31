@@ -45,7 +45,7 @@ module buspirate_tb();
     .FIFO_WIDTH(FIFO_WIDTH),
     .FIFO_DEPTH(FIFO_DEPTH)
     )buspirate(
-    .clock_master(clk),
+    .clock(clk),
     //.reset(rst),
     .bpio_io(bpio_io),
     .bpio_dir(bpio_dir),
