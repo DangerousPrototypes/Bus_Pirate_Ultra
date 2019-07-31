@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.4.2">
+<eagle version="9.1.3">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -33710,6 +33710,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-8.89" y1="-27.96" x2="-9.945" y2="-33.655" width="0" layer="19" extent="1-1"/>
 <wire x1="-7.94" y1="-19.705" x2="-8.89" y2="-27.96" width="0" layer="19" extent="1-1"/>
 <wire x1="8.48995" y1="1.079875" x2="-7.94" y2="-19.705" width="0" layer="19" extent="1-1"/>
+<wire x1="40.4876" y1="29.2236" x2="38.8112" y2="28.4226" width="0" layer="19" extent="1-1"/>
 <wire x1="0.175" y1="20.315" x2="3.57505" y2="18.859875" width="0" layer="19" extent="1-1"/>
 <wire x1="0.175" y1="29.215" x2="3.57505" y2="31.13125" width="0" layer="19" extent="1-1"/>
 </signal>
@@ -34061,8 +34062,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="64.8393" y1="29.75" x2="64.04" y2="29.75" width="0.254" layer="1"/>
 <wire x1="64.04" y1="29.75" x2="62.865" y2="28.575" width="0.254" layer="1"/>
 <wire x1="54.102" y1="27.432" x2="54.102" y2="31.75" width="0.4064" layer="1"/>
-<wire x1="45.72" y1="31.75" x2="54.102" y2="31.75" width="0.254" layer="16"/>
-<via x="54.102" y="31.75" extent="1-16" drill="0.4064"/>
+<wire x1="45.72" y1="31.75" x2="49.911" y2="31.75" width="0.254" layer="16"/>
 <wire x1="50.292" y1="15.5128" x2="50.292" y2="15.494" width="1.1684" layer="16"/>
 <wire x1="50.292" y1="15.494" x2="53.975" y2="15.494" width="1.1684" layer="16"/>
 <wire x1="54.102" y1="27.432" x2="54.102" y2="19.812" width="1.1684" layer="16"/>
@@ -34136,6 +34136,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="43.18" y1="44.235" x2="43.18" y2="41.275" width="0.3048" layer="1"/>
 <wire x1="18.285" y1="12.821" x2="19.216" y2="11.89" width="0.254" layer="1"/>
 <wire x1="18.285" y1="14.25" x2="18.285" y2="12.821" width="0.254" layer="1"/>
+<via x="49.911" y="31.75" extent="1-16" drill="0.4064"/>
+<wire x1="49.911" y1="31.75" x2="51.8393" y2="31.75" width="0.254" layer="1"/>
 <wire x1="-11.645" y1="-163.195" x2="-11.645" y2="-168.275" width="0" layer="19" extent="1-1"/>
 <wire x1="-11.645" y1="-147.955" x2="-11.645" y2="-163.195" width="0" layer="19" extent="1-1"/>
 <wire x1="-9.895" y1="-138.27" x2="-11.645" y2="-147.955" width="0" layer="19" extent="1-1"/>
@@ -34248,7 +34250,12 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="61.1886" y1="32.893" x2="64.77" y2="36.4744" width="0.254" layer="1"/>
 <wire x1="67.32" y1="47" x2="74.775" y2="47" width="0.254" layer="1"/>
 <wire x1="64.77" y1="44.45" x2="67.32" y2="47" width="0.254" layer="1"/>
+<contactref element="IC23" pad="3"/>
+<contactref element="R49" pad="1"/>
+<wire x1="11.4" y1="2.86" x2="9.806" y2="2.86" width="0.3048" layer="1"/>
+<wire x1="9.806" y1="2.86" x2="9.74" y2="2.794" width="0.3048" layer="1"/>
 <wire x1="44.323" y1="10.033" x2="44.265" y2="7.65" width="0" layer="19" extent="1-16"/>
+<wire x1="11.4" y1="2.86" x2="25.7984" y2="12.9366" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$18">
 <contactref element="LED5" pad="A"/>
@@ -35430,19 +35437,21 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="52.705" y1="36.9288" x2="52.705" y2="36.9003" width="0.254" layer="1"/>
 </signal>
 <signal name="MCU_INT1">
-<contactref element="U3" pad="128"/>
 <via x="25.654" y="33.909" extent="1-16" drill="0.4064"/>
 <wire x1="28.8167375" y1="38.91" x2="48.133" y2="38.91" width="0.254" layer="16"/>
-<via x="52.959" y="33.83" extent="1-16" drill="0.508"/>
-<wire x1="53.3393" y1="34.206903125" x2="52.959" y2="33.83" width="0.254" layer="1"/>
-<wire x1="53.3393" y1="34.206903125" x2="53.3393" y2="35.75" width="0.254" layer="1"/>
 <contactref element="U2" pad="2"/>
 <wire x1="15.285" y1="33.25" x2="24.995" y2="33.25" width="0.254" layer="1"/>
 <wire x1="28.8167375" y1="38.91" x2="25.654" y2="35.7472625" width="0.254" layer="16"/>
-<wire x1="48.133" y1="38.91" x2="52.959" y2="34.084" width="0.254" layer="16"/>
-<wire x1="52.959" y1="34.084" x2="52.959" y2="33.83" width="0.254" layer="16"/>
 <wire x1="24.995" y1="33.25" x2="25.654" y2="33.909" width="0.254" layer="1"/>
 <wire x1="25.654" y1="35.7472625" x2="25.654" y2="33.909" width="0.254" layer="16"/>
+<wire x1="53.34" y1="29.845" x2="51.435" y2="27.94" width="0.254" layer="16"/>
+<wire x1="48.133" y1="38.91" x2="53.34" y2="33.703" width="0.254" layer="16"/>
+<wire x1="53.34" y1="33.703" x2="53.34" y2="29.845" width="0.254" layer="16"/>
+<contactref element="U3" pad="49"/>
+<wire x1="51.3393" y1="14.25" x2="51.3393" y2="16.5413" width="0.254" layer="1"/>
+<wire x1="51.3393" y1="16.5413" x2="51.435" y2="16.637" width="0.254" layer="1"/>
+<via x="51.435" y="16.637" extent="1-16" drill="0.4064"/>
+<wire x1="51.435" y1="16.637" x2="51.435" y2="27.94" width="0.254" layer="16"/>
 </signal>
 <signal name="PWM">
 <contactref element="U3" pad="21"/>
@@ -35455,12 +35464,18 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 </signal>
 <signal name="MCU_MCO">
 <contactref element="U2" pad="100"/>
-<contactref element="U3" pad="20"/>
-<wire x1="38.4868" y1="29.75" x2="41.402" y2="26.8348" width="0.254" layer="1"/>
-<wire x1="41.402" y1="26.8348" x2="41.402" y2="25.6766" width="0.254" layer="1"/>
-<wire x1="41.402" y1="25.6766" x2="42.8286" y2="24.25" width="0.254" layer="1"/>
-<wire x1="42.8286" y1="24.25" x2="43.3393" y2="24.25" width="0.254" layer="1"/>
+<wire x1="38.4868" y1="29.75" x2="40.1509" y2="28.0859" width="0.254" layer="1"/>
 <wire x1="36.785" y1="29.75" x2="38.4868" y2="29.75" width="0.254" layer="1"/>
+<contactref element="U3" pad="128"/>
+<wire x1="40.1509" y1="28.0859" x2="41.2939" y2="28.0859" width="0.254" layer="1"/>
+<wire x1="41.2939" y1="28.0859" x2="41.529" y2="28.321" width="0.254" layer="1"/>
+<via x="41.529" y="28.321" extent="1-16" drill="0.4064"/>
+<wire x1="41.529" y1="28.321" x2="48.387" y2="28.321" width="0.254" layer="16"/>
+<wire x1="48.387" y1="28.321" x2="52.451" y2="32.385" width="0.254" layer="16"/>
+<via x="52.4743" y="32.385" extent="1-16" drill="0.4064"/>
+<wire x1="52.4743" y1="32.385" x2="53.3393" y2="33.25" width="0.254" layer="1"/>
+<wire x1="53.3393" y1="33.25" x2="53.3393" y2="35.75" width="0.254" layer="1"/>
+<wire x1="52.451" y1="32.385" x2="52.4743" y2="32.385" width="0.254" layer="16"/>
 </signal>
 <signal name="MCU_AUX6">
 <contactref element="U3" pad="124"/>
@@ -36096,12 +36111,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="19.674" y1="9.028" x2="19.216" y2="9.486" width="0.4064" layer="1"/>
 <wire x1="21.832" y1="9.028" x2="21.082" y2="9.028" width="0.4064" layer="1"/>
 <wire x1="20.332" y1="9.028" x2="21.082" y2="9.028" width="0.4064" layer="1"/>
-</signal>
-<signal name="VREG_EN">
-<contactref element="IC23" pad="3"/>
-<contactref element="R49" pad="1"/>
-<wire x1="11.4" y1="2.86" x2="9.806" y2="2.86" width="0.3048" layer="1"/>
-<wire x1="9.806" y1="2.86" x2="9.74" y2="2.794" width="0.3048" layer="1"/>
 </signal>
 <signal name="BPIO5">
 <contactref element="IC18" pad="4"/>
