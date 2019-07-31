@@ -46,7 +46,7 @@ int main(void)
 
 	// init vars
 	usbflushtime=0;
-//#define LADEBUG
+#define LADEBUG
 	// init clock
 	rcc_clock_setup_in_hse_8mhz_out_72mhz();
 //	rcc_clock_setup_in_hsi_out_48mhz();
