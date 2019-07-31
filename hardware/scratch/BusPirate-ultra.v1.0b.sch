@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.4.2">
+<eagle version="9.1.3">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -28379,6 +28379,14 @@ TEST PADS</text>
 <wire x1="162.56" y1="304.8" x2="162.56" y2="307.34" width="0.1524" layer="91"/>
 <junction x="162.56" y="307.34"/>
 </segment>
+<segment>
+<pinref part="IC23" gate="IC" pin="!SHDN"/>
+<wire x1="342.9" y1="322.58" x2="322.58" y2="322.58" width="0.1524" layer="91"/>
+<wire x1="322.58" y1="322.58" x2="317.5" y2="322.58" width="0.1524" layer="91"/>
+<pinref part="R49" gate="R" pin="1"/>
+<junction x="322.58" y="322.58"/>
+<label x="317.5" y="322.58" size="1.778" layer="95" align="center-right"/>
+</segment>
 </net>
 <net name="N$18" class="0">
 <segment>
@@ -29502,14 +29510,14 @@ TEST PADS</text>
 </net>
 <net name="MCU_INT1" class="0">
 <segment>
-<pinref part="U3" gate="BANK0" pin="GBIN1/IOT_197"/>
-<wire x1="426.72" y1="149.86" x2="429.26" y2="149.86" width="0.1524" layer="91"/>
-<label x="429.26" y="149.86" size="1.778" layer="95" align="center-left"/>
-</segment>
-<segment>
 <pinref part="U2" gate="U" pin="PE3/FT/FSMC_A19"/>
 <wire x1="38.1" y1="335.28" x2="35.56" y2="335.28" width="0.1524" layer="91"/>
 <label x="35.56" y="335.28" size="1.778" layer="95" align="center-right"/>
+</segment>
+<segment>
+<pinref part="U3" gate="BANK2" pin="GBIN5/IOB_81"/>
+<wire x1="528.32" y1="45.72" x2="530.86" y2="45.72" width="0.1524" layer="91"/>
+<label x="530.86" y="45.72" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="PWM" class="0">
@@ -29531,9 +29539,9 @@ TEST PADS</text>
 <label x="35.56" y="408.94" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U3" gate="BANK3" pin="GBIN7/IOL_13B"/>
-<wire x1="429.26" y1="58.42" x2="431.8" y2="58.42" width="0.1524" layer="91"/>
-<label x="431.8" y="58.42" size="1.778" layer="95" align="center-left"/>
+<pinref part="U3" gate="BANK0" pin="GBIN1/IOT_197"/>
+<wire x1="426.72" y1="149.86" x2="429.26" y2="149.86" width="0.1524" layer="91"/>
+<label x="429.26" y="149.86" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="MCU_AUX6" class="0">
@@ -30278,16 +30286,6 @@ TEST PADS</text>
 <wire x1="396.24" y1="309.88" x2="396.24" y2="314.96" width="0.1524" layer="91"/>
 <junction x="388.62" y="309.88"/>
 <junction x="396.24" y="314.96"/>
-</segment>
-</net>
-<net name="VREG_EN" class="0">
-<segment>
-<pinref part="IC23" gate="IC" pin="!SHDN"/>
-<wire x1="342.9" y1="322.58" x2="322.58" y2="322.58" width="0.1524" layer="91"/>
-<wire x1="322.58" y1="322.58" x2="317.5" y2="322.58" width="0.1524" layer="91"/>
-<pinref part="R49" gate="R" pin="1"/>
-<junction x="322.58" y="322.58"/>
-<label x="317.5" y="322.58" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="BPIO5" class="0">
