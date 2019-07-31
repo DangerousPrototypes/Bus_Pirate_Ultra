@@ -17,7 +17,7 @@ module top #(
   parameter FIFO_WIDTH = 16,
   parameter FIFO_DEPTH = 4
 ) (
-  input clock,
+  input clock_master,
   inout wire [BP_PINS-1:0] bpio_io,
   output wire [BP_PINS-1:0] bpio_dir, bpio_od,
   output wire[LA_CHIPS-1:0] sram_clock,
@@ -60,8 +60,8 @@ module top #(
       .bufdat_tristate_dout(bpio_tdo), //tristate data pin data out
       .bufdat_tristate_din(bpio_tdi)  //tristate data pin data in
       );
-
-
+wire clock;
+assign clock=count[2];
     // PWM
     //TODO: move to pin module????
     //TODO: N:1 mux freq measure and PWM on IO pins?
@@ -108,7 +108,7 @@ module top #(
     reg la_done;
     wire sram_clock_source;
     reg sram_auto_clock;
-    assign sram_clock_source=(`reg_la_start&&!la_done)?clock:(`reg_la_io_quad&&sram_auto_clock)?clock:(`reg_la_io_spi)?mcu_clock:1'b0;
+    assign sram_clock_source=(`reg_la_start&&!la_done)?clock:(`reg_la_io_quad)?sram_auto_clock:(`reg_la_io_spi)?mcu_clock:1'b0;
     //assign sram_clock_source=(`reg_la_start&&!la_done)?clock:mcu_clock;
     assign sram_clock={sram_clock_source,sram_clock_source};
     assign sram_cs={`reg_la_io_cs0,`reg_la_io_cs1};
@@ -129,13 +129,20 @@ module top #(
     sync MC_OE_SYNC(clock, mc_oe, mc_oe_sync);
     sync MC_CE_SYNC(clock, mc_ce, mc_ce_sync);
 
+
+
+always @(posedge clock_master)
+begin
+  count <= count + 1;
+end
+
     always @(posedge clock)
       begin
 
         pwm_reset<=1'b0;
         sram_auto_clock<=1'b0;
         register[0][7:0]<=sram_sio_tdi;
-        count <= count + 1;
+        //count <= count + 1;
 
         if(`reg_la_start)
         begin
@@ -158,10 +165,12 @@ module top #(
               16'h001a:begin
                 pwm_reset<=1'b1;
               end
+              16'h0001:begin
+                sram_auto_clock<=1'b1;
+              end
             endcase
             case(mc_add)
-              16'h0000:begin
-                sram_auto_clock<=1'b1;
+              16'h0000:begin //this prevents contention with the <= from SRAM to register above....
               end
               default:register [mc_add] <= mc_din;
             endcase
