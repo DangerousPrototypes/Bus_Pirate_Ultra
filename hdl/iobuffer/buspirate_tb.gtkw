@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.77 (w)1999-2016 BSI
-[*] Wed Jul 31 12:01:34 2019
+[*] Fri Aug 02 13:03:50 2019
 [*]
 [dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.vcd"
-[dumpfile_mtime] "Wed Jul 31 12:00:09 2019"
-[dumpfile_size] 48677
+[dumpfile_mtime] "Fri Aug 02 12:50:59 2019"
+[dumpfile_size] 52130
 [savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.gtkw"
 [timestart] 63000
 [size] 1920 1017
 [pos] -1 -1
-*-19.301805 809000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-19.301805 2450000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] buspirate_tb.
 [treeopen] buspirate_tb.buspirate.
 [sst_width] 211
@@ -35,9 +35,16 @@ buspirate_tb.buspirate.mc_dout[15:0]
 @22
 buspirate_tb.sram_sio_d[7:0]
 buspirate_tb.sram_sio[7:0]
+@23
 buspirate_tb.buspirate.sram_sio_tdi[7:0]
+@22
 buspirate_tb.buspirate.sram_sio_tdo[7:0]
 buspirate_tb.buspirate.sram_sio[7:0]
+@28
+buspirate_tb.buspirate.sram_clock_source
+buspirate_tb.buspirate.mcu_clock
+buspirate_tb.buspirate.mcu_mosi
+buspirate_tb.buspirate.mcu_miso
 @200
 -BUFFER PINS
 @28
@@ -54,13 +61,11 @@ buspirate_tb.BP_BUF[4].iopin_state
 buspirate_tb.buspirate.register_peek[15:0]
 @28
 buspirate_tb.buspirate.pwm_out
-@29
 buspirate_tb.buspirate.AUX_PWM.rst
 @22
 buspirate_tb.buspirate.sample_counter[22:0]
 @28
 buspirate_tb.buspirate.la_done
-buspirate_tb.buspirate.sram_clock_source
 buspirate_tb.buspirate.clock
 buspirate_tb.buspirate.sram_auto_clock
 @22

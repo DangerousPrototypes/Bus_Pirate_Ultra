@@ -97,6 +97,34 @@ module buspirate_tb();
       repeat(10) @(posedge clk);
 
 
+      //zSRAM SPI debug
+      mc_add = 6'h03;
+      //mc_data_reg <= 16'h0003;
+      mc_data_reg=16'b0000000000000100;
+      mcu_clock=0;
+      mcu_mosi=0;
+      sram_sio_d=8'b00000000;
+      sram_sio_d=8'b00000000;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      mc_oe=0;
+      mcu_clock=1;
+      mcu_mosi=1;
+      sram_sio_d=8'b00100010;
+      sram_sio_d=8'b00100010;
+
+      repeat(6)@(posedge clk);
+      mcu_clock=0;
+      mcu_mosi=0;
+      sram_sio_d=8'b00000000;
+      sram_sio_d=8'b00000000;
+      repeat(6)@(posedge clk);
+
+
+
+
       //IO pins setup
       mc_add = 6'h00; //od|oe
       mc_data_reg <= 16'h00FF;

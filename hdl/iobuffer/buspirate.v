@@ -113,6 +113,7 @@ module top #(
         sram_auto_clock<=1'b0;
         //`reg_la_read[7:0]<=sram_sio_tdi;
         count <= count + 1;
+        la_done<=1'b1;
 
         if(`reg_la_start)
         begin
@@ -148,7 +149,7 @@ module top #(
             case(mc_add)
               6'h02:begin
                 sram_auto_clock<=1'b1; //is this really stable? don't we need delay betwee the clock and the reading of the results?
-                mc_dout_d <= {8'h00,sram_sio_tdi};
+                mc_dout_d <= {8'h00,sram_sio_tdi}; //should move to if clock=1 in a clock delay?
               end
               6'h03: mc_dout_d<=`reg_la_config;
               default:mc_dout_d <= rreg[mc_add];
