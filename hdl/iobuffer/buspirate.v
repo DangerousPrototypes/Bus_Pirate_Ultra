@@ -7,6 +7,8 @@
 `include "synchronizer.v"
 `include "pwm.v"
 `include "pll.v"
+`include "registers.v"
+`define SIMULATION
 
 module top #(
   parameter MC_DATA_WIDTH = 16,
@@ -33,22 +35,24 @@ module top #(
   input wire [MC_ADD_WIDTH-1:0] mc_add,
   inout [MC_DATA_WIDTH-1:0] mc_data
   );
+    //pll PLL_2F(clock,pll_clk,locked);
+    //wires tied to the memory controller WE and OE signals
+    wire mc_we_sync,mc_oe_sync,mc_ce_sync;
+    sync MC_WE_SYNC(clock, mc_we, mc_we_sync);
+    sync MC_OE_SYNC(clock, mc_oe, mc_oe_sync);
+    sync MC_CE_SYNC(clock, mc_ce, mc_ce_sync);
     // memory regs
-    reg [MC_DATA_WIDTH-1:0] register [32:0];
+    reg [MC_DATA_WIDTH-1:0] wreg [32:0];
+    reg [MC_DATA_WIDTH-1:0] rreg [32:0];
     // Tristate pin handling
     // Bus Pirate IO pins
     wire [BP_PINS-1:0] bpio_toe, bpio_tdo, bpio_tdi;
-
     // BP IO pin control wires
     wire [BP_PINS-1:0] bpio_oe,bpio_di,bpio_do;
 
-    `define reg_bpio_od register[3][BP_PINS-1+8:8]
-    `define reg_bpio_dir register[3][BP_PINS-1:0]
-
     iobuf BPIO_BUF[BP_PINS-1:0] (
       //interface
-      //TODO: oe master control!
-      .oe(1'b1), //bp_oe//output enable 1=true
+      .oe(`reg_bpio_oe), //bp_oe//output enable 1=true
       .od(`reg_bpio_od), //open drain 1=true
       .dir(`reg_bpio_dir),//direction 1=input
       .din(bpio_do),//data in (value when buffer is output)
@@ -66,12 +70,7 @@ module top #(
     //TODO: N:1 mux freq measure and PWM on IO pins?
     wire pwm_out;
     reg pwm_reset;
-    `define reg_pwm_on register[25]
-    `define reg_pwm_off register [26]
     pwm AUX_PWM(pwm_reset, count[0],pwm_out, `reg_pwm_on,`reg_pwm_off);
-
-
-    //pll PLL_2F(clock,pll_clk,locked);
     assign bpio_do=pwm_out;
 
   	// Memory controller interface
@@ -80,62 +79,39 @@ module top #(
     wire [MC_DATA_WIDTH-1:0] mc_dout;
     assign mc_dout=mc_dout_d;
 
+    //LATCH OE
+    assign lat_oe=1'b0; //open latch, eleminated on next revision
     localparam N = 3;
     reg [N:0] count;
-    wire bpio_data_oe;
-    wire bpio_data_dout;
-    wire bpio_data_din;
-    wire dout;
     //1111 0100 0010 0100 0000 0000
     reg [22:0] sample_counter;
 
     wire [LA_WIDTH-1:0] sram_sio_tdi;
     wire [LA_WIDTH-1:0] sram_sio_tdo;
 
-    `define reg_la_io_quad register[2][0]
-    `define reg_la_io_quad_direction register[2][1]
-    `define reg_la_io_spi register[2][2]
-    `define reg_la_start register[2][3]
-    `define reg_la_io_cs0 register[2][8] //reserve upper bits for more SRAMs
-    `define reg_la_io_cs1 register[2][9]
-    `define reg_la_samples_post register[4]
-
-
-    //register test:
-    //straight through SPI
-    //reg [LA_WIDTH-1:0] sram_sio_tdo_d;
     reg la_done;
     wire sram_clock_source;
     reg sram_auto_clock;
     assign sram_clock_source=(`reg_la_start&&!la_done)?clock:(`reg_la_io_quad)?sram_auto_clock:(`reg_la_io_spi)?mcu_clock:1'b0;
-    //assign sram_clock_source=(`reg_la_start&&!la_done)?clock:mcu_clock;
     assign sram_clock={sram_clock_source,sram_clock_source};
     assign sram_cs={`reg_la_io_cs0,`reg_la_io_cs1};
-    assign sram_sio_tdo[0]=(`reg_la_start&&!la_done)?lat[0]:`reg_la_io_quad?register[1][0]:mcu_mosi;
-    assign sram_sio_tdo[4]=(`reg_la_start&&!la_done)?lat[4]:`reg_la_io_quad?register[1][4]:mcu_mosi;
-    assign {sram_sio_tdo[7:5],sram_sio_tdo[3:1]}=(`reg_la_start&&!la_done)?{lat[7:5],lat[3:1]}:{register[1][7:5],register[1][3:1]};
+    assign sram_sio_tdo[0]=(`reg_la_start&&!la_done)?lat[0]:`reg_la_io_quad?`reg_la_write[0]:mcu_mosi;
+    assign sram_sio_tdo[4]=(`reg_la_start&&!la_done)?lat[4]:`reg_la_io_quad?`reg_la_write[4]:mcu_mosi;
+    assign {sram_sio_tdo[7:5],sram_sio_tdo[3:1]}=(`reg_la_start&&!la_done)?{lat[7:5],lat[3:1]}:{`reg_la_write[7:5],`reg_la_write[3:1]};
     assign mcu_miso=`reg_la_io_cs1?sram_sio_tdi[5]:sram_sio_tdi[1]; //very hack dont like
 
-    //LATCH OE
-    assign lat_oe=1'b0;
-
-    wire [15:0] register_peek;
-    assign register_peek=register[16'h0000];
-
-    //wires tied to the memory controller WE and OE signals
-    wire mc_we_sync,mc_oe_sync,mc_ce_sync;
-    sync MC_WE_SYNC(clock, mc_we, mc_we_sync);
-    sync MC_OE_SYNC(clock, mc_oe, mc_oe_sync);
-    sync MC_CE_SYNC(clock, mc_ce, mc_ce_sync);
-
-
+    //for simulation debugging...
+    `ifdef SIMULATION
+      wire [15:0] register_peek;
+      assign register_peek=wreg[6'h00];
+    `endif
 
     always @(posedge clock)
       begin
 
         pwm_reset<=1'b0;
         sram_auto_clock<=1'b0;
-        register[0][7:0]<=sram_sio_tdi;
+        //`reg_la_read[7:0]<=sram_sio_tdi;
         count <= count + 1;
 
         if(`reg_la_start)
@@ -153,33 +129,34 @@ module top #(
 
         if(!mc_ce)
         begin
+
           if (mc_we_sync)			// write
+
           begin
+            wreg[mc_add] <= mc_din;
             case(mc_add)
-              6'h001a:begin
-                pwm_reset<=1'b1;
-              end
-              6'h0001:begin
-                sram_auto_clock<=1'b1;
-              end
-            endcase
-            case(mc_add)
-              6'h0000:begin //this prevents contention with the <= from SRAM to register above....
-              end
-              default:register [mc_add] <= mc_din;
+              6'h02:sram_auto_clock<=1'b1;
+              6'h06:pwm_reset<=1'b1;
+              default: begin end
             endcase
           end
+
           else if (mc_oe_sync)		// read
+
           begin
-          case(mc_add)
-            6'h0000:begin
-              sram_auto_clock<=1'b1;
-            end
-          endcase
-            mc_dout_d <= register [mc_add];
+            //mc_dout_d <= rreg[mc_add];
+            case(mc_add)
+              6'h02:begin
+                sram_auto_clock<=1'b1; //is this really stable? don't we need delay betwee the clock and the reading of the results?
+                mc_dout_d <= {8'h00,sram_sio_tdi};
+              end
+              6'h03: mc_dout_d<=`reg_la_config;
+              default:mc_dout_d <= rreg[mc_add];
+            endcase
           end
-        end
-      end
+
+        end// if we or oe
+      end //if ce
 
 
 
@@ -214,9 +191,6 @@ module top #(
 			.D_OUT_0({sram_sio_tdo[7:6],sram_sio_tdo[3:2]}),        //data out wire
 			.D_IN_0({sram_sio_tdi[7:6],sram_sio_tdi[3:2]})           //data in wire
 		);
-
-
-
     // Memory controller data pins
     SB_IO #(
       .PIN_TYPE(6'b1010_01),
@@ -227,18 +201,7 @@ module top #(
       .D_OUT_0(mc_dout),
       .D_IN_0(mc_din)
     );
-/*
-    SB_IO #(
-      .PIN_TYPE(6'b1010_01), //tristate
-      .PULLUP(1'b0)          //no pullup
-    ) bpio_datapin (
-      .PACKAGE_PIN(bpio_io),//which pin
-      .OUTPUT_ENABLE(bpio__data_oe),   //output enable wire
-      .D_OUT_0(bpio__data_dout),        //data out wire
-      .D_IN_0(bpio__data_din)           //data in wire
-    );
-*/
-        // Bus Pirate IO pins
+    // Bus Pirate IO pins
     SB_IO #(
       .PIN_TYPE(6'b1010_01),
       .PULLUP(1'b0)
@@ -249,45 +212,79 @@ module top #(
       .D_IN_0(bpio_tdi)
     );
 
-
-
-
+`ifdef SIMULATION
     initial begin
       sample_counter<=0;
-      count<=0;
+      count<=3'b000;
       la_done<=1;
-      register[6'b00000] <= 16'b0000000000000000;				// test values
-      register[6'b00001] <= 16'b0000000000000000;
-      register[6'b00010] <= 16'b0000000000000000;
-      register[6'b00011] <= 16'b0000000000000000;
-      register[6'b00100] <= 16'b0000000000000000;
-      register[6'b00101] <= 16'b0000000000000000;
-      register[6'b00110] <= 16'b0000000000000000;
-      register[6'b00111] <= 16'b0000000000000000;
-      register[6'b01000] <= 16'b0000000000000000;
-      register[6'b01001] <= 16'b0000000000000000;
-      register[6'b01010] <= 16'b0000000000000000;
-      register[6'b01011] <= 16'b0000000000000000;
-      register[6'b01100] <= 16'b0000000000000000;
-      register[6'b01101] <= 16'b0000000000000000;
-      register[6'b01110] <= 16'b0000000000000000;
-      register[6'b01111] <= 16'b0000000000000000;
-      register[6'b10000] <= 16'b0000000000000000;
-      register[6'b10001] <= 16'b0000000000000000;
-      register[6'b10010] <= 16'b0000000000000000;
-      register[6'b10011] <= 16'b0000000000000000;
-      register[6'b10100] <= 16'b0000000000000000;
-      register[6'b10101] <= 16'b0000000000000000;
-      register[6'b10110] <= 16'b0000000000000000;
-      register[6'b10111] <= 16'b0000000000000000;
-      register[6'b11000] <= 16'b0000000000000000;
-      register[6'b11001] <= 16'b0000000000000000;
-      register[6'b11010] <= 16'b0000000000000000;
-      register[6'b11011] <= 16'b0000000000000000;
-      register[6'b11100] <= 16'b0000000000000000;
-      register[6'b11101] <= 16'b0000000000000000;
-      register[6'b11110] <= 16'b0000000000000000;
-      register[6'b11111] <= 16'b0000000000000000;
+      rreg[6'b00000] <= 16'b0000000000000000;				// test values
+      rreg[6'b00001] <= 16'b0000000000000000;
+      rreg[6'b00010] <= 16'b0000000000000000;
+      rreg[6'b00011] <= 16'b0000000000000000;
+      rreg[6'b00100] <= 16'b0000000000000000;
+      rreg[6'b00101] <= 16'b0000000000000000;
+      rreg[6'b00110] <= 16'b0000000000000000;
+      rreg[6'b00111] <= 16'b0000000000000000;
+      rreg[6'b01000] <= 16'b0000000000000000;
+      rreg[6'b01001] <= 16'b0000000000000000;
+      rreg[6'b01010] <= 16'b0000000000000000;
+      rreg[6'b01011] <= 16'b0000000000000000;
+      rreg[6'b01100] <= 16'b0000000000000000;
+      rreg[6'b01101] <= 16'b0000000000000000;
+      rreg[6'b01110] <= 16'b0000000000000000;
+      rreg[6'b01111] <= 16'b0000000000000000;
+      rreg[6'b10000] <= 16'b0000000000000000;
+      rreg[6'b10001] <= 16'b0000000000000000;
+      rreg[6'b10010] <= 16'b0000000000000000;
+      rreg[6'b10011] <= 16'b0000000000000000;
+      rreg[6'b10100] <= 16'b0000000000000000;
+      rreg[6'b10101] <= 16'b0000000000000000;
+      rreg[6'b10110] <= 16'b0000000000000000;
+      rreg[6'b10111] <= 16'b0000000000000000;
+      rreg[6'b11000] <= 16'b0000000000000000;
+      rreg[6'b11001] <= 16'b0000000000000000;
+      rreg[6'b11010] <= 16'b0000000000000000;
+      rreg[6'b11011] <= 16'b0000000000000000;
+      rreg[6'b11100] <= 16'b0000000000000000;
+      rreg[6'b11101] <= 16'b0000000000000000;
+      rreg[6'b11110] <= 16'b0000000000000000;
+      rreg[6'b11111] <= 16'b0000000000000000;
+
+      wreg[6'b00000] <= 16'b0000000000000000;				// test values
+      wreg[6'b00001] <= 16'b0000000000000000;
+      wreg[6'b00010] <= 16'b0000000000000000;
+      wreg[6'b00011] <= 16'b0000000000000000;
+      wreg[6'b00100] <= 16'b0000000000000000;
+      wreg[6'b00101] <= 16'b0000000000000000;
+      wreg[6'b00110] <= 16'b0000000000000000;
+      wreg[6'b00111] <= 16'b0000000000000000;
+      wreg[6'b01000] <= 16'b0000000000000000;
+      wreg[6'b01001] <= 16'b0000000000000000;
+      wreg[6'b01010] <= 16'b0000000000000000;
+      wreg[6'b01011] <= 16'b0000000000000000;
+      wreg[6'b01100] <= 16'b0000000000000000;
+      wreg[6'b01101] <= 16'b0000000000000000;
+      wreg[6'b01110] <= 16'b0000000000000000;
+      wreg[6'b01111] <= 16'b0000000000000000;
+      wreg[6'b10000] <= 16'b0000000000000000;
+      wreg[6'b10001] <= 16'b0000000000000000;
+      wreg[6'b10010] <= 16'b0000000000000000;
+      wreg[6'b10011] <= 16'b0000000000000000;
+      wreg[6'b10100] <= 16'b0000000000000000;
+      wreg[6'b10101] <= 16'b0000000000000000;
+      wreg[6'b10110] <= 16'b0000000000000000;
+      wreg[6'b10111] <= 16'b0000000000000000;
+      wreg[6'b11000] <= 16'b0000000000000000;
+      wreg[6'b11001] <= 16'b0000000000000000;
+      wreg[6'b11010] <= 16'b0000000000000000;
+      wreg[6'b11011] <= 16'b0000000000000000;
+      wreg[6'b11100] <= 16'b0000000000000000;
+      wreg[6'b11101] <= 16'b0000000000000000;
+      wreg[6'b11110] <= 16'b0000000000000000;
+      wreg[6'b11111] <= 16'b0000000000000000;
+
+
     end
+  `endif
 
 endmodule

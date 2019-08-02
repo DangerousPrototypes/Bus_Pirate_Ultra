@@ -97,18 +97,32 @@ module buspirate_tb();
       repeat(10) @(posedge clk);
 
 
-
+      //IO pins setup
+      mc_add = 6'h00; //od|oe
+      mc_data_reg <= 16'h00FF;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+      mc_add = 6'h01; //hl|dir
+      mc_data_reg <= 16'h0000;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
 
 
       //PWM
-      mc_add = 6'h19;
+      mc_add = 6'h05;
       mc_data_reg <= 16'h0001;
       repeat(6)@(posedge clk);
       mc_we=0;
       repeat(6)@(posedge clk);
       mc_we=1;
       repeat(6)@(posedge clk);
-      mc_add = 6'h1a;
+      mc_add = 6'h06;
       mc_data_reg <= 16'h0001;
       repeat(6)@(posedge clk);
       mc_we=0;
@@ -126,7 +140,7 @@ module buspirate_tb();
       mc_we=1;
 
       //SRAM quad, read, CS low...
-      mc_add = 6'h02;
+      mc_add = 6'h03;
       //mc_data_reg <= 16'h0003;
       mc_data_reg=16'b0000000000000001;
       repeat(6)@(posedge clk);
@@ -134,7 +148,7 @@ module buspirate_tb();
       repeat(6)@(posedge clk);
       mc_we=1;
 
-      mc_add = 6'h00;
+      mc_add = 6'h02;
       //mc_data_reg = 16'hzzzz;
       sram_sio_d=8'haa;
       repeat(6)@(posedge clk);
@@ -149,7 +163,7 @@ module buspirate_tb();
       mc_oe=1;
       repeat(12)@(posedge clk);
       //start LA
-      mc_add = 6'h02;
+      mc_add = 6'h03;
       //mc_data_reg <= 16'h0003;
       mc_data_reg=16'b0000000000001001;
       repeat(6)@(posedge clk);
