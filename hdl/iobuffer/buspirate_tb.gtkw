@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.77 (w)1999-2016 BSI
-[*] Tue Jul 30 15:53:50 2019
+[*] Wed Jul 31 12:01:34 2019
 [*]
 [dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.vcd"
-[dumpfile_mtime] "Tue Jul 30 15:52:02 2019"
-[dumpfile_size] 48584
+[dumpfile_mtime] "Wed Jul 31 12:00:09 2019"
+[dumpfile_size] 48677
 [savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.gtkw"
 [timestart] 63000
 [size] 1920 1017
 [pos] -1 -1
-*-19.301805 2011000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-19.301805 809000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] buspirate_tb.
 [treeopen] buspirate_tb.buspirate.
 [sst_width] 211
@@ -54,13 +54,16 @@ buspirate_tb.BP_BUF[4].iopin_state
 buspirate_tb.buspirate.register_peek[15:0]
 @28
 buspirate_tb.buspirate.pwm_out
+@29
+buspirate_tb.buspirate.AUX_PWM.rst
 @22
 buspirate_tb.buspirate.sample_counter[22:0]
 @28
 buspirate_tb.buspirate.la_done
 buspirate_tb.buspirate.sram_clock_source
 buspirate_tb.buspirate.clock
-@29
 buspirate_tb.buspirate.sram_auto_clock
+@22
+buspirate_tb.buspirate.lat[7:0]
 [pattern_trace] 1
 [pattern_trace] 0

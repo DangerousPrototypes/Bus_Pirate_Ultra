@@ -36,6 +36,7 @@ module buspirate_tb();
 
   assign sram_sio=(!mc_oe)?sram_sio_d:8'hzz;
 
+
   top #(
     .MC_DATA_WIDTH(MC_DATA_WIDTH),
     .MC_ADD_WIDTH(MC_ADD_WIDTH),
@@ -118,6 +119,7 @@ module buspirate_tb();
       //LA sample count
       mc_add = 6'h04;
       mc_data_reg=16'h0010;
+      lat<=8'hAA;
       repeat(6)@(posedge clk);
       mc_we=0;
       repeat(6)@(posedge clk);

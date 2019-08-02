@@ -4,7 +4,7 @@
 #------------------------------------------------------------------
 
 # Clock source
-set_io clock_master 20 # friendly name, fpga pin
+set_io clock 20 # friendly name, fpga pin
 set_io reset 55 #wrong pin, just holder
 
 # Bus Pirate bpio_fer control pins

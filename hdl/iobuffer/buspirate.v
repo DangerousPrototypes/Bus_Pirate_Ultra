@@ -111,9 +111,9 @@ module top #(
     //assign sram_clock_source=(`reg_la_start&&!la_done)?clock:mcu_clock;
     assign sram_clock={sram_clock_source,sram_clock_source};
     assign sram_cs={`reg_la_io_cs0,`reg_la_io_cs1};
-    assign sram_sio_tdo[0]=`reg_la_io_quad?register[1][0]:mcu_mosi;
-    assign sram_sio_tdo[4]=`reg_la_io_quad?register[1][4]:mcu_mosi;
-    assign {sram_sio_tdo[7:5],sram_sio_tdo[3:1]}={register[1][7:5],register[1][3:1]};
+    assign sram_sio_tdo[0]=(`reg_la_start&&!la_done)?lat[0]:`reg_la_io_quad?register[1][0]:mcu_mosi;
+    assign sram_sio_tdo[4]=(`reg_la_start&&!la_done)?lat[4]:`reg_la_io_quad?register[1][4]:mcu_mosi;
+    assign {sram_sio_tdo[7:5],sram_sio_tdo[3:1]}=(`reg_la_start&&!la_done)?{lat[7:5],lat[3:1]}:{register[1][7:5],register[1][3:1]};
     assign mcu_miso=`reg_la_io_cs1?sram_sio_tdi[5]:sram_sio_tdi[1]; //very hack dont like
 
     //LATCH OE
@@ -156,15 +156,15 @@ module top #(
           if (mc_we_sync)			// write
           begin
             case(mc_add)
-              16'h001a:begin
+              6'h001a:begin
                 pwm_reset<=1'b1;
               end
-              16'h0001:begin
+              6'h0001:begin
                 sram_auto_clock<=1'b1;
               end
             endcase
             case(mc_add)
-              16'h0000:begin //this prevents contention with the <= from SRAM to register above....
+              6'h0000:begin //this prevents contention with the <= from SRAM to register above....
               end
               default:register [mc_add] <= mc_din;
             endcase
@@ -172,7 +172,7 @@ module top #(
           else if (mc_oe_sync)		// read
           begin
           case(mc_add)
-            16'h0000:begin
+            6'h0000:begin
               sram_auto_clock<=1'b1;
             end
           endcase
