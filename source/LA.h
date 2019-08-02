@@ -35,9 +35,9 @@ void logicAnalyzerDumpSamples(uint32_t numSamples);
 #define la_sram_quad_input() gpio_clear(GPIOE, GPIO3)
 
 #define sram_select() sram_select_0(); sram_select_1()
-#define sram_select_0() FPGA_REG_02&=~(0b1<<8)
-#define sram_select_1() FPGA_REG_02&=~(0b1<<9)
-#define sram_deselect() FPGA_REG_02|=0b11<<8
+#define sram_select_0() FPGA_REG_03&=~(0b1<<8)
+#define sram_select_1() FPGA_REG_03&=~(0b1<<9)
+#define sram_deselect() FPGA_REG_03|=0b11<<8
 
 #define sram_clock_high() gpio_set(GPIOB,GPIO13)
 #define sram_clock_low() gpio_clear(GPIOB,GPIO13)
