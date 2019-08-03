@@ -52,8 +52,8 @@ set_io mcu_cs 71 #B12
 set_io mcu_mosi 68 #MOSI B15
 set_io mcu_miso 67 #MISO B14
 
-set_io -nowarn mcu_aux1 129 #C10 aux1 137 #E2
-set_io -nowarn mcu_aux2 128 #C11 aux2 136 #E3
+set_io -nowarn mcu_aux1 137 #E2
+set_io -nowarn mcu_aux2 136 #E3
 set_io -nowarn mcu_aux3 135 #C12
 set_io -nowarn mcu_aux4 134 #
 set_io -nowarn mcu_aux5 125 #B8

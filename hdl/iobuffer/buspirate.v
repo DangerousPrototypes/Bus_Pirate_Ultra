@@ -94,11 +94,11 @@ module top #(
     reg sram_auto_clock;
     assign sram_clock_source=(`reg_la_start&&!la_done)?clock:(`reg_la_io_quad)?sram_auto_clock:(`reg_la_io_spi)?mcu_clock:1'b0;
     assign sram_clock={sram_clock_source,sram_clock_source};
-    assign sram_cs={`reg_la_io_cs0,`reg_la_io_cs1};
+    assign sram_cs={`reg_la_io_cs1,`reg_la_io_cs0};
     assign sram_sio_tdo[0]=(`reg_la_start&&!la_done)?lat[0]:`reg_la_io_quad?`reg_la_write[0]:mcu_mosi;
     assign sram_sio_tdo[4]=(`reg_la_start&&!la_done)?lat[4]:`reg_la_io_quad?`reg_la_write[4]:mcu_mosi;
     assign {sram_sio_tdo[7:5],sram_sio_tdo[3:1]}=(`reg_la_start&&!la_done)?{lat[7:5],lat[3:1]}:{`reg_la_write[7:5],`reg_la_write[3:1]};
-    assign mcu_miso=`reg_la_io_cs1?sram_sio_tdi[5]:sram_sio_tdi[1]; //very hack dont like
+    assign mcu_miso=!`reg_la_io_cs0?sram_sio_tdi[1]:sram_sio_tdi[5]; //very hack dont like
 
     //for simulation debugging...
     `ifdef SIMULATION
