@@ -14917,6 +14917,71 @@ Based on TE part number 1981568-1</description>
 <wire x1="1.175" y1="-1.525" x2="-1.175" y2="-1.525" width="0.127" layer="39"/>
 <wire x1="-1.175" y1="-1.525" x2="-1.175" y2="1.525" width="0.127" layer="39"/>
 </package>
+<package name="SC-70-6_EXTENDED_PADS">
+<smd name="1" x="-0.65" y="-1.4" dx="0.47" dy="2" layer="1" stop="no"/>
+<smd name="2" x="0" y="-1.4" dx="0.47" dy="2" layer="1" stop="no"/>
+<smd name="3" x="0.65" y="-1.4" dx="0.47" dy="2" layer="1" stop="no"/>
+<smd name="4" x="0.65" y="1.4" dx="0.47" dy="2" layer="1" stop="no"/>
+<smd name="5" x="0" y="1.4" dx="0.47" dy="2" layer="1" stop="no"/>
+<smd name="6" x="-0.65" y="1.4" dx="0.47" dy="2" layer="1" stop="no"/>
+<wire x1="-1.05" y1="0.625" x2="1.05" y2="0.625" width="0.127" layer="51"/>
+<wire x1="1.05" y1="0.625" x2="1.05" y2="-0.625" width="0.127" layer="51"/>
+<wire x1="1.05" y1="-0.625" x2="-1.05" y2="-0.625" width="0.127" layer="51"/>
+<wire x1="-1.05" y1="-0.625" x2="-1.05" y2="0.625" width="0.127" layer="51"/>
+<rectangle x1="-0.775" y1="0.625" x2="-0.525" y2="1.15" layer="51"/>
+<rectangle x1="-0.125" y1="0.625" x2="0.125" y2="1.15" layer="51"/>
+<rectangle x1="0.525" y1="0.625" x2="0.775" y2="1.15" layer="51"/>
+<rectangle x1="0.525" y1="-1.15" x2="0.775" y2="-0.625" layer="51"/>
+<rectangle x1="-0.125" y1="-1.15" x2="0.125" y2="-0.625" layer="51"/>
+<rectangle x1="-0.775" y1="-1.15" x2="-0.525" y2="-0.625" layer="51"/>
+<circle x="-0.8" y="-0.375" radius="0" width="0.127" layer="51"/>
+<text x="0" y="3.81" size="1.27" layer="25" font="vector" ratio="10" align="center">&gt;NAME</text>
+<text x="0" y="-3.81" size="1.27" layer="27" font="vector" ratio="10" align="center">&gt;VALUE</text>
+<wire x1="-1.05" y1="-0.625" x2="-1.05" y2="0.625" width="0.127" layer="21"/>
+<wire x1="1.05" y1="0.625" x2="1.05" y2="-0.625" width="0.127" layer="21"/>
+<rectangle x1="-0.285" y1="0.35" x2="0.285" y2="2.45" layer="29"/>
+<rectangle x1="0.365" y1="0.35" x2="0.935" y2="2.45" layer="29"/>
+<rectangle x1="-0.935" y1="0.35" x2="-0.365" y2="2.45" layer="29"/>
+<rectangle x1="-0.285" y1="-2.45" x2="0.285" y2="-0.35" layer="29"/>
+<rectangle x1="0.365" y1="-2.45" x2="0.935" y2="-0.35" layer="29"/>
+<rectangle x1="-0.935" y1="-2.45" x2="-0.365" y2="-0.35" layer="29"/>
+<circle x="-1.27" y="-1.016" radius="0.179603125" width="0" layer="21"/>
+<wire x1="-1.175" y1="2.525" x2="1.175" y2="2.525" width="0.127" layer="39"/>
+<wire x1="1.175" y1="2.525" x2="1.175" y2="-2.525" width="0.127" layer="39"/>
+<wire x1="1.175" y1="-2.525" x2="-1.175" y2="-2.525" width="0.127" layer="39"/>
+<wire x1="-1.175" y1="-2.525" x2="-1.175" y2="2.525" width="0.127" layer="39"/>
+</package>
+<package name="SC-70-5_EXTENDED_PADS">
+<smd name="1" x="-0.65" y="-1.4" dx="0.47" dy="2" layer="1" stop="no"/>
+<smd name="2" x="0" y="-1.4" dx="0.47" dy="2" layer="1" stop="no"/>
+<smd name="3" x="0.65" y="-1.4" dx="0.47" dy="2" layer="1" stop="no"/>
+<smd name="4" x="0.65" y="1.4" dx="0.47" dy="2" layer="1" stop="no"/>
+<smd name="5" x="-0.65" y="1.4" dx="0.47" dy="2" layer="1" stop="no"/>
+<wire x1="-1.05" y1="0.625" x2="1.05" y2="0.625" width="0.127" layer="51"/>
+<wire x1="1.05" y1="0.625" x2="1.05" y2="-0.625" width="0.127" layer="51"/>
+<wire x1="1.05" y1="-0.625" x2="-1.05" y2="-0.625" width="0.127" layer="51"/>
+<wire x1="-1.05" y1="-0.625" x2="-1.05" y2="0.625" width="0.127" layer="51"/>
+<rectangle x1="-0.775" y1="0.625" x2="-0.525" y2="1.15" layer="51"/>
+<rectangle x1="0.525" y1="0.625" x2="0.775" y2="1.15" layer="51"/>
+<rectangle x1="0.525" y1="-1.15" x2="0.775" y2="-0.625" layer="51"/>
+<rectangle x1="-0.125" y1="-1.15" x2="0.125" y2="-0.625" layer="51"/>
+<rectangle x1="-0.775" y1="-1.15" x2="-0.525" y2="-0.625" layer="51"/>
+<circle x="-0.8" y="-0.375" radius="0" width="0.127" layer="51"/>
+<text x="0" y="3.81" size="1.27" layer="25" font="vector" ratio="10" align="center">&gt;NAME</text>
+<text x="0" y="-3.81" size="1.27" layer="27" font="vector" ratio="10" align="center">&gt;VALUE</text>
+<wire x1="-1.05" y1="-0.625" x2="-1.05" y2="0.625" width="0.127" layer="21"/>
+<wire x1="1.05" y1="0.625" x2="1.05" y2="-0.625" width="0.127" layer="21"/>
+<rectangle x1="0.365" y1="0.35" x2="0.935" y2="2.45" layer="29"/>
+<rectangle x1="-0.935" y1="0.35" x2="-0.365" y2="2.45" layer="29"/>
+<rectangle x1="-0.285" y1="-2.45" x2="0.285" y2="-0.35" layer="29"/>
+<rectangle x1="0.365" y1="-2.45" x2="0.935" y2="-0.35" layer="29"/>
+<rectangle x1="-0.935" y1="-2.45" x2="-0.365" y2="-0.35" layer="29"/>
+<circle x="-1.27" y="-1.016" radius="0.179603125" width="0" layer="21"/>
+<wire x1="-1.175" y1="2.525" x2="1.175" y2="2.525" width="0.127" layer="39"/>
+<wire x1="1.175" y1="2.525" x2="1.175" y2="-2.525" width="0.127" layer="39"/>
+<wire x1="1.175" y1="-2.525" x2="-1.175" y2="-2.525" width="0.127" layer="39"/>
+<wire x1="-1.175" y1="-2.525" x2="-1.175" y2="2.525" width="0.127" layer="39"/>
+</package>
 </packages>
 <symbols>
 <symbol name="RESISTOR">
@@ -15876,6 +15941,19 @@ Based on TE part number 1981568-1</description>
 <technology name=""/>
 </technologies>
 </device>
+<device name="-EXTENDED" package="SC-70-6_EXTENDED_PADS">
+<connects>
+<connect gate="U" pin="A" pad="3"/>
+<connect gate="U" pin="B" pad="4"/>
+<connect gate="U" pin="DIR" pad="5"/>
+<connect gate="U" pin="GND" pad="2"/>
+<connect gate="U" pin="VCCA" pad="1"/>
+<connect gate="U" pin="VCCB" pad="6"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
 </devices>
 </deviceset>
 <deviceset name="IC_FPGA_ICE40HX4K" prefix="U">
@@ -16552,6 +16630,17 @@ Based on TE part number 1981568-1</description>
 </gates>
 <devices>
 <device name="" package="SC-70-5">
+<connects>
+<connect gate="G" pin="I" pad="2"/>
+<connect gate="G" pin="O" pad="4"/>
+<connect gate="P" pin="GND" pad="3"/>
+<connect gate="P" pin="V+" pad="5"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="-EXTENDED" package="SC-70-5_EXTENDED_PADS">
 <connects>
 <connect gate="G" pin="I" pad="2"/>
 <connect gate="G" pin="O" pad="4"/>
@@ -34455,34 +34544,34 @@ Source: AVX .. aphvc.pdf</description>
 <part name="RN3" library="dp_devices" deviceset="RNETWORK" device="" value="2K"/>
 <part name="U3" library="dp_devices.v6" deviceset="IC_FPGA_ICE40HX4K" device="" value="ICE40HX4K"/>
 <part name="U2" library="dp_devices.v6" deviceset="IC_UC_STM32F103ZX" device="" value="STM32F103ZX"/>
-<part name="IC8" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-SC-70-6" value="SN74LVC1T45DBV"/>
+<part name="IC8" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-EXTENDED" value="SN74LVC1T45DBV"/>
 <part name="R19" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="P+13" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="R28" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="R24" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="1M"/>
 <part name="P+8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="IC9" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-SC-70-6" value="SN74LVC1T45DBV"/>
+<part name="IC9" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-EXTENDED" value="SN74LVC1T45DBV"/>
 <part name="R20" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="P+14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="R29" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="R25" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="1M"/>
 <part name="P+4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="P+9" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="IC10" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-SC-70-6" value="SN74LVC1T45DBV"/>
+<part name="IC10" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-EXTENDED" value="SN74LVC1T45DBV"/>
 <part name="R21" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="P+15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="R30" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="R26" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="1M"/>
 <part name="P+5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="P+10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="IC13" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-SC-70-6" value="SN74LVC1T45DBV"/>
+<part name="IC13" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-EXTENDED" value="SN74LVC1T45DBV"/>
 <part name="R23" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="P+17" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="R33" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="R31" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="1M"/>
 <part name="P+7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="P+12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="IC11" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-SC-70-6" value="SN74LVC1T45DBV"/>
+<part name="IC11" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-EXTENDED" value="SN74LVC1T45DBV"/>
 <part name="R22" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="P+16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="R32" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
@@ -34584,33 +34673,33 @@ Source: AVX .. aphvc.pdf</description>
 <part name="U1" library="dp_devices.v6" deviceset="IC_MEM_W25X40CL" device="" value="W25X40CL"/>
 <part name="+3V1" library="dp_devices.v6" deviceset="SUPPLY_+3V3" device=""/>
 <part name="+3V2" library="dp_devices.v6" deviceset="SUPPLY_+3V3" device=""/>
-<part name="IC18" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-SC-70-6" value="SN74LVC1T45DBV"/>
-<part name="R34" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="100K"/>
+<part name="IC18" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-EXTENDED" value="SN74LVC1T45DBV"/>
+<part name="R34" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="P+18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="R35" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="100K"/>
-<part name="R36" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="1M"/>
+<part name="R35" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
+<part name="R36" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="1M"/>
 <part name="P+19" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="P+20" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C55" library="rcl" deviceset="C-EU" device="C0603" value="0.1uF"/>
-<part name="C56" library="rcl" deviceset="C-EU" device="C0603" value="0.1uF"/>
-<part name="IC20" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-SC-70-6" value="SN74LVC1T45DBV"/>
-<part name="R37" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="100K"/>
+<part name="C55" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="C-EU" device="C0402" package3d_urn="urn:adsk.eagle:package:26136/1" value="0.1uF"/>
+<part name="C56" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="C-EU" device="C0402" package3d_urn="urn:adsk.eagle:package:26136/1" value="0.1uF"/>
+<part name="IC20" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-EXTENDED" value="SN74LVC1T45DBV"/>
+<part name="R37" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="P+21" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="R38" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="100K"/>
-<part name="R39" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="1M"/>
+<part name="R38" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
+<part name="R39" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="1M"/>
 <part name="P+22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="P+23" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C57" library="rcl" deviceset="C-EU" device="C0603" value="0.1uF"/>
-<part name="C58" library="rcl" deviceset="C-EU" device="C0603" value="0.1uF"/>
-<part name="IC22" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-SC-70-6" value="SN74LVC1T45DBV"/>
+<part name="C57" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="C-EU" device="C0402" package3d_urn="urn:adsk.eagle:package:26136/1" value="0.1uF"/>
+<part name="C58" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="C-EU" device="C0402" package3d_urn="urn:adsk.eagle:package:26136/1" value="0.1uF"/>
+<part name="IC22" library="dp_devices.v6" deviceset="IC_BUFF_SN74LVC1T45DBV" device="-EXTENDED" value="SN74LVC1T45DBV"/>
 <part name="R40" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
 <part name="P+24" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="R41" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="100K"/>
-<part name="R42" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="1M"/>
+<part name="R41" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="100K"/>
+<part name="R42" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:26058/1" value="1M"/>
 <part name="P+25" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="P+26" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C59" library="rcl" deviceset="C-EU" device="C0603" value="0.1uF"/>
-<part name="C60" library="rcl" deviceset="C-EU" device="C0603" value="0.1uF"/>
+<part name="C59" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="C-EU" device="C0402" package3d_urn="urn:adsk.eagle:package:26136/1" value="0.1uF"/>
+<part name="C60" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="C-EU" device="C0402" package3d_urn="urn:adsk.eagle:package:26136/1" value="0.1uF"/>
 <part name="R43" library="dp_devices.v6" deviceset="RESISTOR" device="-0603"/>
 <part name="R44" library="dp_devices.v6" deviceset="RESISTOR" device="-0603"/>
 <part name="GND6" library="dp_devices.v6" deviceset="SUPPLY_GND" device=""/>
@@ -34745,20 +34834,21 @@ Source: AVX .. aphvc.pdf</description>
 <part name="GND83" library="dp_devices.v6" deviceset="SUPPLY_GND" device=""/>
 <part name="SUPPLY7" library="supply2" deviceset="V+" device=""/>
 <part name="GND84" library="dp_devices.v6" deviceset="SUPPLY_GND" device=""/>
-<part name="IC4" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="" value="74LVC1G07DBV"/>
+<part name="IC4" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="-EXTENDED" value="74LVC1G07DBV"/>
 <part name="P+27" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="GND85" library="dp_devices.v6" deviceset="SUPPLY_GND" device=""/>
 <part name="C53" library="dp_devices.v6" deviceset="CAPACITOR_NPOL" device="-0603"/>
 <part name="GND22" library="dp_devices.v6" deviceset="SUPPLY_GND" device=""/>
 <part name="R48" library="dp_devices.v6" deviceset="RESISTOR" device="-0603"/>
 <part name="R53" library="dp_devices.v6" deviceset="RESISTOR" device="-0603" value="0R"/>
-<part name="IC5" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="" value="74LVC1G07DBV"/>
-<part name="IC6" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="" value="74LVC1G07DBV"/>
-<part name="IC12" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="" value="74LVC1G07DBV"/>
-<part name="IC7" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="" value="74LVC1G07DBV"/>
-<part name="IC21" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="" value="74LVC1G07DBV"/>
-<part name="IC19" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="" value="74LVC1G07DBV"/>
-<part name="IC17" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="" value="74LVC1G07DBV"/>
+<part name="IC5" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="-EXTENDED" value="74LVC1G07DBV"/>
+<part name="IC6" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="-EXTENDED" value="74LVC1G07DBV"/>
+<part name="IC12" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="-EXTENDED" value="74LVC1G07DBV"/>
+<part name="IC7" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="-EXTENDED" value="74LVC1G07DBV"/>
+<part name="IC21" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="-EXTENDED" value="74LVC1G07DBV"/>
+<part name="IC19" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="-EXTENDED" value="74LVC1G07DBV"/>
+<part name="IC17" library="dp_devices.v6" deviceset="IC_BUFF_74LVC1G07" device="-EXTENDED" value="74LVC1G07DBV"/>
+<part name="GND86" library="dp_devices.v6" deviceset="SUPPLY_GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -35824,6 +35914,7 @@ TEST PADS</text>
 <attribute name="VALUE" x="101.6" y="114.3" size="1.778" layer="96"/>
 </instance>
 <instance part="IC17" gate="P" x="513.08" y="284.48"/>
+<instance part="GND86" gate="G$1" x="337.82" y="88.9" smashed="yes" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -36504,6 +36595,11 @@ TEST PADS</text>
 <segment>
 <pinref part="IC17" gate="P" pin="GND"/>
 <pinref part="GND55" gate="G$1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="IC3" gate="IC" pin="!OE"/>
+<pinref part="GND86" gate="G$1" pin="GND"/>
+<wire x1="335.28" y1="88.9" x2="332.74" y2="88.9" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="3V3" class="0">
@@ -37409,9 +37505,9 @@ TEST PADS</text>
 <label x="708.66" y="116.84" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<wire x1="332.74" y1="109.22" x2="335.28" y2="109.22" width="0.1524" layer="91"/>
-<pinref part="IC3" gate="IC" pin="7D"/>
-<label x="335.28" y="109.22" size="1.778" layer="95" align="center-left"/>
+<wire x1="332.74" y1="96.52" x2="335.28" y2="96.52" width="0.1524" layer="91"/>
+<pinref part="IC3" gate="IC" pin="2D"/>
+<label x="335.28" y="96.52" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFDIR1" class="0">
@@ -37498,9 +37594,9 @@ TEST PADS</text>
 <label x="708.66" y="114.3" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<wire x1="332.74" y1="106.68" x2="335.28" y2="106.68" width="0.1524" layer="91"/>
-<pinref part="IC3" gate="IC" pin="6D"/>
-<label x="335.28" y="106.68" size="1.778" layer="95" align="center-left"/>
+<wire x1="332.74" y1="99.06" x2="335.28" y2="99.06" width="0.1524" layer="91"/>
+<pinref part="IC3" gate="IC" pin="3D"/>
+<label x="335.28" y="99.06" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFOD2" class="0">
@@ -37574,9 +37670,9 @@ TEST PADS</text>
 <label x="708.66" y="111.76" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<wire x1="332.74" y1="104.14" x2="335.28" y2="104.14" width="0.1524" layer="91"/>
-<pinref part="IC3" gate="IC" pin="5D"/>
-<label x="335.28" y="104.14" size="1.778" layer="95" align="center-left"/>
+<wire x1="332.74" y1="101.6" x2="335.28" y2="101.6" width="0.1524" layer="91"/>
+<pinref part="IC3" gate="IC" pin="4D"/>
+<label x="335.28" y="101.6" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFOD3" class="0">
@@ -38419,18 +38515,6 @@ TEST PADS</text>
 <label x="388.62" y="139.7" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
-<net name="LAT_OE" class="0">
-<segment>
-<wire x1="332.74" y1="88.9" x2="335.28" y2="88.9" width="0.1524" layer="91"/>
-<label x="335.28" y="88.9" size="1.778" layer="95" rot="MR180" align="center-left"/>
-<pinref part="IC3" gate="IC" pin="!OE"/>
-</segment>
-<segment>
-<pinref part="U3" gate="BANK1" pin="IOR_138"/>
-<wire x1="528.32" y1="142.24" x2="530.86" y2="142.24" width="0.1524" layer="91"/>
-<label x="530.86" y="142.24" size="1.778" layer="95" align="center-left"/>
-</segment>
-</net>
 <net name="N$19" class="0">
 <segment>
 <pinref part="U2" gate="U" pin="TIM8_CH2/TIM3_CH2('11')/FT/PC7"/>
@@ -38859,9 +38943,9 @@ TEST PADS</text>
 <label x="708.66" y="106.68" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="IC3" gate="IC" pin="3D"/>
-<wire x1="332.74" y1="99.06" x2="335.28" y2="99.06" width="0.1524" layer="91"/>
-<label x="335.28" y="99.06" size="1.778" layer="95" align="center-left"/>
+<pinref part="IC3" gate="IC" pin="6D"/>
+<wire x1="332.74" y1="106.68" x2="335.28" y2="106.68" width="0.1524" layer="91"/>
+<label x="335.28" y="106.68" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BPIO6" class="0">
@@ -38894,9 +38978,9 @@ TEST PADS</text>
 <label x="708.66" y="104.14" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="IC3" gate="IC" pin="2D"/>
-<wire x1="332.74" y1="96.52" x2="335.28" y2="96.52" width="0.1524" layer="91"/>
-<label x="335.28" y="96.52" size="1.778" layer="95" align="center-left"/>
+<pinref part="IC3" gate="IC" pin="7D"/>
+<wire x1="332.74" y1="109.22" x2="335.28" y2="109.22" width="0.1524" layer="91"/>
+<label x="335.28" y="109.22" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BPIO7" class="0">
@@ -38929,9 +39013,9 @@ TEST PADS</text>
 <label x="708.66" y="101.6" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="IC3" gate="IC" pin="1D"/>
-<wire x1="332.74" y1="93.98" x2="335.28" y2="93.98" width="0.1524" layer="91"/>
-<label x="335.28" y="93.98" size="1.778" layer="95" align="center-left"/>
+<pinref part="IC3" gate="IC" pin="8D"/>
+<wire x1="332.74" y1="111.76" x2="335.28" y2="111.76" width="0.1524" layer="91"/>
+<label x="335.28" y="111.76" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFDIR5" class="0">
@@ -39006,9 +39090,9 @@ TEST PADS</text>
 <label x="708.66" y="109.22" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="IC3" gate="IC" pin="4D"/>
-<wire x1="332.74" y1="101.6" x2="335.28" y2="101.6" width="0.1524" layer="91"/>
-<label x="335.28" y="101.6" size="1.778" layer="95" align="center-left"/>
+<pinref part="IC3" gate="IC" pin="5D"/>
+<wire x1="332.74" y1="104.14" x2="335.28" y2="104.14" width="0.1524" layer="91"/>
+<label x="335.28" y="104.14" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="BUFDIR4" class="0">
@@ -39305,105 +39389,105 @@ TEST PADS</text>
 <label x="708.66" y="119.38" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="IC3" gate="IC" pin="8D"/>
-<wire x1="332.74" y1="111.76" x2="335.28" y2="111.76" width="0.1524" layer="91"/>
-<label x="335.28" y="111.76" size="1.778" layer="95" align="center-left"/>
+<pinref part="IC3" gate="IC" pin="1D"/>
+<wire x1="332.74" y1="93.98" x2="335.28" y2="93.98" width="0.1524" layer="91"/>
+<label x="335.28" y="93.98" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="LAT0" class="0">
-<segment>
-<pinref part="IC3" gate="IC" pin="8Q"/>
-<wire x1="312.42" y1="111.76" x2="309.88" y2="111.76" width="0.1524" layer="91"/>
-<label x="309.88" y="111.76" size="1.778" layer="95" align="center-right"/>
-</segment>
 <segment>
 <pinref part="U3" gate="BANK1" pin="IOR_152"/>
 <wire x1="528.32" y1="162.56" x2="530.86" y2="162.56" width="0.1524" layer="91"/>
 <label x="530.86" y="162.56" size="1.778" layer="95" align="center-left"/>
 </segment>
-</net>
-<net name="LAT1" class="0">
-<segment>
-<wire x1="312.42" y1="109.22" x2="309.88" y2="109.22" width="0.1524" layer="91"/>
-<pinref part="IC3" gate="IC" pin="7Q"/>
-<label x="309.88" y="109.22" size="1.778" layer="95" align="center-right"/>
-</segment>
-<segment>
-<pinref part="U3" gate="BANK1" pin="IOR_148"/>
-<wire x1="528.32" y1="160.02" x2="530.86" y2="160.02" width="0.1524" layer="91"/>
-<label x="530.86" y="160.02" size="1.778" layer="95" align="center-left"/>
-</segment>
-</net>
-<net name="LAT2" class="0">
-<segment>
-<wire x1="312.42" y1="106.68" x2="309.88" y2="106.68" width="0.1524" layer="91"/>
-<pinref part="IC3" gate="IC" pin="6Q"/>
-<label x="309.88" y="106.68" size="1.778" layer="95" align="center-right"/>
-</segment>
-<segment>
-<pinref part="U3" gate="BANK1" pin="IOR_147"/>
-<wire x1="528.32" y1="157.48" x2="530.86" y2="157.48" width="0.1524" layer="91"/>
-<label x="530.86" y="157.48" size="1.778" layer="95" align="center-left"/>
-</segment>
-</net>
-<net name="LAT3" class="0">
-<segment>
-<wire x1="312.42" y1="104.14" x2="309.88" y2="104.14" width="0.1524" layer="91"/>
-<pinref part="IC3" gate="IC" pin="5Q"/>
-<label x="309.88" y="104.14" size="1.778" layer="95" align="center-right"/>
-</segment>
-<segment>
-<pinref part="U3" gate="BANK1" pin="IOR_146"/>
-<wire x1="528.32" y1="154.94" x2="530.86" y2="154.94" width="0.1524" layer="91"/>
-<label x="530.86" y="154.94" size="1.778" layer="95" align="center-left"/>
-</segment>
-</net>
-<net name="LAT4" class="0">
-<segment>
-<pinref part="IC3" gate="IC" pin="4Q"/>
-<wire x1="312.42" y1="101.6" x2="309.88" y2="101.6" width="0.1524" layer="91"/>
-<label x="309.88" y="101.6" size="1.778" layer="95" align="center-right"/>
-</segment>
-<segment>
-<pinref part="U3" gate="BANK1" pin="IOR_144"/>
-<wire x1="528.32" y1="152.4" x2="530.86" y2="152.4" width="0.1524" layer="91"/>
-<label x="530.86" y="152.4" size="1.778" layer="95" align="center-left"/>
-</segment>
-</net>
-<net name="LAT5" class="0">
-<segment>
-<pinref part="IC3" gate="IC" pin="3Q"/>
-<wire x1="312.42" y1="99.06" x2="309.88" y2="99.06" width="0.1524" layer="91"/>
-<label x="309.88" y="99.06" size="1.778" layer="95" align="center-right"/>
-</segment>
-<segment>
-<pinref part="U3" gate="BANK1" pin="GBIN2/IOR_141"/>
-<wire x1="528.32" y1="149.86" x2="530.86" y2="149.86" width="0.1524" layer="91"/>
-<label x="530.86" y="149.86" size="1.778" layer="95" align="center-left"/>
-</segment>
-</net>
-<net name="LAT6" class="0">
-<segment>
-<pinref part="IC3" gate="IC" pin="2Q"/>
-<wire x1="312.42" y1="96.52" x2="309.88" y2="96.52" width="0.1524" layer="91"/>
-<label x="309.88" y="96.52" size="1.778" layer="95" align="center-right"/>
-</segment>
-<segment>
-<pinref part="U3" gate="BANK1" pin="GBIN3/IOR_140"/>
-<wire x1="528.32" y1="147.32" x2="530.86" y2="147.32" width="0.1524" layer="91"/>
-<label x="530.86" y="147.32" size="1.778" layer="95" align="center-left"/>
-</segment>
-</net>
-<net name="LAT7" class="0">
 <segment>
 <pinref part="IC3" gate="IC" pin="1Q"/>
 <wire x1="312.42" y1="93.98" x2="309.88" y2="93.98" width="0.1524" layer="91"/>
 <label x="309.88" y="93.98" size="1.778" layer="95" align="center-right"/>
 </segment>
+</net>
+<net name="LAT1" class="0">
+<segment>
+<pinref part="U3" gate="BANK1" pin="IOR_148"/>
+<wire x1="528.32" y1="160.02" x2="530.86" y2="160.02" width="0.1524" layer="91"/>
+<label x="530.86" y="160.02" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<pinref part="IC3" gate="IC" pin="2Q"/>
+<wire x1="312.42" y1="96.52" x2="309.88" y2="96.52" width="0.1524" layer="91"/>
+<label x="309.88" y="96.52" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="LAT2" class="0">
+<segment>
+<pinref part="U3" gate="BANK1" pin="IOR_147"/>
+<wire x1="528.32" y1="157.48" x2="530.86" y2="157.48" width="0.1524" layer="91"/>
+<label x="530.86" y="157.48" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<pinref part="IC3" gate="IC" pin="3Q"/>
+<wire x1="312.42" y1="99.06" x2="309.88" y2="99.06" width="0.1524" layer="91"/>
+<label x="309.88" y="99.06" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="LAT3" class="0">
+<segment>
+<pinref part="U3" gate="BANK1" pin="IOR_146"/>
+<wire x1="528.32" y1="154.94" x2="530.86" y2="154.94" width="0.1524" layer="91"/>
+<label x="530.86" y="154.94" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<pinref part="IC3" gate="IC" pin="4Q"/>
+<wire x1="312.42" y1="101.6" x2="309.88" y2="101.6" width="0.1524" layer="91"/>
+<label x="309.88" y="101.6" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="LAT4" class="0">
+<segment>
+<pinref part="U3" gate="BANK1" pin="IOR_144"/>
+<wire x1="528.32" y1="152.4" x2="530.86" y2="152.4" width="0.1524" layer="91"/>
+<label x="530.86" y="152.4" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<wire x1="312.42" y1="104.14" x2="309.88" y2="104.14" width="0.1524" layer="91"/>
+<pinref part="IC3" gate="IC" pin="5Q"/>
+<label x="309.88" y="104.14" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="LAT5" class="0">
+<segment>
+<pinref part="U3" gate="BANK1" pin="GBIN2/IOR_141"/>
+<wire x1="528.32" y1="149.86" x2="530.86" y2="149.86" width="0.1524" layer="91"/>
+<label x="530.86" y="149.86" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<wire x1="312.42" y1="106.68" x2="309.88" y2="106.68" width="0.1524" layer="91"/>
+<pinref part="IC3" gate="IC" pin="6Q"/>
+<label x="309.88" y="106.68" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="LAT6" class="0">
+<segment>
+<pinref part="U3" gate="BANK1" pin="GBIN3/IOR_140"/>
+<wire x1="528.32" y1="147.32" x2="530.86" y2="147.32" width="0.1524" layer="91"/>
+<label x="530.86" y="147.32" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<wire x1="312.42" y1="109.22" x2="309.88" y2="109.22" width="0.1524" layer="91"/>
+<pinref part="IC3" gate="IC" pin="7Q"/>
+<label x="309.88" y="109.22" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="LAT7" class="0">
 <segment>
 <pinref part="U3" gate="BANK1" pin="IOR_139"/>
 <wire x1="528.32" y1="144.78" x2="530.86" y2="144.78" width="0.1524" layer="91"/>
 <label x="530.86" y="144.78" size="1.778" layer="95" align="center-left"/>
+</segment>
+<segment>
+<pinref part="IC3" gate="IC" pin="8Q"/>
+<wire x1="312.42" y1="111.76" x2="309.88" y2="111.76" width="0.1524" layer="91"/>
+<label x="309.88" y="111.76" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="MCU_ADC5" class="0">
