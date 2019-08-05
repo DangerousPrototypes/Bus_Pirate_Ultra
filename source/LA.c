@@ -56,8 +56,16 @@ void logicAnalyzerSetup(void)
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
-    for(i=0;i<8;i++){
-        temp=buff[i]=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF); //0d=MFID, 5d=KGD, + 6 bytes of density info
+    //for(i=0;i<8;i++){
+    //    temp=buff[i]=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF); //0d=MFID, 5d=KGD, + 6 bytes of density info
+    //}
+
+    temp=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    cdcprintf("SRAM 0 test: %02X ",temp);
+    if(temp!=0x0D){
+        cdcprintf("FAIL!\r\n");
+    }else{
+        cdcprintf("PASS!\r\n");
     }
     //release FPGA into program mode
     sram_deselect();			// release cs
@@ -67,8 +75,15 @@ void logicAnalyzerSetup(void)
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
-    for(i=0;i<8;i++){
-        temp=buff[i]=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF); //0d=MFID, 5d=KGD, + 6 bytes of density info
+    //for(i=0;i<8;i++){
+    //    temp=buff[i]=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF); //0d=MFID, 5d=KGD, + 6 bytes of density info
+    //}
+    temp=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    cdcprintf("SRAM 1 test: %02X ",temp);
+    if(temp!=0x0D){
+        cdcprintf("FAIL!\r\n");
+    }else{
+        cdcprintf("PASS!\r\n");
     }
     //release FPGA into program mode
     sram_deselect();			// release cs
@@ -79,13 +94,25 @@ void logicAnalyzerSetup(void)
 
 
 	//quad mode
-	sram_select_0();
+	//sram_select_0();
+	sram_select();
 	spi_xfer(BP_FPGA_SPI, (uint16_t)CMDQUADMODE);
 	sram_deselect();
 
-    sram_select_1();
-	spi_xfer(BP_FPGA_SPI, (uint16_t)CMDQUADMODE);
-	sram_deselect();
+    //sram_select_1();
+	//spi_xfer(BP_FPGA_SPI, (uint16_t)CMDQUADMODE);
+	//sram_deselect();
+
+    setup_spix4w(); //write
+    sram_select();
+    spiWx4(CMDWRITE); //write command
+    spiWx4(0);
+    spiWx4(0);
+    spiWx4(0); //3 byte address
+    for(i=0;i<8;i++){
+        spiWx8(0xff);
+    }
+    sram_deselect();
 
 	setup_spix4w(); //write
 	sram_select();
@@ -93,8 +120,10 @@ void logicAnalyzerSetup(void)
 	spiWx4(0);
 	spiWx4(0);
 	spiWx4(0); //3 byte address
-	for(i=0;i<4;i++)
-		spiWx8(i);
+    for(i=0;i<4;i++){
+        spiWx8(0xaa);
+        spiWx8(0x55);
+    }
     sram_deselect();
 
     setup_spix4w();
@@ -107,10 +136,58 @@ void logicAnalyzerSetup(void)
 	spiRx4(); //dummy byte * 3 for fast quad read command
 	spiRx4(); //dummy byte
     spiRx4(); //dummy byte
-    for(i=0;i<4;i++){
-        temp=spiRx8();
+    temp=spiRx8();
+    cdcprintf("SRAM quad test: %02X ",temp);
+    if(temp!=0xaa){
+        cdcprintf("FAIL!\r\n");
+    }else{
+        cdcprintf("PASS!\r\n");
     }
     sram_deselect();
+
+
+    setup_spix4w(); //write
+    sram_select();
+    spiWx4(CMDWRITE); //write command
+    spiWx4(0);
+    spiWx4(0);
+    spiWx4(0); //3 byte address
+    for(i=0;i<0xffff;i++){
+
+        spiWx8((uint8_t)i);
+    }
+    spiWx8((uint8_t)i);//one extra, need even number of samples
+    sram_deselect();
+
+    setup_spix4w();
+	sram_select();
+	spiWx4(CMDREADQUAD); //read command
+	spiWx4(0);
+	spiWx4(0);
+	spiWx4(0); //3 byte address
+	setup_spix4r(); //read
+	spiRx4(); //dummy byte * 3 for fast quad read command
+	spiRx4(); //dummy byte
+    spiRx4(); //dummy byte
+    for(i=0;i<0xffff;i++){
+        temp=spiRx8();
+        if(temp!=(uint8_t)i){
+            cdcprintf("SRAM big test failed at: %04X!=%02X \r\n",i,temp);
+            break;
+        }
+
+    }
+
+    sram_deselect();
+
+
+
+
+
+
+
+
+
     temp=0xff;
 
 }

@@ -602,9 +602,7 @@ void doUI(void)
 						modeConfig.numbits=temp3;
 						break;
 				case '~':
-				        //read from SRAM test
-		// release cs
-
+	                   logicAnalyzerSetup();
 						break;
 				default:	cdcprintf("Unknown command: %c", c);
 						modeConfig.error=1;
