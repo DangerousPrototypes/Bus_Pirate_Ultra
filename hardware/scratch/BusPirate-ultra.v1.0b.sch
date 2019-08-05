@@ -36978,35 +36978,6 @@ TEST PADS</text>
 <label x="104.14" y="30.48" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="C37" gate="G$1" pin="1"/>
-<wire x1="342.9" y1="408.94" x2="340.36" y2="408.94" width="0.1524" layer="91"/>
-<pinref part="IC24" gate="IC" pin="VCC"/>
-<wire x1="340.36" y1="408.94" x2="340.36" y2="411.48" width="0.1524" layer="91"/>
-<junction x="340.36" y="408.94"/>
-<pinref part="SUPPLY61" gate="1" pin="V+"/>
-<label x="340.36" y="414.02" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="C44" gate="G$1" pin="1"/>
-<wire x1="195.58" y1="137.16" x2="200.66" y2="137.16" width="0.1524" layer="91"/>
-<pinref part="U5" gate="U" pin="VDD"/>
-<wire x1="200.66" y1="137.16" x2="200.66" y2="134.62" width="0.1524" layer="91"/>
-<pinref part="SUPPLY76" gate="1" pin="V+"/>
-<wire x1="195.58" y1="137.16" x2="195.58" y2="139.7" width="0.1524" layer="91"/>
-<junction x="195.58" y="137.16"/>
-<label x="193.04" y="142.24" size="1.778" layer="95" align="center-right"/>
-</segment>
-<segment>
-<pinref part="C65" gate="G$1" pin="1"/>
-<wire x1="195.58" y1="93.98" x2="200.66" y2="93.98" width="0.1524" layer="91"/>
-<pinref part="U6" gate="U" pin="VDD"/>
-<wire x1="200.66" y1="93.98" x2="200.66" y2="91.44" width="0.1524" layer="91"/>
-<pinref part="SUPPLY95" gate="1" pin="V+"/>
-<wire x1="195.58" y1="93.98" x2="195.58" y2="96.52" width="0.1524" layer="91"/>
-<junction x="195.58" y="93.98"/>
-<label x="193.04" y="99.06" size="1.778" layer="95" align="center-right"/>
-</segment>
-<segment>
 <pinref part="SUPPLY1" gate="1" pin="V+"/>
 <junction x="495.3" y="342.9"/>
 <pinref part="IC1" gate="SUP" pin="V+"/>
@@ -37231,6 +37202,35 @@ TEST PADS</text>
 <wire x1="335.28" y1="327.66" x2="330.2" y2="327.66" width="0.1524" layer="91"/>
 <junction x="330.2" y="327.66"/>
 <label x="330.2" y="332.74" size="1.778" layer="95" rot="R180" align="center-right"/>
+</segment>
+<segment>
+<pinref part="C37" gate="G$1" pin="1"/>
+<wire x1="342.9" y1="408.94" x2="340.36" y2="408.94" width="0.1524" layer="91"/>
+<pinref part="IC24" gate="IC" pin="VCC"/>
+<wire x1="340.36" y1="408.94" x2="340.36" y2="411.48" width="0.1524" layer="91"/>
+<junction x="340.36" y="408.94"/>
+<pinref part="SUPPLY61" gate="1" pin="V+"/>
+<label x="340.36" y="414.02" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="C44" gate="G$1" pin="1"/>
+<wire x1="195.58" y1="137.16" x2="200.66" y2="137.16" width="0.1524" layer="91"/>
+<pinref part="U5" gate="U" pin="VDD"/>
+<wire x1="200.66" y1="137.16" x2="200.66" y2="134.62" width="0.1524" layer="91"/>
+<pinref part="SUPPLY76" gate="1" pin="V+"/>
+<wire x1="195.58" y1="137.16" x2="195.58" y2="139.7" width="0.1524" layer="91"/>
+<junction x="195.58" y="137.16"/>
+<label x="195.58" y="142.24" size="1.778" layer="95" align="center-right"/>
+</segment>
+<segment>
+<pinref part="C65" gate="G$1" pin="1"/>
+<wire x1="195.58" y1="93.98" x2="200.66" y2="93.98" width="0.1524" layer="91"/>
+<pinref part="U6" gate="U" pin="VDD"/>
+<wire x1="200.66" y1="93.98" x2="200.66" y2="91.44" width="0.1524" layer="91"/>
+<pinref part="SUPPLY95" gate="1" pin="V+"/>
+<wire x1="195.58" y1="93.98" x2="195.58" y2="96.52" width="0.1524" layer="91"/>
+<junction x="195.58" y="93.98"/>
+<label x="195.58" y="99.06" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="EXVUSB" class="0">
