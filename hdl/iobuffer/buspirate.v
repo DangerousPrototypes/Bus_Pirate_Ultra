@@ -8,7 +8,7 @@
 `include "pwm.v"
 `include "pll.v"
 `include "registers.v"
-`define SIMULATION
+//`define SIMULATION
 
 module top #(
   parameter MC_DATA_WIDTH = 16,
@@ -85,19 +85,21 @@ module top #(
     reg [N:0] count;
     //1111 0100 0010 0100 0000 0000
     reg [22:0] sample_counter;
+    reg [1:0] sram_cs_d;
 
     wire [LA_WIDTH-1:0] sram_sio_tdi;
     wire [LA_WIDTH-1:0] sram_sio_tdo;
 
-    reg la_done;
+    reg la_active;
     wire sram_clock_source;
-    reg sram_auto_clock;
-    assign sram_clock_source=(`reg_la_start&&!la_done)?clock:(`reg_la_io_quad)?sram_auto_clock:(`reg_la_io_spi)?mcu_clock:1'b0;
+    reg sram_auto_clock, sram_auto_clock_delay;
+    assign sram_clock_source=(`reg_la_start&&la_active)?clock:(`reg_la_io_quad)?sram_auto_clock:(`reg_la_io_spi)?mcu_clock:1'b0;
     assign sram_clock={sram_clock_source,sram_clock_source};
     assign sram_cs={`reg_la_io_cs1,`reg_la_io_cs0};
-    assign sram_sio_tdo[0]=(`reg_la_start&&!la_done)?lat[0]:`reg_la_io_quad?`reg_la_write[0]:mcu_mosi;
-    assign sram_sio_tdo[4]=(`reg_la_start&&!la_done)?lat[4]:`reg_la_io_quad?`reg_la_write[4]:mcu_mosi;
-    assign {sram_sio_tdo[7:5],sram_sio_tdo[3:1]}=(`reg_la_start&&!la_done)?{lat[7:5],lat[3:1]}:{`reg_la_write[7:5],`reg_la_write[3:1]};
+    //assign sram_cs=sram_cs_d;
+    assign sram_sio_tdo[0]=(`reg_la_start&&la_active)?lat[0]:`reg_la_io_quad?`reg_la_write[0]:mcu_mosi;
+    assign sram_sio_tdo[4]=(`reg_la_start&&la_active)?lat[4]:`reg_la_io_quad?`reg_la_write[4]:mcu_mosi;
+    assign {sram_sio_tdo[7:5],sram_sio_tdo[3:1]}=(`reg_la_start&&la_active)?{lat[7:5],lat[3:1]}:{`reg_la_write[7:5],`reg_la_write[3:1]};
     assign mcu_miso=!`reg_la_io_cs0?sram_sio_tdi[1]:sram_sio_tdi[5]; //very hack dont like
 
     //for simulation debugging...
@@ -106,25 +108,36 @@ module top #(
       assign register_peek=wreg[6'h00];
     `endif
 
+
     always @(posedge clock)
       begin
 
         pwm_reset<=1'b0;
-        sram_auto_clock<=1'b0;
+        if(sram_auto_clock_delay)
+        begin
+          sram_auto_clock_delay<=1'b0;
+          sram_auto_clock<=1'b1;
+        end
+        else if(sram_auto_clock)
+        begin
+          sram_auto_clock<=1'b0;
+        end
+
         //`reg_la_read[7:0]<=sram_sio_tdi;
         count <= count + 1;
-        la_done<=1'b1;
+        //la_active<=1'b0;
+        //sram_cs_d<={`reg_la_io_cs1,`reg_la_io_cs0};
 
-        if(`reg_la_start)
+        if(`reg_la_start==1)
         begin
-          if(sample_counter<=`reg_la_samples_post)
+          if(sample_counter<`reg_la_samples_post)
+          begin
+            sample_counter<=sample_counter+1;
+            la_active<=1'b1;
+          end
+          else
             begin
-              sample_counter<=sample_counter+1;
-              la_done<=1'b0;
-            end
-          else //stop the logic analyzer
-            begin
-              la_done<=1'b1;
+              la_active<=1'b0;
             end
         end
 
@@ -136,7 +149,7 @@ module top #(
           begin
             wreg[mc_add] <= mc_din;
             case(mc_add)
-              6'h02:sram_auto_clock<=1'b1;
+              6'h02:sram_auto_clock_delay<=1'b1;
               6'h06:pwm_reset<=1'b1;
               default: begin end
             endcase
@@ -148,14 +161,17 @@ module top #(
             //mc_dout_d <= rreg[mc_add];
             case(mc_add)
               6'h02:begin
-                sram_auto_clock<=1'b1; //is this really stable? don't we need delay betwee the clock and the reading of the results?
+                sram_auto_clock_delay<=1'b1; //is this really stable? don't we need delay betwee the clock and the reading of the results?
                 mc_dout_d <= {8'h00,sram_sio_tdi}; //should move to if clock=1 in a clock delay?
               end
               6'h03: mc_dout_d<=`reg_la_config;
               default:mc_dout_d <= rreg[mc_add];
             endcase
           end
-
+          /*else if (sram_auto_clock)begin
+            sram_auto_clock<=1'b0;
+            mc_dout_d <= {8'h00,sram_sio_tdi};
+          end*/
         end// if we or oe
       end //if ce
 
@@ -217,7 +233,7 @@ module top #(
     initial begin
       sample_counter<=0;
       count<=3'b000;
-      la_done<=1;
+      la_active<=0;
       rreg[6'b00000] <= 16'b0000000000000000;				// test values
       rreg[6'b00001] <= 16'b0000000000000000;
       rreg[6'b00010] <= 16'b0000000000000000;

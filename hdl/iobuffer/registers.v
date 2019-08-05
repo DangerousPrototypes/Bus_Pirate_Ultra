@@ -12,7 +12,7 @@
 `define reg_la_io_quad wreg[6'h03][0]
 `define reg_la_io_quad_direction wreg[6'h03][1]
 `define reg_la_io_spi wreg[6'h03][2]
-`define reg_la_start wreg[6'h03][3]
+`define reg_la_start wreg[6'h03][7]
 `define reg_la_io_cs0 wreg[6'h03][8] //reserve upper bits for more SRAMs
 `define reg_la_io_cs1 wreg[6'h03][9]
 `define reg_la_samples_post wreg[6'h04]
