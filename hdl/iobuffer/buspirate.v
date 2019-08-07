@@ -8,7 +8,7 @@
 `include "pwm.v"
 `include "pll.v"
 `include "registers.v"
-//`define SIMULATION
+`define SIMULATION
 
 module top #(
   parameter MC_DATA_WIDTH = 16,
@@ -71,7 +71,7 @@ module top #(
     wire pwm_out;
     reg pwm_reset;
     pwm AUX_PWM(pwm_reset, count[0],pwm_out, `reg_pwm_on,`reg_pwm_off);
-    assign bpio_do=pwm_out;
+    assign bpio_do[0]=pwm_out;
 
   	// Memory controller interface
   	wire [MC_DATA_WIDTH-1:0] mc_din;
@@ -84,8 +84,7 @@ module top #(
     localparam N = 3;
     reg [N:0] count;
     //1111 0100 0010 0100 0000 0000
-    reg [22:0] sample_counter;
-    reg [1:0] sram_cs_d;
+    reg [7:0] la_sample_prescaler;
 
     wire [LA_WIDTH-1:0] sram_sio_tdi;
     wire [LA_WIDTH-1:0] sram_sio_tdo;
@@ -93,26 +92,29 @@ module top #(
     reg la_active;
     wire sram_clock_source;
     reg sram_auto_clock, sram_auto_clock_delay;
-    assign sram_clock_source=(`reg_la_start&&la_active)?clock:(`reg_la_io_quad)?sram_auto_clock:(`reg_la_io_spi)?mcu_clock:1'b0;
+    assign sram_clock_source=(`reg_la_start&&`reg_la_active)?clock:(`reg_la_io_quad)?sram_auto_clock:(`reg_la_io_spi)?mcu_clock:1'b0;
     assign sram_clock={sram_clock_source,sram_clock_source};
-    assign sram_cs={`reg_la_io_cs1,`reg_la_io_cs0};
-    //assign sram_cs=sram_cs_d;
-    assign sram_sio_tdo[0]=(`reg_la_start&&la_active)?lat[0]:`reg_la_io_quad?`reg_la_write[0]:mcu_mosi;
-    assign sram_sio_tdo[4]=(`reg_la_start&&la_active)?lat[4]:`reg_la_io_quad?`reg_la_write[4]:mcu_mosi;
-    assign {sram_sio_tdo[7:5],sram_sio_tdo[3:1]}=(`reg_la_start&&la_active)?{lat[7:5],lat[3:1]}:{`reg_la_write[7:5],`reg_la_write[3:1]};
+    assign sram_cs={`reg_la_io_cs1,`reg_la_io_cs0}; //TODO: hold CS low during active?
+    assign sram_sio_tdo[0]=(`reg_la_start&&`reg_la_active)?lat[0]:`reg_la_io_quad?`reg_la_write[0]:mcu_mosi;
+    assign sram_sio_tdo[4]=(`reg_la_start&&`reg_la_active)?lat[4]:`reg_la_io_quad?`reg_la_write[4]:mcu_mosi;
+    assign {sram_sio_tdo[7:5],sram_sio_tdo[3:1]}=(`reg_la_start&&`reg_la_active)?{lat[7:5],lat[3:1]}:{`reg_la_write[7:5],`reg_la_write[3:1]};
     assign mcu_miso=!`reg_la_io_cs0?sram_sio_tdi[1]:sram_sio_tdi[5]; //very hack dont like
 
     //for simulation debugging...
     `ifdef SIMULATION
-      wire [15:0] register_peek;
-      assign register_peek=wreg[6'h00];
+      wire [15:0] FPGA_REG_03;
+      assign FPGA_REG_03=wreg[6'h03];
+      wire [15:0] FPGA_REG_04;
+      assign FPGA_REG_04=rreg[6'h04];
     `endif
 
 
     always @(posedge clock)
       begin
 
+        count <= count + 1;
         pwm_reset<=1'b0;
+
         if(sram_auto_clock_delay)
         begin
           sram_auto_clock_delay<=1'b0;
@@ -123,23 +125,29 @@ module top #(
           sram_auto_clock<=1'b0;
         end
 
-        //`reg_la_read[7:0]<=sram_sio_tdi;
-        count <= count + 1;
-        //la_active<=1'b0;
-        //sram_cs_d<={`reg_la_io_cs1,`reg_la_io_cs0};
-
-        if(`reg_la_start==1)
+        //TODO:
+        //prescale to 0xff and capture to nearest 0xff
+        if(`reg_la_clear_sample_counter)
         begin
-          if(sample_counter<`reg_la_samples_post)
+          `reg_la_sample_count<=16'h0000;
+          `reg_la_clear_sample_counter<=16'h0000;
+          `reg_la_max_samples_reached<=1'b0;
+        end
+        else if(`reg_la_start)
+        begin
+          if(`reg_la_sample_count<16'hF424) //F424
           begin
-            sample_counter<=sample_counter+1;
-            la_active<=1'b1;
+            `reg_la_sample_count<=`reg_la_sample_count+1;
+            `reg_la_active<=1'b1;
           end
           else
             begin
-              la_active<=1'b0;
+              `reg_la_active<=1'b0;
+              `reg_la_max_samples_reached<=1'b1;
             end
         end
+
+
 
         if(!mc_ce)
         begin
@@ -231,7 +239,6 @@ module top #(
 
 `ifdef SIMULATION
     initial begin
-      sample_counter<=0;
       count<=3'b000;
       la_active<=0;
       rreg[6'b00000] <= 16'b0000000000000000;				// test values
