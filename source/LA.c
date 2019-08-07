@@ -33,7 +33,7 @@ static volatile uint32_t counts;
 void logicAnalyzerSetup(void)
 {
     uint8_t temp;
-    uint16_t i;
+    uint16_t i,samples;
     char buff[256];
 
     //la_sram_mode_setup();
@@ -88,11 +88,6 @@ void logicAnalyzerSetup(void)
     //release FPGA into program mode
     sram_deselect();			// release cs
 
-
-
-
-
-
 	//quad mode
 	//sram_select_0();
 	sram_select();
@@ -103,18 +98,70 @@ void logicAnalyzerSetup(void)
 	//spi_xfer(BP_FPGA_SPI, (uint16_t)CMDQUADMODE);
 	//sram_deselect();
 
+//setup io
+    FPGA_REG_00=0x00FF;
+    FPGA_REG_01=0x0000;
+
+
+    //setup the sram for capture
     setup_spix4w(); //write
     sram_select();
     spiWx4(CMDWRITE); //write command
     spiWx4(0);
     spiWx4(0);
     spiWx4(0); //3 byte address
-    for(i=0;i<8;i++){
-        spiWx8(0xff);
+    //for(i=0;i<8;i++){
+    //    spiWx8(0xff);
+    //}
+    //sram_deselect();
+
+    FPGA_REG_03|=(0b11000);//clear sample counter | start capture
+    //cdcprintf("FPGA_REG_3: %04X\r\n",FPGA_REG_03);
+
+    //now do some stuff
+    //setup the PWM
+	FPGA_REG_05=0x1;
+	FPGA_REG_06=0x1;
+    //delay
+    //delayms(1);
+    //change the PWM
+	//FPGA_REG_05=0x10;
+	//FPGA_REG_06=0x10;
+	delayms(1);
+
+    //cdcprintf("FPGA_REG_3: %04X\r\n",FPGA_REG_03);*/
+
+	FPGA_REG_03&=~((0b1<<4));//stop capture
+
+    cdcprintf("FPGA_REG_3: %08b\r\n",FPGA_REG_03);
+
+    sram_deselect();
+    samples=FPGA_REG_04;
+    cdcprintf("Samples captured: %04X\r\n",samples);
+    //cdcprintf("FPGA_REG_3: %04X\r\n",FPGA_REG_03);
+
+    //TODO: read samples back to cdc2
+    cdcputc2((uint8_t)(samples>>8));
+    cdcputc2((uint8_t)(samples));
+
+    cdcprintf("Dumping samples\r\n");
+    setup_spix4w();
+	sram_select();
+	spiWx4(CMDREADQUAD); //read command
+	spiWx4(0);
+	spiWx4(0);
+	spiWx4(0); //3 byte address
+	setup_spix4r(); //read
+	spiRx4(); //dummy byte * 3 for fast quad read command
+	spiRx4(); //dummy byte
+    spiRx4(); //dummy byte
+    for(i=0;i<samples;i++){
+        cdcputc2(spiRx8());
     }
     sram_deselect();
 
-	setup_spix4w(); //write
+
+/*	setup_spix4w(); //write
 	sram_select();
 	spiWx4(CMDWRITE); //write command
 	spiWx4(0);
@@ -180,7 +227,7 @@ void logicAnalyzerSetup(void)
 
     sram_deselect();
 
-
+*/
 
 
 
