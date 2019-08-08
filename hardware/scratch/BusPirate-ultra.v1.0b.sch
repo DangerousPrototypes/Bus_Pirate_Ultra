@@ -37094,13 +37094,6 @@ TEST PADS</text>
 <label x="419.1" y="378.46" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
-<net name="ADC2" class="0">
-<segment>
-<pinref part="U2" gate="U" pin="PA7/SPI1_MOSI('0')/TIM8_CH1N/ADC12_IN7/TIM3_CH2('00')/TIM1_CH1N('01')"/>
-<wire x1="38.1" y1="411.48" x2="35.56" y2="411.48" width="0.1524" layer="91"/>
-<label x="35.56" y="411.48" size="1.778" layer="95" align="center-right"/>
-</segment>
-</net>
 <net name="N$6" class="0">
 <segment>
 <wire x1="792.48" y1="144.78" x2="792.48" y2="139.7" width="0.1524" layer="91"/>
@@ -37358,13 +37351,6 @@ TEST PADS</text>
 <pinref part="U2" gate="U" pin="ADC12_IN14/PC4"/>
 <wire x1="144.78" y1="375.92" x2="147.32" y2="375.92" width="0.1524" layer="91"/>
 <label x="147.32" y="375.92" size="1.778" layer="95" align="center-left"/>
-</segment>
-</net>
-<net name="VEXTPU" class="0">
-<segment>
-<pinref part="U2" gate="U" pin="FSMC_A9/FT/PF15"/>
-<wire x1="144.78" y1="304.8" x2="147.32" y2="304.8" width="0.1524" layer="91"/>
-<label x="147.32" y="304.8" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="UART_RX" class="0">
@@ -38753,9 +38739,9 @@ TEST PADS</text>
 <label x="490.22" y="60.96" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U2" gate="U" pin="PA6/SPI1_MISO('0')/TIM8_BKIN/ADC12_IN6/TIM3_CH1('00')/TIM1_BKIN('01')"/>
-<wire x1="38.1" y1="414.02" x2="35.56" y2="414.02" width="0.1524" layer="91"/>
-<label x="35.56" y="414.02" size="1.778" layer="95" align="center-right"/>
+<pinref part="U2" gate="U" pin="FSMC_A9/FT/PF15"/>
+<wire x1="144.78" y1="304.8" x2="147.32" y2="304.8" width="0.1524" layer="91"/>
+<label x="147.32" y="304.8" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="VREF/VOUT" class="0">
@@ -39600,6 +39586,27 @@ TEST PADS</text>
 <pinref part="U2" gate="U" pin="PG0/FT/FSMC_A10"/>
 <wire x1="38.1" y1="299.72" x2="35.56" y2="299.72" width="0.1524" layer="91"/>
 <label x="35.56" y="299.72" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="DISPLAY_SPI_CLOCK" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PA5/SPI1_SCK('0')/ADC12_IN5"/>
+<wire x1="38.1" y1="416.56" x2="35.56" y2="416.56" width="0.1524" layer="91"/>
+<label x="35.56" y="416.56" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="DISPLAY_SPI_MOSI" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PA7/SPI1_MOSI('0')/TIM8_CH1N/ADC12_IN7/TIM3_CH2('00')/TIM1_CH1N('01')"/>
+<wire x1="38.1" y1="411.48" x2="35.56" y2="411.48" width="0.1524" layer="91"/>
+<label x="35.56" y="411.48" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="DISPLAY_SPI_MISO" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PA6/SPI1_MISO('0')/TIM8_BKIN/ADC12_IN6/TIM3_CH1('00')/TIM1_BKIN('01')"/>
+<wire x1="38.1" y1="414.02" x2="35.56" y2="414.02" width="0.1524" layer="91"/>
+<label x="35.56" y="414.02" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 </nets>

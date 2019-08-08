@@ -35174,9 +35174,6 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="45.085" y1="2.96" x2="47.625" y2="2.96" width="0.254" layer="1"/>
 <wire x1="61.595" y1="9.271" x2="47.625" y2="2.96" width="0" layer="19" extent="1-16"/>
 </signal>
-<signal name="ADC2">
-<contactref element="U2" pad="43"/>
-</signal>
 <signal name="N$6">
 <contactref element="LED3" pad="A"/>
 <contactref element="R14" pad="1"/>
@@ -35484,9 +35481,6 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <signal name="N$1">
 <wire x1="52.07" y1="6.604" x2="56.515" y2="6.604" width="0.6096" layer="16"/>
 <wire x1="56.515" y1="6.604" x2="57.15" y2="5.969" width="0.6096" layer="16"/>
-</signal>
-<signal name="VEXTPU">
-<contactref element="U2" pad="55"/>
 </signal>
 <signal name="UART_RX">
 <contactref element="TP2" pad="TP"/>
@@ -36715,7 +36709,6 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 </signal>
 <signal name="MCU_AUX12">
 <contactref element="U3" pad="41"/>
-<contactref element="U2" pad="42"/>
 <wire x1="47.3393" y1="14.25" x2="47.3393" y2="15.3987" width="0.254" layer="1"/>
 <wire x1="47.3393" y1="15.3987" x2="46.736" y2="16.002" width="0.254" layer="1"/>
 <via x="46.736" y="16.002" extent="1-16" drill="0.4064"/>
@@ -36727,12 +36720,13 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="33.782" y1="15.367" x2="32.8581375" y2="16.2908625" width="0.254" layer="16"/>
 <wire x1="19.785" y1="14.74513125" x2="20.701" y2="15.66113125" width="0.254" layer="1"/>
 <wire x1="20.701" y1="20.447" x2="20.701" y2="15.66113125" width="0.254" layer="1"/>
-<wire x1="19.785" y1="14.25" x2="19.785" y2="14.74513125" width="0.254" layer="1"/>
 <via x="20.701" y="20.447" extent="1-16" drill="0.4064"/>
 <wire x1="32.8581375" y1="18.523075" x2="30.8834125" y2="20.4978" width="0.254" layer="16"/>
 <wire x1="30.8834125" y1="20.4978" x2="20.751796875" y2="20.4978" width="0.254" layer="16"/>
 <wire x1="20.751796875" y1="20.4978" x2="20.701" y2="20.447" width="0.254" layer="16"/>
 <wire x1="46.736" y1="16.002" x2="46.736" y2="16.04066875" width="0.254" layer="16"/>
+<contactref element="U2" pad="55"/>
+<wire x1="20.701" y1="15.66113125" x2="26.285" y2="14.25" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="VREF/VOUT">
 <contactref element="Q1" pad="5"/>
@@ -37284,6 +37278,15 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <wire x1="90.82" y1="3.65" x2="89.52" y2="9.25" width="0" layer="19" extent="1-1"/>
 <wire x1="91.47" y1="3.65" x2="90.82" y2="3.65" width="0" layer="19" extent="1-1"/>
 <wire x1="26.785" y1="14.25" x2="88.87" y2="9.25" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="DISPLAY_SPI_CLOCK">
+<contactref element="U2" pad="41"/>
+</signal>
+<signal name="DISPLAY_SPI_MOSI">
+<contactref element="U2" pad="43"/>
+</signal>
+<signal name="DISPLAY_SPI_MISO">
+<contactref element="U2" pad="42"/>
 </signal>
 </signals>
 <mfgpreviewcolors>
