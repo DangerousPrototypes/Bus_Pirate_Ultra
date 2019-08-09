@@ -12,12 +12,24 @@ module ram (
 
 parameter DEPTH = 256;
 parameter WIDTH = 16;
-localparam integer ABITS = $clog2(DEPTH);
+localparam integer ABITS = $clog2(DEPTH); //256=8
 input [ABITS-1:0] waddr, raddr;
 input [WIDTH-1:0] din;
 input write_en, wclk, rclk;
 output reg [WIDTH-1:0] dout;
 reg [WIDTH-1:0] mem [DEPTH-1:0];
+
+reg [ABITS-1:0] in_pos = 0;
+reg [ABITS-1:0] out_pos = 0;
+
+reg [WIDTH-1:0] memory [0:DEPTH-1];
+
+wire [ABITS-1:0] next_in_pos = (in_pos == DEPTH-1) ? 0 : in_pos + 1;
+wire [ABITS-1:0] next_next_in_pos = (next_in_pos == DEPTH-1) ? 0 : next_in_pos + 1;
+
+wire [ABITS-1:0] next_out_pos = (out_pos == DEPTH-1) ? 0 : out_pos + 1;
+reg [WIDTH-1:0] out_data_d = 0;
+
 
 always @(posedge wclk) // Write memory.
   begin

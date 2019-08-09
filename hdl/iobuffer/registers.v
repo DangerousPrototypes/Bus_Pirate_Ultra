@@ -27,6 +27,8 @@
 `define reg_pwm_off wreg[6'h06]
 
 `define reg_fifo_in wreg[6'h07]
+`define reg_fifo_in_shift wreg[6'h08][0]
+`define reg_fifo_out_pop wreg[6'h08][1]
 `define reg_fifo_in_test wreg[6'h09]
 
 //read registers
@@ -36,6 +38,8 @@
 `define reg_fifo_out rreg[6'h07]
 `define reg_fifo_status rreg[6'h08]
 `define reg_fifo_status_full rreg[6'h08][0]
+`define reg_fifo_status_nempty rreg[6'h08][1]
+`define reg_fifo_status_out_nempty rreg[6'h08][2]
 `define reg_fifo_out_test rreg[6'h09]
 
 `endif

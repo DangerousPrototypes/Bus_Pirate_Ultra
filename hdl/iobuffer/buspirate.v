@@ -10,7 +10,7 @@
 `include "registers.v"
 `include "spimaster.v"
 `include "fifo.v"
-`include "ram.v"
+//`include "ram.v"
 `define SIMULATION
 
 module top #(
@@ -20,7 +20,7 @@ module top #(
   parameter LA_CHIPS = 2,
   parameter BP_PINS = 5,
   parameter FIFO_WIDTH = 16,
-  parameter FIFO_DEPTH = 256
+  parameter FIFO_DEPTH = 512
 ) (
   input clock,
   inout wire [BP_PINS-1:0] bpio_io,
@@ -156,32 +156,32 @@ module top #(
    reg [8:0] waddr,raddr;
    wire [7:0] fifo_data_out;
 
-   ram FIFO_IN(
+  /* ram FIFO_IN(
      .din(`reg_fifo_in_test),
      .write_en(1'b1),
      .waddr(`reg_pwm_off),
      .wclk(pwm_reset),
-     .raddr(`reg_pwm_off),
+     .raddr(`reg_pwm_on),
      .rclk(pwm_reset),
      .dout(fifo_data_out)
      );
+*/
 
-/*
   fifo #(
    .WIDTH(FIFO_WIDTH),
    .DEPTH(FIFO_DEPTH)
    ) FIFO_IN (
    .in_clock(clock),
-   .in_shift(in_fifo_in_shift),
-   .in_data(`reg_fifo_in),
-   .in_full(in_fifo_in_full),
-   .in_nempty(in_fifo_in_nempty),
-
-   //.out_clock(clock),
-   .out_pop(in_fifo_out_pop),
+   .in_shift(`reg_fifo_in_shift),
+   .in_data(`reg_fifo_in_test),
+   .in_full(in_fifo_in_nempty),
+   .in_nempty(in_fifo_in_full),
+.write_en(1'b1),
+   .out_clock(clock),
+   .out_pop(`reg_fifo_out_pop),
    .out_data(in_fifo_out_data),
    .out_nempty(in_fifo_out_nempty)
- );*/
+ );
 
 
 
@@ -196,7 +196,10 @@ module top #(
         go<=1'b0;
         `reg_fifo_status_full<=state;
 
-        `reg_fifo_out_test[7:0]<=fifo_data_out;
+        `reg_fifo_out_test<=in_fifo_out_data;
+        `reg_fifo_status_full<=in_fifo_in_full;
+        `reg_fifo_status_nempty<=in_fifo_in_nempty;
+        `reg_fifo_status_out_nempty<=in_fifo_out_nempty;
 
         if(data_ready)
         begin
