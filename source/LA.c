@@ -120,14 +120,27 @@ void logicAnalyzerSetup(void)
 
     //now do some stuff
     //setup the PWM
-	FPGA_REG_05=0x1;
-	FPGA_REG_06=0x1;
+	//FPGA_REG_05=0x1;
+	//FPGA_REG_06=0x1;
     //delay
     //delayms(1);
     //change the PWM
 	//FPGA_REG_05=0x10;
 	//FPGA_REG_06=0x10;
-	delayms(1);
+	//delayms(1);
+    FPGA_REG_07=0x8001;//setup cs
+	while(FPGA_REG_08&&0b1);
+	FPGA_REG_07=0x8000;
+    while(FPGA_REG_08&&0b1);
+
+	FPGA_REG_07=0x0855;
+	while(FPGA_REG_08&&0b1);
+	FPGA_REG_07=0x04AA;
+    while(FPGA_REG_08&&0b1);
+
+    FPGA_REG_07=0x8001;//setup cs
+	while(FPGA_REG_08&&0b1);
+
 
     //cdcprintf("FPGA_REG_3: %04X\r\n",FPGA_REG_03);*/
 
