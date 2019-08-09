@@ -26,10 +26,16 @@
 `define reg_pwm_on wreg[6'h05]
 `define reg_pwm_off wreg[6'h06]
 
+`define reg_fifo_in wreg[6'h07]
+`define reg_fifo_in_test wreg[6'h09]
+
 //read registers
 `define reg_la_read rreg[6'h02]
 //`define reg_la_config wreg[6'h03]
 `define reg_la_sample_count rreg[6'h04]
-
+`define reg_fifo_out rreg[6'h07]
+`define reg_fifo_status rreg[6'h08]
+`define reg_fifo_status_full rreg[6'h08][0]
+`define reg_fifo_out_test rreg[6'h09]
 
 `endif

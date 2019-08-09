@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.77 (w)1999-2016 BSI
-[*] Fri Aug 02 13:03:50 2019
+[*] Thu Aug 08 13:05:30 2019
 [*]
 [dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.vcd"
-[dumpfile_mtime] "Fri Aug 02 12:50:59 2019"
-[dumpfile_size] 52130
+[dumpfile_mtime] "Thu Aug 08 13:03:14 2019"
+[dumpfile_size] 64007
 [savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.gtkw"
 [timestart] 63000
 [size] 1920 1017
 [pos] -1 -1
-*-19.301805 2450000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-19.301805 508000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] buspirate_tb.
 [treeopen] buspirate_tb.buspirate.
 [sst_width] 211
@@ -35,9 +35,7 @@ buspirate_tb.buspirate.mc_dout[15:0]
 @22
 buspirate_tb.sram_sio_d[7:0]
 buspirate_tb.sram_sio[7:0]
-@23
 buspirate_tb.buspirate.sram_sio_tdi[7:0]
-@22
 buspirate_tb.buspirate.sram_sio_tdo[7:0]
 buspirate_tb.buspirate.sram_sio[7:0]
 @28
@@ -55,20 +53,30 @@ buspirate_tb.BP_BUF[3].iopin_state
 buspirate_tb.BP_BUF[4].iopin_state
 @200
 -SPI
+@22
+buspirate_tb.buspirate.SPI_MASTER.data_i[7:0]
+buspirate_tb.buspirate.SPI_MASTER.data_o[7:0]
+@28
+buspirate_tb.buspirate.BPIO_BUF[2].din
+@29
+buspirate_tb.buspirate.BPIO_BUF[2].dout
+@28
+buspirate_tb.buspirate.SPI_MASTER.go
+buspirate_tb.buspirate.SPI_MASTER.mosi
+buspirate_tb.buspirate.SPI_MASTER.state
+buspirate_tb.buspirate.SPI_MASTER.sclk
+buspirate_tb.buspirate.SPI_MASTER.rst
+buspirate_tb.buspirate.SPI_MASTER.cs
+@200
 -FIFO_IN
 -FIFO_OUT
-@22
-buspirate_tb.buspirate.register_peek[15:0]
 @28
 buspirate_tb.buspirate.pwm_out
-buspirate_tb.buspirate.AUX_PWM.rst
-@22
-buspirate_tb.buspirate.sample_counter[22:0]
-@28
-buspirate_tb.buspirate.la_done
 buspirate_tb.buspirate.clock
 buspirate_tb.buspirate.sram_auto_clock
 @22
 buspirate_tb.buspirate.lat[7:0]
+buspirate_tb.buspirate.FPGA_REG_03[15:0]
+buspirate_tb.buspirate.FPGA_REG_04[15:0]
 [pattern_trace] 1
 [pattern_trace] 0

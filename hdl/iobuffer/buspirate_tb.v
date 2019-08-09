@@ -10,7 +10,7 @@ module buspirate_tb();
   parameter LA_CHIPS = 2;
   parameter BP_PINS = 5;
   parameter FIFO_WIDTH = 16;
-  parameter FIFO_DEPTH = 4;
+  parameter FIFO_DEPTH = 256;
 
   reg clk, rst;
 
@@ -89,43 +89,57 @@ module buspirate_tb();
     initial begin
       $dumpfile(`DUMPSTR(`VCD_OUTPUT));
       $dumpvars(0, buspirate_tb);
-      bpio_test_input=5'b11111;
-      mc_we=1;
-      mc_oe=1;
-      mc_ce=0;
+      bpio_test_input<=5'b11111;
+      mc_we<=1;
+      mc_oe<=1;
+      mc_ce<=0;
       @(negedge rst); // wait for reset
       repeat(10) @(posedge clk);
 
 
-      //zSRAM SPI debug
-      mc_add = 6'h03;
-      mc_data_reg=16'b0000000000000000;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      mc_data_reg=16'b0000000000011011;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(200)@(posedge clk);
+
 
       //IO pins setup
       mc_add = 6'h00; //od|oe
-      mc_data_reg <= 16'h00FF;
+      mc_data_reg <= 16'h00FB;
       repeat(6)@(posedge clk);
       mc_we=0;
       repeat(6)@(posedge clk);
       mc_we=1;
       repeat(6)@(posedge clk);
       mc_add = 6'h01; //hl|dir
-      mc_data_reg <= 16'h0000;
+      mc_data_reg <= 16'h0004;
       repeat(6)@(posedge clk);
       mc_we=0;
       repeat(6)@(posedge clk);
       mc_we=1;
       repeat(6)@(posedge clk);
+bpio_test_input<=5'b11111;
+
+mc_data_reg=16'h8000;
+repeat(6)@(posedge clk);
+mc_we=0;
+repeat(6)@(posedge clk);
+mc_we=1;
+repeat(10)@(posedge clk);
+
+      //zSRAM SPI debug
+      mc_add = 6'h07;
+      mc_data_reg=16'h08ff;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(50)@(posedge clk);
+      mc_add = 6'h07;
+      mc_data_reg=16'h8001;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(200)@(posedge clk);
+
+
 
 
       //PWM

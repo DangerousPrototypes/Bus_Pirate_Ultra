@@ -8,6 +8,9 @@
 `include "pwm.v"
 `include "pll.v"
 `include "registers.v"
+`include "spimaster.v"
+`include "fifo.v"
+`include "ram.v"
 `define SIMULATION
 
 module top #(
@@ -17,7 +20,7 @@ module top #(
   parameter LA_CHIPS = 2,
   parameter BP_PINS = 5,
   parameter FIFO_WIDTH = 16,
-  parameter FIFO_DEPTH = 4
+  parameter FIFO_DEPTH = 256
 ) (
   input clock,
   inout wire [BP_PINS-1:0] bpio_io,
@@ -70,8 +73,12 @@ module top #(
     //TODO: N:1 mux freq measure and PWM on IO pins?
     wire pwm_out;
     reg pwm_reset;
-    pwm AUX_PWM(pwm_reset, count[0],pwm_out, `reg_pwm_on,`reg_pwm_off);
-    assign bpio_do[0]=pwm_out;
+    pwm PWM_OUT(pwm_reset, count[0],pwm_out, `reg_pwm_on,`reg_pwm_off);
+    //assign bpio_do[0]=pwm_out;
+    //assign bpio_do[1]=pwm_out;
+    //assign bpio_do[2]=pwm_out;
+    //assign bpio_do[3]=pwm_out;
+    assign bpio_do[4]=pwm_out;
 
   	// Memory controller interface
   	wire [MC_DATA_WIDTH-1:0] mc_din;
@@ -109,11 +116,92 @@ module top #(
     `endif
 
 
+    // SPI master
+     // sync signals
+     reg state_last, go,reset, go_delay;
+     wire state,  data_ready;
+     wire[7:0] spi_in, spi_out;
+     assign data_ready=((state_last===1'b1)&&(state===1'b0));
+
+     spimaster SPI_MASTER(
+     // general control
+       .rst(reset),				// resets module to known state
+       .clkin(clock),				// clock that makes everyhting tick
+     // spi configuration
+       .cpol(1'b1), //cpol,				// clock polarity
+       .cpha(1'b0), //cpha,				// clock phase
+       .cspol(1'b1), //cspol,				// CS polarity
+       .autocs(1'b0), //autocs,				// assert CS automatically
+     // sync signals
+       .go(go),					// starts a SPI transmission
+       .state(state),				// state of module (0=idle, 1=busy/transmitting)
+     // data in/out
+       .data_i(`reg_fifo_in), 			// data in (will get transmitted)
+       .data_o(spi_in),				// data out (will get received)
+     // spi signals
+       .mosi(bpio_do[0]),          // master out slave in
+       .sclk(bpio_do[1]),          // SPI clock (= clkin/2)
+       .miso(bpio_di[2]),          // master in slave out
+       .cs(bpio_do[3])				     // chip select
+       );
+
+       //FIFO
+   wire in_fifo_in_nempty, in_fifo_in_full, in_fifo_out_nempty,in_fifo_in_shift,in_fifo_out_pop,out_fifo_out_pop;
+   wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty;
+   wire [MC_DATA_WIDTH-1:0] out_fifo_out_data, out_fifo_in_data, in_fifo_out_data;
+   wire out_fifo_in_shift, in_fifo_out_clock, out_fifo_in_clock;
+   assign in_fifo_in_shift=`reg_pwm_off[15];
+   assign in_fifo_out_pop=`reg_pwm_off[14];
+
+   reg [8:0] waddr,raddr;
+   wire [7:0] fifo_data_out;
+
+   ram FIFO_IN(
+     .din(`reg_fifo_in_test),
+     .write_en(1'b1),
+     .waddr(`reg_pwm_off),
+     .wclk(pwm_reset),
+     .raddr(`reg_pwm_off),
+     .rclk(pwm_reset),
+     .dout(fifo_data_out)
+     );
+
+/*
+  fifo #(
+   .WIDTH(FIFO_WIDTH),
+   .DEPTH(FIFO_DEPTH)
+   ) FIFO_IN (
+   .in_clock(clock),
+   .in_shift(in_fifo_in_shift),
+   .in_data(`reg_fifo_in),
+   .in_full(in_fifo_in_full),
+   .in_nempty(in_fifo_in_nempty),
+
+   //.out_clock(clock),
+   .out_pop(in_fifo_out_pop),
+   .out_data(in_fifo_out_data),
+   .out_nempty(in_fifo_out_nempty)
+ );*/
+
+
+
+
     always @(posedge clock)
       begin
 
         count <= count + 1;
         pwm_reset<=1'b0;
+        state_last<=state;
+        reset<=1'b0;
+        go<=1'b0;
+        `reg_fifo_status_full<=state;
+
+        `reg_fifo_out_test[7:0]<=fifo_data_out;
+
+        if(data_ready)
+        begin
+          `reg_fifo_out[7:0]<=spi_in;
+        end
 
         if(sram_auto_clock_delay)
         begin
@@ -159,6 +247,7 @@ module top #(
             case(mc_add)
               6'h02:sram_auto_clock_delay<=1'b1;
               6'h06:pwm_reset<=1'b1;
+              6'h07:go<=1'b1;
               default: begin end
             endcase
           end
@@ -182,7 +271,6 @@ module top #(
           end*/
         end// if we or oe
       end //if ce
-
 
 
     //define the tristate data pin explicitly in the top module
@@ -239,6 +327,7 @@ module top #(
 
 `ifdef SIMULATION
     initial begin
+      reset<=1'b1;
       count<=3'b000;
       la_active<=0;
       rreg[6'b00000] <= 16'b0000000000000000;				// test values
