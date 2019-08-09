@@ -90,6 +90,7 @@ module top #(
     assign lat_oe=1'b0; //open latch, eleminated on next revision
     localparam N = 3;
     reg [N:0] count;
+    reg [2:0] reset_count;
     //1111 0100 0010 0100 0000 0000
     reg [7:0] la_sample_prescaler;
 
@@ -115,14 +116,44 @@ module top #(
       assign FPGA_REG_04=rreg[6'h04];
     `endif
 
+    //FIFO
+
+    wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty;
+    wire [MC_DATA_WIDTH-1:0] out_fifo_out_data, out_fifo_in_data;
+    wire out_fifo_in_shift, in_fifo_out_clock, out_fifo_in_clock;
+
+    //in use
+    wire [MC_DATA_WIDTH-1:0] in_fifo_out_data;
+    wire in_fifo_in_nempty, in_fifo_in_full, in_fifo_out_nempty;//, in_fifo_out_pop;
+    reg in_fifo_in_shift, peripheral_busy;//,in_fifo_out_pop;
+    //assign in_fifo_out_pop=in_fifo_out_nempty && (peripheral_busy===1'b0);
+    reg in_fifo_out_pop;
+
+    reg in_fifo_out_pop_last, state_last, reset, peripheral_start;
+    wire in_fifo_out_data_ready, out_fifo_in_data_ready, state;
+
+    fifo #(
+    .WIDTH(FIFO_WIDTH),
+    .DEPTH(FIFO_DEPTH)
+    ) FIFO_IN (
+    .in_clock(clock),
+    .in_shift(in_fifo_in_shift),
+    .in_data(mc_din),
+    .in_full(in_fifo_in_full),
+    .in_nempty(in_fifo_in_nempty),
+
+    .out_clock(clock),
+    .out_pop(out_fifo_in_data_ready),
+    .out_data(in_fifo_out_data),
+    .out_nempty(in_fifo_out_nempty)
+    );
+
 
     // SPI master
-     // sync signals
-     reg state_last, go,reset, go_delay;
-     wire state,  data_ready;
-     wire[7:0] spi_in, spi_out;
-     assign data_ready=((state_last===1'b1)&&(state===1'b0));
-
+    //TODO: move CS, delay, start logic analyzer commands to FIFO and process in top level
+     wire[7:0] spi_in;
+     //assign in_fifo_out_data_ready=((in_fifo_out_pop_last===1'b1)&&(in_fifo_out_pop===1'b0));
+     assign out_fifo_in_data_ready=((state_last===1'b1)&&(state===1'b0));
      spimaster SPI_MASTER(
      // general control
        .rst(reset),				// resets module to known state
@@ -133,10 +164,10 @@ module top #(
        .cspol(1'b1), //cspol,				// CS polarity
        .autocs(1'b0), //autocs,				// assert CS automatically
      // sync signals
-       .go(go),					// starts a SPI transmission
+       .go(peripheral_start),					// starts a SPI transmission
        .state(state),				// state of module (0=idle, 1=busy/transmitting)
      // data in/out
-       .data_i(`reg_fifo_in), 			// data in (will get transmitted)
+       .data_i(in_fifo_out_data), 			// data in (will get transmitted)
        .data_o(spi_in),				// data out (will get received)
      // spi signals
        .mosi(bpio_do[0]),          // master out slave in
@@ -145,55 +176,28 @@ module top #(
        .cs(bpio_do[3])				     // chip select
        );
 
-       //FIFO
-   wire in_fifo_in_nempty, in_fifo_in_full, in_fifo_out_nempty,in_fifo_in_shift,in_fifo_out_pop,out_fifo_out_pop;
-   wire out_fifo_in_nempty, out_fifo_in_full, out_fifo_out_nempty;
-   wire [MC_DATA_WIDTH-1:0] out_fifo_out_data, out_fifo_in_data, in_fifo_out_data;
-   wire out_fifo_in_shift, in_fifo_out_clock, out_fifo_in_clock;
-   assign in_fifo_in_shift=`reg_pwm_off[15];
-   assign in_fifo_out_pop=`reg_pwm_off[14];
-
-   reg [8:0] waddr,raddr;
-   wire [7:0] fifo_data_out;
-
-  /* ram FIFO_IN(
-     .din(`reg_fifo_in_test),
-     .write_en(1'b1),
-     .waddr(`reg_pwm_off),
-     .wclk(pwm_reset),
-     .raddr(`reg_pwm_on),
-     .rclk(pwm_reset),
-     .dout(fifo_data_out)
-     );
-*/
-
-  fifo #(
-   .WIDTH(FIFO_WIDTH),
-   .DEPTH(FIFO_DEPTH)
-   ) FIFO_IN (
-   .in_clock(clock),
-   .in_shift(`reg_fifo_in_shift),
-   .in_data(`reg_fifo_in_test),
-   .in_full(in_fifo_in_nempty),
-   .in_nempty(in_fifo_in_full),
-.write_en(1'b1),
-   .out_clock(clock),
-   .out_pop(`reg_fifo_out_pop),
-   .out_data(in_fifo_out_data),
-   .out_nempty(in_fifo_out_nempty)
- );
-
-
 
 
     always @(posedge clock)
       begin
 
+        if(reset_count<2) begin
+          reset_count<=reset_count+1;
+          reset<=1'b1;
+        end
+        else
+        begin
+          reset<=1'b0;
+        end
+
         count <= count + 1;
         pwm_reset<=1'b0;
         state_last<=state;
-        reset<=1'b0;
-        go<=1'b0;
+        in_fifo_out_pop_last<=in_fifo_out_pop;
+
+        in_fifo_in_shift<=1'b0;
+        peripheral_start<=1'b0;
+        in_fifo_out_pop<=1'b0;
         `reg_fifo_status_full<=state;
 
         `reg_fifo_out_test<=in_fifo_out_data;
@@ -201,9 +205,19 @@ module top #(
         `reg_fifo_status_nempty<=in_fifo_in_nempty;
         `reg_fifo_status_out_nempty<=in_fifo_out_nempty;
 
-        if(data_ready)
-        begin
+        if(out_fifo_in_data_ready)
+        begin //TODO: put in out fifo...
           `reg_fifo_out[7:0]<=spi_in;
+        end
+
+        if(!peripheral_busy && in_fifo_out_nempty && !state)
+        begin
+          peripheral_start<=1'b1;
+          peripheral_busy<=1'b1;
+        end
+        else if(!peripheral_start && !state)
+        begin
+          peripheral_busy<=1'b0;
         end
 
         if(sram_auto_clock_delay)
@@ -250,7 +264,7 @@ module top #(
             case(mc_add)
               6'h02:sram_auto_clock_delay<=1'b1;
               6'h06:pwm_reset<=1'b1;
-              6'h07:go<=1'b1;
+              6'h07:in_fifo_in_shift<=1'b1;
               default: begin end
             endcase
           end
@@ -330,9 +344,11 @@ module top #(
 
 `ifdef SIMULATION
     initial begin
-      reset<=1'b1;
+      peripheral_busy<=1'b0;
+      reset<=1'b0;
       count<=3'b000;
       la_active<=0;
+      reset_count<=0;
       rreg[6'b00000] <= 16'b0000000000000000;				// test values
       rreg[6'b00001] <= 16'b0000000000000000;
       rreg[6'b00010] <= 16'b0000000000000000;

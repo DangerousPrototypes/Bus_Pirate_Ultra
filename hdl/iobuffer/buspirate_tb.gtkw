@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.77 (w)1999-2016 BSI
-[*] Thu Aug 08 13:05:30 2019
+[*] Fri Aug 09 14:29:17 2019
 [*]
 [dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.vcd"
-[dumpfile_mtime] "Thu Aug 08 13:03:14 2019"
-[dumpfile_size] 64007
+[dumpfile_mtime] "Fri Aug 09 14:28:32 2019"
+[dumpfile_size] 73558
 [savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.gtkw"
-[timestart] 63000
+[timestart] 0
 [size] 1920 1017
 [pos] -1 -1
-*-19.301805 508000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-19.301805 2810000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] buspirate_tb.
 [treeopen] buspirate_tb.buspirate.
 [sst_width] 211
@@ -32,18 +32,6 @@ buspirate_tb.buspirate.mc_din[15:0]
 buspirate_tb.buspirate.mc_dout[15:0]
 @200
 -SRAMs
-@22
-buspirate_tb.sram_sio_d[7:0]
-buspirate_tb.sram_sio[7:0]
-buspirate_tb.buspirate.sram_sio_tdi[7:0]
-buspirate_tb.buspirate.sram_sio_tdo[7:0]
-buspirate_tb.buspirate.sram_sio[7:0]
-@28
-buspirate_tb.buspirate.sram_clock_source
-buspirate_tb.buspirate.mcu_clock
-buspirate_tb.buspirate.mcu_mosi
-buspirate_tb.buspirate.mcu_miso
-@200
 -BUFFER PINS
 @28
 buspirate_tb.BP_BUF[0].iopin_state
@@ -54,13 +42,11 @@ buspirate_tb.BP_BUF[4].iopin_state
 @200
 -SPI
 @22
-buspirate_tb.buspirate.SPI_MASTER.data_i[7:0]
 buspirate_tb.buspirate.SPI_MASTER.data_o[7:0]
+buspirate_tb.buspirate.SPI_MASTER.data_i[15:0]
 @28
 buspirate_tb.buspirate.BPIO_BUF[2].din
-@29
 buspirate_tb.buspirate.BPIO_BUF[2].dout
-@28
 buspirate_tb.buspirate.SPI_MASTER.go
 buspirate_tb.buspirate.SPI_MASTER.mosi
 buspirate_tb.buspirate.SPI_MASTER.state
@@ -71,12 +57,32 @@ buspirate_tb.buspirate.SPI_MASTER.cs
 -FIFO_IN
 -FIFO_OUT
 @28
-buspirate_tb.buspirate.pwm_out
-buspirate_tb.buspirate.clock
-buspirate_tb.buspirate.sram_auto_clock
+buspirate_tb.buspirate.FIFO_IN.in_clock
 @22
-buspirate_tb.buspirate.lat[7:0]
-buspirate_tb.buspirate.FPGA_REG_03[15:0]
-buspirate_tb.buspirate.FPGA_REG_04[15:0]
+buspirate_tb.buspirate.FIFO_IN.in_data[15:0]
+@28
+buspirate_tb.buspirate.FIFO_IN.in_full
+buspirate_tb.buspirate.FIFO_IN.in_nempty
+@22
+buspirate_tb.buspirate.FIFO_IN.in_pos[7:0]
+@28
+buspirate_tb.buspirate.FIFO_IN.in_shift
+@22
+buspirate_tb.buspirate.FIFO_IN.next_in_pos[7:0]
+buspirate_tb.buspirate.FIFO_IN.next_next_in_pos[7:0]
+buspirate_tb.buspirate.FIFO_IN.next_out_pos[7:0]
+@28
+buspirate_tb.buspirate.FIFO_IN.out_clock
+@22
+buspirate_tb.buspirate.FIFO_IN.out_data[15:0]
+@28
+buspirate_tb.buspirate.peripheral_start
+buspirate_tb.buspirate.peripheral_busy
+buspirate_tb.buspirate.FIFO_IN.out_nempty
+buspirate_tb.buspirate.state
+buspirate_tb.buspirate.out_fifo_in_data_ready
+buspirate_tb.buspirate.FIFO_IN.out_pop
+@22
+buspirate_tb.buspirate.FIFO_IN.out_pos[7:0]
 [pattern_trace] 1
 [pattern_trace] 0

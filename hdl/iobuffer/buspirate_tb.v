@@ -116,7 +116,7 @@ module buspirate_tb();
       repeat(6)@(posedge clk);
 bpio_test_input<=5'b11111;
 
-mc_data_reg=16'h8000;
+mc_data_reg=16'h8000; //cs
 repeat(6)@(posedge clk);
 mc_we=0;
 repeat(6)@(posedge clk);
@@ -125,17 +125,31 @@ repeat(10)@(posedge clk);
 
       //zSRAM SPI debug
       mc_add = 6'h07;
-      mc_data_reg=16'h08ff;
-      repeat(6)@(posedge clk);
+      mc_data_reg=16'h08aa;
+      repeat(3)@(posedge clk);
       mc_we=0;
-      repeat(6)@(posedge clk);
+      repeat(3)@(posedge clk);
       mc_we=1;
-      repeat(50)@(posedge clk);
+      repeat(3)@(posedge clk);
+      mc_add = 6'h07;
+      mc_data_reg=16'h08ff;
+      repeat(3)@(posedge clk);
+      mc_we=0;
+      repeat(3)@(posedge clk);
+      mc_we=1;
+      repeat(3)@(posedge clk);
+      mc_add = 6'h07;
+      mc_data_reg=16'h0800;
+      repeat(3)@(posedge clk);
+      mc_we=0;
+      repeat(3)@(posedge clk);
+      mc_we=1;
+      repeat(3)@(posedge clk);
       mc_add = 6'h07;
       mc_data_reg=16'h8001;
-      repeat(6)@(posedge clk);
+      repeat(3)@(posedge clk);
       mc_we=0;
-      repeat(6)@(posedge clk);
+      repeat(3)@(posedge clk);
       mc_we=1;
       repeat(200)@(posedge clk);
 

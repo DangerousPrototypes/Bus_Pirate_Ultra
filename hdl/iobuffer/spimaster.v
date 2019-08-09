@@ -60,10 +60,11 @@ begin
 	sclk <= 1'b0;
 	state <= 1'b0;
 	cs <= 1'b0;
+	bitcount <=5'b00000;
 end
 else
 begin
-	if((go == 1'b1)&&(state == 1'b0))		// only accept go when we are idle
+	if((go === 1'b1)&&(state === 1'b0))		// only accept go when we are idle
 	begin
 		if(data_i[15]==1'b1) //this is a pipelined command
 		begin
@@ -71,7 +72,8 @@ begin
 				8'h00: cs<=1'b0;
 				8'h01: cs<=1'b1;
 			endcase
-		end
+			bitcount <= 0; //adjust the number of bits to send
+			state <= 1'b1;		end
 		else
 		begin
 			bitcount <= data_i[11:8]; //adjust the number of bits to send
@@ -80,17 +82,19 @@ begin
 		end
 	end
 
-	if((go == 1'b0)&&(state == 1'b0))		// put lines into their idle state
+	if((go === 1'b0)&&(state === 1'b0))		// put lines into their idle state
 	begin
 		sclk <= cpol;						// clock line
 		if (autocs) cs <= cspol;			// cs line
 	end
 
-	if(state == 1'b1)						// transmit the bits and receive them
+	if(state === 1'b1)						// transmit the bits and receive them
 	begin
-		if (clockphase == 1'b0)
+		if(bitcount==5'b00000)
+			state<=1'b0;
+		else if (clockphase === 1'b0)
 		begin
-			if (cpha == 1'b0)
+			if (cpha === 1'b0)
 			begin
 				mosi <= data_i[bitcount-1];
 			end
@@ -103,7 +107,7 @@ begin
 		end
 		else
 		begin
-			if (cpha == 1'b0)
+			if (cpha === 1'b0)
 			begin
 				data_o[bitcount-1] <= miso;
 			end
@@ -115,7 +119,7 @@ begin
 			bitcount <= bitcount - 1;
 			clockphase <= 1'b0;
 		end
-		if(bitcount == 0)
+		if(bitcount === 0)
 		begin
 			state <= 1'b0;
 			mosi <= data_i[0];
