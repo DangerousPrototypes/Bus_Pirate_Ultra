@@ -53,11 +53,11 @@ set_io mcu_mosi 68 #MOSI B15
 set_io mcu_miso 67 #MISO B14
 
 set_io bp_active 137 #C10
-set_io -nowarn mcu_aux2 136 #C11
-set_io -nowarn mcu_aux3 135 #C12
+set_io bp_fifo_in_full 136 #C11
+set_io bp_fifo_out_nempty 135 #C12
 set_io -nowarn mcu_aux4 134 #
-set_io -nowarn mcu_aux5 125 #B8
-set_io -nowarn mcu_aux6 124 #B9
+set_io -nowarn mcu_aux5 125 #B8 DONT TRUST THESE NUMBERS!!
+set_io -nowarn mcu_aux6 124 #B9 DONT TRUST THESE NUMBERS!!
 set_io -nowarn mcu_aux7 119 #
 
 

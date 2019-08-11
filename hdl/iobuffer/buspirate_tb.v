@@ -1,6 +1,9 @@
 `timescale 1ns/1ps
 `define DUMPSTR(x) `"x.vcd`"
 
+`define WRITE(address,data) mc_add <= address;mc_data_reg <= data;repeat(3)@(posedge clk);mc_we=0;repeat(6)@(posedge clk);mc_we=1;repeat(3)@(posedge clk)
+`define READ(address,data) mc_add <= address;mc_data_reg <= data;repeat(3)@(posedge clk);mc_oe=0;repeat(6)@(posedge clk);mc_oe=1;repeat(3)@(posedge clk)
+
 module buspirate_tb();
 
   parameter DURATION = 10;
@@ -31,7 +34,7 @@ module buspirate_tb();
   reg [MC_ADD_WIDTH-1:0] mc_add;
   wire [MC_DATA_WIDTH-1:0] mc_data;
   reg [MC_DATA_WIDTH-1:0] mc_data_reg;
-  wire bp_active;
+  wire bp_active, bp_fifo_in_full,bp_fifo_out_nempty;
 
   assign mc_data=(mc_oe)?mc_data_reg:16'hzzzz;
 
@@ -65,7 +68,9 @@ module buspirate_tb();
     .mc_we(mc_we),
     .mc_add(mc_add),
     .mc_data(mc_data),
-    .bp_active(bp_active)
+    .bp_active(bp_active),
+    .bp_fifo_in_full(bp_fifo_in_full),
+    .bp_fifo_out_nempty(bp_fifo_out_nempty)
     );
 
     //this simulates the 74LVC logic buffers so we can see the results in simulation
@@ -97,111 +102,22 @@ module buspirate_tb();
       mc_ce<=0;
       @(negedge rst); // wait for reset
       repeat(10) @(posedge clk);
-
-
-
-
       //IO pins setup
-      mc_add = 6'h00; //od|oe
-      mc_data_reg <= 16'h00FB;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      mc_add = 6'h01; //hl|dir
-      mc_data_reg <= 16'h0004;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-bpio_test_input<=5'b11111;
-
-//pause BPSM
-mc_add = 6'h03; //hl|dir
-mc_data_reg <= 16'b10000000;
-repeat(6)@(posedge clk);
-mc_we=0;
-repeat(6)@(posedge clk);
-mc_we=1;
-repeat(6)@(posedge clk);
-
-      mc_add = 6'h07;
-
-      mc_data_reg=16'hFE00; //IO pins low
-      repeat(3)@(posedge clk);
-      mc_we=0;
-      repeat(3)@(posedge clk);
-      mc_we=1;
-repeat(3)@(posedge clk);
-      mc_data_reg=16'h81FF; //IO pins high
-      repeat(3)@(posedge clk);
-      mc_we=0;
-      repeat(3)@(posedge clk);
-      mc_we=1;
-repeat(3)@(posedge clk);
-      mc_data_reg=16'h8100; //IO pins low
-      repeat(3)@(posedge clk);
-      mc_we=0;
-      repeat(3)@(posedge clk);
-      mc_we=1;
-repeat(3)@(posedge clk);
-
-      //FIFO
-      mc_add = 6'h07;
-      mc_data_reg=16'h08aa;
-      repeat(3)@(posedge clk);
-      mc_we=0;
-      repeat(3)@(posedge clk);
-      mc_we=1;
-      repeat(3)@(posedge clk);
-      mc_add = 6'h07;
-      mc_data_reg=16'h08ff;
-      repeat(3)@(posedge clk);
-      mc_we=0;
-      repeat(3)@(posedge clk);
-      mc_we=1;
-      repeat(3)@(posedge clk);
-      mc_add = 6'h07;
-      mc_data_reg=16'h0800;
-      repeat(3)@(posedge clk);
-      mc_we=0;
-      repeat(3)@(posedge clk);
-      mc_we=1;
-      repeat(3)@(posedge clk);
-
-      mc_data_reg=16'h840F;
-      repeat(3)@(posedge clk);
-      mc_we=0;
-      repeat(3)@(posedge clk);
-      mc_we=1;
-      repeat(3)@(posedge clk);
-
-
-      mc_data_reg=16'h81FF; //IO pins high
-      repeat(3)@(posedge clk);
-      mc_we=0;
-      repeat(3)@(posedge clk);
-      mc_we=1;
-repeat(3)@(posedge clk);
-      mc_data_reg=16'hFF00; //IO pins low
-      repeat(3)@(posedge clk);
-      mc_we=0;
-      repeat(3)@(posedge clk);
-      mc_we=1;
-repeat(3)@(posedge clk);
-      //trigger BP SM
-      mc_add = 6'h03; //hl|dir
-      mc_data_reg <= 16'b00000000;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-
+      `WRITE(6'h00,16'h00FB);//od|oe
+      `WRITE(6'h01,16'h0004);//hl|dir
+      bpio_test_input<=5'b11111;
+      `WRITE(6'h03,16'b10000000);//pause BPSM
+      `WRITE(6'h07,16'hFE00);//IO pins low
+      `WRITE(6'h07,16'h81FF);//IO pins high
+      `WRITE(6'h07,16'h8100); //IO pins low
+      `WRITE(6'h07,16'h08aa); //write SPI data
+      `WRITE(6'h07,16'h08ff);
+      `WRITE(6'h07,16'h0800);
+      `WRITE(6'h07,16'h840F); //delay 0x0f
+      `WRITE(6'h07,16'h81FF); //IO pins high
+      `WRITE(6'h07,16'hFF00); //IO pins low
+      `WRITE(6'h03,16'b00000000);//trigger BP SM
       repeat(200)@(posedge clk);
-      repeat(100) @(posedge clk);
       $finish;
     end
 
