@@ -31,6 +31,7 @@ module buspirate_tb();
   reg [MC_ADD_WIDTH-1:0] mc_add;
   wire [MC_DATA_WIDTH-1:0] mc_data;
   reg [MC_DATA_WIDTH-1:0] mc_data_reg;
+  wire bp_active;
 
   assign mc_data=(mc_oe)?mc_data_reg:16'hzzzz;
 
@@ -63,7 +64,8 @@ module buspirate_tb();
     .mc_ce(mc_ce),
     .mc_we(mc_we),
     .mc_add(mc_add),
-    .mc_data(mc_data)
+    .mc_data(mc_data),
+    .bp_active(bp_active)
     );
 
     //this simulates the 74LVC logic buffers so we can see the results in simulation
@@ -116,14 +118,37 @@ module buspirate_tb();
       repeat(6)@(posedge clk);
 bpio_test_input<=5'b11111;
 
-mc_data_reg=16'h8000; //cs
+//pause BPSM
+mc_add = 6'h03; //hl|dir
+mc_data_reg <= 16'b10000000;
 repeat(6)@(posedge clk);
 mc_we=0;
 repeat(6)@(posedge clk);
 mc_we=1;
-repeat(10)@(posedge clk);
+repeat(6)@(posedge clk);
 
-      //zSRAM SPI debug
+      mc_add = 6'h07;
+
+      mc_data_reg=16'hFE00; //IO pins low
+      repeat(3)@(posedge clk);
+      mc_we=0;
+      repeat(3)@(posedge clk);
+      mc_we=1;
+repeat(3)@(posedge clk);
+      mc_data_reg=16'h81FF; //IO pins high
+      repeat(3)@(posedge clk);
+      mc_we=0;
+      repeat(3)@(posedge clk);
+      mc_we=1;
+repeat(3)@(posedge clk);
+      mc_data_reg=16'h8100; //IO pins low
+      repeat(3)@(posedge clk);
+      mc_we=0;
+      repeat(3)@(posedge clk);
+      mc_we=1;
+repeat(3)@(posedge clk);
+
+      //FIFO
       mc_add = 6'h07;
       mc_data_reg=16'h08aa;
       repeat(3)@(posedge clk);
@@ -145,196 +170,37 @@ repeat(10)@(posedge clk);
       repeat(3)@(posedge clk);
       mc_we=1;
       repeat(3)@(posedge clk);
-      mc_add = 6'h07;
-      mc_data_reg=16'h8001;
+
+      mc_data_reg=16'h840F;
       repeat(3)@(posedge clk);
       mc_we=0;
       repeat(3)@(posedge clk);
       mc_we=1;
+      repeat(3)@(posedge clk);
+
+
+      mc_data_reg=16'h81FF; //IO pins high
+      repeat(3)@(posedge clk);
+      mc_we=0;
+      repeat(3)@(posedge clk);
+      mc_we=1;
+repeat(3)@(posedge clk);
+      mc_data_reg=16'hFF00; //IO pins low
+      repeat(3)@(posedge clk);
+      mc_we=0;
+      repeat(3)@(posedge clk);
+      mc_we=1;
+repeat(3)@(posedge clk);
+      //trigger BP SM
+      mc_add = 6'h03; //hl|dir
+      mc_data_reg <= 16'b00000000;
+      repeat(6)@(posedge clk);
+      mc_we=0;
+      repeat(6)@(posedge clk);
+      mc_we=1;
+      repeat(6)@(posedge clk);
+
       repeat(200)@(posedge clk);
-
-
-
-
-      //PWM
-      mc_add = 6'h05;
-      mc_data_reg <= 16'h0001;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      mc_add = 6'h06;
-      mc_data_reg <= 16'h0001;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-
-      //LA sample count
-      mc_add = 6'h04;
-      mc_data_reg=16'h0010;
-      lat<=8'hAA;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-
-      //SRAM quad, read, CS low...
-      mc_add = 6'h03;
-      //mc_data_reg <= 16'h0003;
-      mc_data_reg=16'b0000000000000001;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-
-      mc_add = 6'h02;
-      //mc_data_reg = 16'hzzzz;
-      sram_sio_d=8'haa;
-      repeat(6)@(posedge clk);
-      mc_oe=0;
-      repeat(6)@(posedge clk);
-      mc_oe=1;
-      repeat(6)@(posedge clk);
-      sram_sio_d=8'h55;
-      repeat(6)@(posedge clk);
-      mc_oe=0;
-      repeat(6)@(posedge clk);
-      mc_oe=1;
-      repeat(12)@(posedge clk);
-      //start LA
-      mc_add = 6'h03;
-      //mc_data_reg <= 16'h0003;
-      mc_data_reg=16'b0000000000001001;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-
-
-
-
-
-
-
-/*
-      mc_add = 6'h10;
-      mc_data_reg <= 16'b0000000001010000;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      mc_add = 6'h10;
-      mc_data_reg <= 16'b0000000001000000;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      mc_data_reg <= 16'b0000000001101010;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      mc_data_reg <= 16'b0000000001001010;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      mc_data_reg <= 16'b0000000001011010;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      mc_data_reg <= 16'b0000000000001010;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      @(posedge clk)
-      mc_oe=0;
-      repeat(6)@(posedge clk);
-      $display("%h",mc_data);
-      repeat(6)@(posedge clk);
-      mc_oe=1;
-      repeat(6)@(posedge clk);
-      @(posedge clk)
-      mc_oe=0;
-      repeat(6)@(posedge clk);
-      $display("%h",mc_data);
-      repeat(6)@(posedge clk);
-      mc_oe=1;
-      repeat(6)@(posedge clk);
-
-
-
-
-
-
-
-
-
-
-
-
-      mc_add = 6'h19;
-      mc_data_reg <= 16'h0003;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      mc_add = 6'h1a;
-      mc_data_reg <= 16'h0003;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-
-      mc_add = 6'h00;
-      mc_data_reg <= 16'h0055;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      mc_data_reg <= 16'h0020;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      mc_data_reg <= 16'h0002;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-      mc_data_reg <= 16'h0303;
-      repeat(6)@(posedge clk);
-      mc_we=0;
-      repeat(6)@(posedge clk);
-      mc_we=1;
-      repeat(6)@(posedge clk);
-
-      // Read test
-      mc_add = 6'h00;
-      @(posedge clk)
-      mc_oe=0;
-      repeat(6)@(posedge clk);
-      $display("%h",mc_data);
-      repeat(6)@(posedge clk);
-      mc_oe=1;
-*/
-
       repeat(100) @(posedge clk);
       $finish;
     end

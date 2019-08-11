@@ -17,6 +17,7 @@
 `define reg_la_start wreg[6'h03][4]
 `define reg_la_active wreg[6'h03][5]
 `define reg_la_max_samples_reached wreg[6'h03][6]
+`define reg_bpsm_reset wreg[6'h03][7]
 
 `define reg_la_io_cs0 wreg[6'h03][8] //reserve upper bits for more SRAMs
 `define reg_la_io_cs1 wreg[6'h03][9]
@@ -40,6 +41,6 @@
 `define reg_fifo_status_full rreg[6'h08][0]
 `define reg_fifo_status_nempty rreg[6'h08][1]
 `define reg_fifo_status_out_nempty rreg[6'h08][2]
-`define reg_fifo_out_test rreg[6'h09]
+
 
 `endif

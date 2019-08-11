@@ -16,7 +16,7 @@ module spimaster (
 	cpol,				// clock polarity
 	cpha,				// clock phase
 	cspol,				// CS polarity
-	autocs,				// assert CS automatically
+	//autocs,				// assert CS automatically
 
 // sync signals
 	go,					// starts a SPI transmission
@@ -27,8 +27,8 @@ module spimaster (
 // spi signals
 	mosi,				// master out slave in
 	sclk,				// SPI clock (= clkin/2)
-	miso,				// master in slave out
-	cs					// chip select
+	miso				// master in slave out
+	//cs					// chip select
 	);
 
 //
@@ -37,7 +37,7 @@ input clkin;
 input cpol;
 input cpha;
 input cspol;
-input autocs;
+//input autocs;
 input go;
 output reg state;
 input [15:0] data_i;
@@ -45,7 +45,7 @@ output reg [7:0] data_o;
 input miso;
 output reg mosi;
 output reg sclk;
-output reg cs;
+//output reg cs;
 
 // internal vars
 reg [4:0] bitcount;		// number of bits to transmit
@@ -59,33 +59,22 @@ begin
 	mosi <= 1'b0;
 	sclk <= 1'b0;
 	state <= 1'b0;
-	cs <= 1'b0;
+	//cs <= 1'b0;
 	bitcount <=5'b00000;
 end
 else
 begin
 	if((go === 1'b1)&&(state === 1'b0))		// only accept go when we are idle
 	begin
-		if(data_i[15]==1'b1) //this is a pipelined command
-		begin
-			case(data_i[0]) //bit zero determines CS
-				8'h00: cs<=1'b0;
-				8'h01: cs<=1'b1;
-			endcase
-			bitcount <= 0; //adjust the number of bits to send
-			state <= 1'b1;		end
-		else
-		begin
-			bitcount <= data_i[11:8]; //adjust the number of bits to send
-			state <= 1'b1;
-			clockphase <= 1'b0;
-		end
+		bitcount <= data_i[11:8]; //adjust the number of bits to send
+		state <= 1'b1;
+		clockphase <= 1'b0;
 	end
 
 	if((go === 1'b0)&&(state === 1'b0))		// put lines into their idle state
 	begin
 		sclk <= cpol;						// clock line
-		if (autocs) cs <= cspol;			// cs line
+		//if (autocs) cs <= cspol;			// cs line
 	end
 
 	if(state === 1'b1)						// transmit the bits and receive them
@@ -124,7 +113,7 @@ begin
 			state <= 1'b0;
 			mosi <= data_i[0];
 		end
-		if (autocs) cs <= ~cspol;
+		//if (autocs) cs <= ~cspol;
 	end
 end
 endmodule
