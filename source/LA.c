@@ -134,54 +134,63 @@ void logicAnalyzerSetup(void)
 	//FPGA_REG_05=0x10;
 	//FPGA_REG_06=0x10;
 	//delayms(1);
-	FPGA_REG_07=0xFE00; //LA start
+
+//set_io bp_active 137 #C10
+//set_io bp_fifo_in_full 136 #C11
+//set_io bp_fifo_out_nempty 135 #C12
+
+	//Bus pirate state machine is in reset, fill FIFO with commands
+	FPGA_REG_07=0xFE00; //LA start command
+    FPGA_REG_07=0x81FF;//all IO high command
+	FPGA_REG_07=0x8100;//all IO low command
+	FPGA_REG_07=0x0855;//write 8 bits of 0x55
+	FPGA_REG_07=0x04AA;//write 4 bits of 0xAA
+    FPGA_REG_07=0x08AA;//0xaa
+    FPGA_REG_07=0x0855;//0x55
+    FPGA_REG_07=0x08FF;//0xff
+    FPGA_REG_07=0x0800;//0x00
+    FPGA_REG_07=0x84FF;//delay for 0xFF cycles
+
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x84FF;
+
     FPGA_REG_07=0x81FF;//all IO high
 	//while(FPGA_REG_08&&0b1);
-	FPGA_REG_07=0x8100;//all IO low
-    //while(FPGA_REG_08&&0b1);
-
-	FPGA_REG_07=0x0855;
-	//while(FPGA_REG_08&&0b1);
-	FPGA_REG_07=0x04AA;
-    //while(FPGA_REG_08&&0b1);
     FPGA_REG_07=0x08AA;
     FPGA_REG_07=0x0855;
-    FPGA_REG_07=0x08FF;
-    FPGA_REG_07=0x0800;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
 
     FPGA_REG_07=0x84FF;
-    FPGA_REG_07=0x84FF;
-        FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;
-    FPGA_REG_07=0x84FF;
-        FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;
-    FPGA_REG_07=0x84FF;
-    FPGA_REG_07=0x84FF;
-        FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;
-    FPGA_REG_07=0x84FF;
-    FPGA_REG_07=0x84FF;
-        FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;
-    FPGA_REG_07=0x84FF;
-        FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;
-    FPGA_REG_07=0x84FF;
-    FPGA_REG_07=0x84FF;
 
-    FPGA_REG_07=0x81FF;//all IO high
-	//while(FPGA_REG_08&&0b1);
     FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
     FPGA_REG_07=0x0855;
-    FPGA_REG_07=0x84FF;
     FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x08AA;
     FPGA_REG_07=0x0855;
     FPGA_REG_07=0xFF00; //LA stop
 
