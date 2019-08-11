@@ -34,6 +34,7 @@ void logicAnalyzerSetup(void)
 {
     uint8_t temp;
     uint16_t i,samples;
+    uint32_t bpsm_active=0;
     char buff[256];
 
     //la_sram_mode_setup();
@@ -115,8 +116,13 @@ void logicAnalyzerSetup(void)
     //}
     //sram_deselect();
 
-    FPGA_REG_03|=(0b11000);//clear sample counter | start capture
+    gpio_set_mode(GPIOC, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT,GPIO10);
+
+    FPGA_REG_03|=(0b10001000);//clear sample counter | start capture
+    //FPGA_REG_03|=(0b1<<7);
     //cdcprintf("FPGA_REG_3: %04X\r\n",FPGA_REG_03);
+    samples=FPGA_REG_04;
+    cdcprintf("Samples cleared: %04X\r\n",samples);
 
     //now do some stuff
     //setup the PWM
@@ -128,25 +134,93 @@ void logicAnalyzerSetup(void)
 	//FPGA_REG_05=0x10;
 	//FPGA_REG_06=0x10;
 	//delayms(1);
-    FPGA_REG_07=0x8001;//setup cs
-	while(FPGA_REG_08&&0b1);
-	FPGA_REG_07=0x8000;
-    while(FPGA_REG_08&&0b1);
+	FPGA_REG_07=0xFE00; //LA start
+    FPGA_REG_07=0x81FF;//all IO high
+	//while(FPGA_REG_08&&0b1);
+	FPGA_REG_07=0x8100;//all IO low
+    //while(FPGA_REG_08&&0b1);
 
 	FPGA_REG_07=0x0855;
-	while(FPGA_REG_08&&0b1);
+	//while(FPGA_REG_08&&0b1);
 	FPGA_REG_07=0x04AA;
-    while(FPGA_REG_08&&0b1);
+    //while(FPGA_REG_08&&0b1);
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x08FF;
+    FPGA_REG_07=0x0800;
 
-    FPGA_REG_07=0x8001;//setup cs
-	while(FPGA_REG_08&&0b1);
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x84FF;
 
+    FPGA_REG_07=0x81FF;//all IO high
+	//while(FPGA_REG_08&&0b1);
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0xFF00; //LA stop
+
+	//TODO: some complete operations signal!
+
+    //while();
+    //while(FPGA_REG_03&0b100000); //wait for complete
+    FPGA_REG_03&=~(0b1<<7);
+    delayus(2);
+    //samples=0;
+    while(true){
+        i=GPIOC_IDR;
+        i=i&(0b1<<10);
+        if(i==0){
+            break;
+        }else{
+            bpsm_active=bpsm_active+1;
+        }
+    }
+/*delayus(5);
+samples=0;
+    while(true){
+    i=FPGA_REG_03;
+    i=i&0b100000;
+        if(i==0){
+            break;
+        }else{
+            samples=samples+1;
+        }
+    }
+
+*/
+    cdcprintf("OP took: %08X cycles\r\n",bpsm_active);
 
     //cdcprintf("FPGA_REG_3: %04X\r\n",FPGA_REG_03);*/
 
-	FPGA_REG_03&=~((0b1<<4));//stop capture
+	//FPGA_REG_03&=~((0b1<<4));//stop capture
 
-    cdcprintf("FPGA_REG_3: %08b\r\n",FPGA_REG_03);
+    //cdcprintf("FPGA_REG_3: %08b\r\n",FPGA_REG_03);
 
     sram_deselect();
     samples=FPGA_REG_04;
