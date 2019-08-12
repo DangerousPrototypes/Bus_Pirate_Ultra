@@ -247,7 +247,7 @@ void doUI(void)
 
 		//command received, start logic capture
 		//TODO: destinguish between bus and non-bus commands
-//		logicAnalyzerCaptureStart();
+		logicAnalyzerCaptureStart();
 
 
 		//cdcprintf2("cmd=%s\r\n", cmdbuff+cmdtail);
@@ -324,16 +324,18 @@ void doUI(void)
 				case '&':	repeat=getrepeat();
 						if(repeat<10) repeat=10;			// minimum is 10us!
 						cdcprintf("Delaying %d us", repeat);
-						while(repeat--)
+						/*while(repeat--)
 						{
 							delayus(1);
-						}
+						}*/
+						FPGA_REG_07=(0x8400|(uint8_t)repeat);//delay for repeat cycles
 						break;
 				case '%':	repeat=getrepeat();
 						cdcprintf("Delaying %d ms", repeat);
 						while(repeat--)
 						{
-							delayms(1);
+							//delayms(1);
+							FPGA_REG_07=(0x8400|(uint8_t)0x0F);//delay for repeat cycles
 						}
 						break;
 				case 'a':	if(modeConfig.mode!=HIZ)
@@ -602,7 +604,8 @@ void doUI(void)
 						modeConfig.numbits=temp3;
 						break;
 				case '~':
-	                   logicAnalyzerSetup();
+                        //logicAnalyzerCaptureStop();
+                        logicAnalyzerTest();
 						break;
 				default:	cdcprintf("Unknown command: %c", c);
 						modeConfig.error=1;
@@ -625,7 +628,7 @@ void doUI(void)
 		//stop logic capture and dump data
 		//TODO:destinguish between bus activity and other commands
 		//only dump if bus command executed
-//		logicAnalyzerCaptureStop();
+		logicAnalyzerCaptureStop();
 
 //		if(modeConfig.logicanalyzerstop==0xff){
 //			cdcprintf("\x07Logic analyzer full before end of command!\r\n");

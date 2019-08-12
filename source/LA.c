@@ -20,127 +20,55 @@ static void spiWx8(uint8_t d);
 static void setup_spix4r(void);
 static uint8_t spiRx4(void);
 static uint8_t spiRx8(void);
-
-/*static enum _stop
-        {
-         NORMAL=0,
-         OVERFLOW
-        } stop=NORMAL;*/
-
+static void getSramId(void);
 
 static volatile uint32_t counts;
 
-void logicAnalyzerSetup(void)
-{
-    uint8_t temp;
-    uint16_t i,samples;
-    uint32_t bpsm_active=0;
-    char buff[256];
 
-    //la_sram_mode_setup();
-    //la_sram_quad_setup();
-    FPGA_REG_03=0b1100000000;
-
-    sram_deselect();
-    //delayus(100);
-	//send mode reset command just in case
-
-	setup_spix4w(); //write
-	sram_select();
-	spiWx4(CMDRESETSPI);
-	sram_deselect();
+static void getSramId(void){ //should return whole struct
+    uint8_t temp[8],i;
 
     //read from SRAM test
-    setup_spix1rw();
-    sram_select_0();	// cs low
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0x9F);
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
     spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
-    //for(i=0;i<8;i++){
-    //    temp=buff[i]=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF); //0d=MFID, 5d=KGD, + 6 bytes of density info
-    //}
-
-    temp=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
-    cdcprintf("SRAM 0 test: %02X ",temp);
-    if(temp!=0x0D){
-        cdcprintf("FAIL!\r\n");
-    }else{
-        cdcprintf("PASS!\r\n");
+    for(i=0;i<8;i++){
+        temp[i]=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF); //0d=MFID, 5d=KGD, + 6 bytes of density info
     }
-    //release FPGA into program mode
-    sram_deselect();			// release cs
+    //return temp;
+}
 
-    sram_select_1();	// cs low
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0x9F);
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
-    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
-    //for(i=0;i<8;i++){
-    //    temp=buff[i]=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF); //0d=MFID, 5d=KGD, + 6 bytes of density info
-    //}
-    temp=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
-    cdcprintf("SRAM 1 test: %02X ",temp);
-    if(temp!=0x0D){
-        cdcprintf("FAIL!\r\n");
-    }else{
-        cdcprintf("PASS!\r\n");
-    }
-    //release FPGA into program mode
-    sram_deselect();			// release cs
 
-	//quad mode
-	//sram_select_0();
+
+void logicAnalyzerSetup(void)
+{
+    sram_deselect();
+
+	setup_spix4w();     //quad write mode
 	sram_select();
-	spi_xfer(BP_FPGA_SPI, (uint16_t)CMDQUADMODE);
+	spiWx4(CMDRESETSPI);//reset to SPI mode
 	sram_deselect();
 
-    //sram_select_1();
-	//spi_xfer(BP_FPGA_SPI, (uint16_t)CMDQUADMODE);
-	//sram_deselect();
+    //read SRAM manufacturer, size, unique ID
+    setup_spix1rw();
+    sram_select_0();	// cs low
+    getSramId();
+    sram_deselect();	// release cs
 
-//setup io
-    FPGA_REG_00=0x00FF;
-    FPGA_REG_01=0x0000;
+    sram_select_1();	// cs low
+    getSramId();
+    sram_deselect();	// release cs
 
+	sram_select();
+	spi_xfer(BP_FPGA_SPI, (uint16_t)CMDQUADMODE); //place SRAM into quad mode
+	sram_deselect();
+}
 
-    //setup the sram for capture
-    setup_spix4w(); //write
-    sram_select();
-    spiWx4(CMDWRITE); //write command
-    spiWx4(0);
-    spiWx4(0);
-    spiWx4(0); //3 byte address
-    //for(i=0;i<8;i++){
-    //    spiWx8(0xff);
-    //}
-    //sram_deselect();
-
-    gpio_set_mode(GPIOC, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT,GPIO10);
-
-    FPGA_REG_03|=(0b10001000);//clear sample counter | start capture
-    //FPGA_REG_03|=(0b1<<7);
-    //cdcprintf("FPGA_REG_3: %04X\r\n",FPGA_REG_03);
-    samples=FPGA_REG_04;
-    cdcprintf("Samples cleared: %04X\r\n",samples);
-
-    //now do some stuff
-    //setup the PWM
-	//FPGA_REG_05=0x1;
-	//FPGA_REG_06=0x1;
-    //delay
-    //delayms(1);
-    //change the PWM
-	//FPGA_REG_05=0x10;
-	//FPGA_REG_06=0x10;
-	//delayms(1);
-
-//set_io bp_active 137 #C10
-//set_io bp_fifo_in_full 136 #C11
-//set_io bp_fifo_out_nempty 135 #C12
-
-	//Bus pirate state machine is in reset, fill FIFO with commands
-	FPGA_REG_07=0xFE00; //LA start command
+void logicAnalyzerTest(void){
+    FPGA_REG_00=0x00FF; //normal output|output enable all pins
+    FPGA_REG_01=0x0000; //direction output(only non-spi pins)|low(unimplemented)
+    logicAnalyzerCaptureStart();
     FPGA_REG_07=0x81FF;//all IO high command
 	FPGA_REG_07=0x8100;//all IO low command
 	FPGA_REG_07=0x0855;//write 8 bits of 0x55
@@ -152,21 +80,21 @@ void logicAnalyzerSetup(void)
     FPGA_REG_07=0x84FF;//delay for 0xFF cycles
 
     FPGA_REG_07=0x84FF;
-        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x08AA;
     FPGA_REG_07=0x0855;
     FPGA_REG_07=0x84FF;
-        FPGA_REG_07=0x08AA;
-    FPGA_REG_07=0x0855;
-    FPGA_REG_07=0x84FF;
-    FPGA_REG_07=0x84FF;
-        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x08AA;
     FPGA_REG_07=0x0855;
     FPGA_REG_07=0x84FF;
     FPGA_REG_07=0x84FF;
-        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x08AA;
     FPGA_REG_07=0x0855;
     FPGA_REG_07=0x84FF;
-        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x08AA;
     FPGA_REG_07=0x0855;
     FPGA_REG_07=0x84FF;
     FPGA_REG_07=0x84FF;
@@ -192,51 +120,54 @@ void logicAnalyzerSetup(void)
     FPGA_REG_07=0x0855;
     FPGA_REG_07=0x08AA;
     FPGA_REG_07=0x0855;
+    logicAnalyzerCaptureStop();
+}
+
+void logicAnalyzerCaptureStart(void){
+    //setup the sram for capture
+    setup_spix4w();     //quad write mode
+    sram_select();
+    spiWx4(CMDWRITE);   //write command
+    spiWx4(0);          //3 byte address
+    spiWx4(0);
+    spiWx4(0);
+    FPGA_REG_03|=(0b10001000);//clear sample counter, pause BP state machine
+
+    //cdcprintf("Samples cleared: %04X\r\n",FPGA_REG_04);
+    //cdcprintf("PIN STATES| active: %01b in_full: %01b out_nempty: %01b\r\n",(gpio_get(GPIOC,GPIO10)!=0),(gpio_get(GPIOC,GPIO11)!=0),(gpio_get(GPIOC,GPIO12)!=0) );
+
+	//Bus pirate state machine is in reset, fill FIFO with commands
+	FPGA_REG_07=0xFE00; //LA start command
+}
+
+
+void logicAnalyzerCaptureStop(void){
+    uint16_t bpsm_active,i,samples;
     FPGA_REG_07=0xFF00; //LA stop
-
-	//TODO: some complete operations signal!
-
-    //while();
-    //while(FPGA_REG_03&0b100000); //wait for complete
-    FPGA_REG_03&=~(0b1<<7);
-    delayus(2);
-    //samples=0;
+    FPGA_REG_03&=~(0b1<<7); //release statemachine from reset
+    //delayms(2);
+    bpsm_active=0;
     while(true){
         i=GPIOC_IDR;
         i=i&(0b1<<10);
         if(i==0){
-            break;
+                break;
+        }else if(bpsm_active>0xfff){
+            cdcprintf("BP state machine timeout!\r\n");
+            cdcprintf("PIN STATES| active: %01b in_full: %01b out_nempty: %01b\r\n",(gpio_get(GPIOC,GPIO10)!=0),(gpio_get(GPIOC,GPIO11)!=0),(gpio_get(GPIOC,GPIO12)!=0) );
+            cdcprintf("BPSM state: %04X\r\n",FPGA_REG_09);
+            cdcprintf("BPSM command: %04X\r\n",FPGA_REG_10);
+            return;
         }else{
             bpsm_active=bpsm_active+1;
         }
     }
-/*delayus(5);
-samples=0;
-    while(true){
-    i=FPGA_REG_03;
-    i=i&0b100000;
-        if(i==0){
-            break;
-        }else{
-            samples=samples+1;
-        }
-    }
-
-*/
+    sram_deselect();
     cdcprintf("OP took: %08X cycles\r\n",bpsm_active);
 
-    //cdcprintf("FPGA_REG_3: %04X\r\n",FPGA_REG_03);*/
 
-	//FPGA_REG_03&=~((0b1<<4));//stop capture
-
-    //cdcprintf("FPGA_REG_3: %08b\r\n",FPGA_REG_03);
-
-    sram_deselect();
     samples=FPGA_REG_04;
     cdcprintf("Samples captured: %04X\r\n",samples);
-    //cdcprintf("FPGA_REG_3: %04X\r\n",FPGA_REG_03);
-
-    //TODO: read samples back to cdc2
     cdcputc2((uint8_t)(samples>>8));
     cdcputc2((uint8_t)(samples));
 
@@ -255,84 +186,6 @@ samples=0;
         cdcputc2(spiRx8());
     }
     sram_deselect();
-
-
-/*	setup_spix4w(); //write
-	sram_select();
-	spiWx4(CMDWRITE); //write command
-	spiWx4(0);
-	spiWx4(0);
-	spiWx4(0); //3 byte address
-    for(i=0;i<4;i++){
-        spiWx8(0xaa);
-        spiWx8(0x55);
-    }
-    sram_deselect();
-
-    setup_spix4w();
-	sram_select();
-	spiWx4(CMDREADQUAD); //read command
-	spiWx4(0);
-	spiWx4(0);
-	spiWx4(0); //3 byte address
-	setup_spix4r(); //read
-	spiRx4(); //dummy byte * 3 for fast quad read command
-	spiRx4(); //dummy byte
-    spiRx4(); //dummy byte
-    temp=spiRx8();
-    cdcprintf("SRAM quad test: %02X ",temp);
-    if(temp!=0xaa){
-        cdcprintf("FAIL!\r\n");
-    }else{
-        cdcprintf("PASS!\r\n");
-    }
-    sram_deselect();
-
-
-    setup_spix4w(); //write
-    sram_select();
-    spiWx4(CMDWRITE); //write command
-    spiWx4(0);
-    spiWx4(0);
-    spiWx4(0); //3 byte address
-    for(i=0;i<0xffff;i++){
-
-        spiWx8((uint8_t)i);
-    }
-    spiWx8((uint8_t)i);//one extra, need even number of samples
-    sram_deselect();
-
-    setup_spix4w();
-	sram_select();
-	spiWx4(CMDREADQUAD); //read command
-	spiWx4(0);
-	spiWx4(0);
-	spiWx4(0); //3 byte address
-	setup_spix4r(); //read
-	spiRx4(); //dummy byte * 3 for fast quad read command
-	spiRx4(); //dummy byte
-    spiRx4(); //dummy byte
-    for(i=0;i<0xffff;i++){
-        temp=spiRx8();
-        if(temp!=(uint8_t)i){
-            cdcprintf("SRAM big test failed at: %04X!=%02X \r\n",i,temp);
-            break;
-        }
-
-    }
-
-    sram_deselect();
-
-*/
-
-
-
-
-
-
-
-    temp=0xff;
-
 }
 
 void setup_spix1rw(void)
@@ -441,4 +294,211 @@ static void spiWx8(uint8_t d)
     //sram_clock_low();
 
 }
+
+
+/*void logicAnalyzerSetup(void)
+{
+    uint8_t temp;
+    uint16_t i,samples;
+    uint32_t bpsm_active=0;
+    char buff[256];
+
+    //la_sram_mode_setup();
+    //la_sram_quad_setup();
+    FPGA_REG_03=0b1100000000;
+
+    sram_deselect();
+    //delayus(100);
+	//send mode reset command just in case
+
+	setup_spix4w(); //write
+	sram_select();
+	spiWx4(CMDRESETSPI);
+	sram_deselect();
+
+    //read from SRAM test
+    setup_spix1rw();
+    sram_select_0();	// cs low
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0x9F);
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    //for(i=0;i<8;i++){
+    //    temp=buff[i]=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF); //0d=MFID, 5d=KGD, + 6 bytes of density info
+    //}
+
+    temp=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    cdcprintf("SRAM 0 test: %02X ",temp);
+    if(temp!=0x0D){
+        cdcprintf("FAIL!\r\n");
+    }else{
+        cdcprintf("PASS!\r\n");
+    }
+    //release FPGA into program mode
+    sram_deselect();			// release cs
+
+    sram_select_1();	// cs low
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0x9F);
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);//24 dummy address bits...
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    //for(i=0;i<8;i++){
+    //    temp=buff[i]=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF); //0d=MFID, 5d=KGD, + 6 bytes of density info
+    //}
+    temp=spi_xfer(BP_FPGA_SPI, (uint16_t) 0xFF);
+    cdcprintf("SRAM 1 test: %02X ",temp);
+    if(temp!=0x0D){
+        cdcprintf("FAIL!\r\n");
+    }else{
+        cdcprintf("PASS!\r\n");
+    }
+    //release FPGA into program mode
+    sram_deselect();			// release cs
+
+	//quad mode
+	//sram_select_0();
+	sram_select();
+	spi_xfer(BP_FPGA_SPI, (uint16_t)CMDQUADMODE);
+	sram_deselect();
+
+    //sram_select_1();
+	//spi_xfer(BP_FPGA_SPI, (uint16_t)CMDQUADMODE);
+	//sram_deselect();
+
+//setup io
+    FPGA_REG_00=0x00FF;
+    FPGA_REG_01=0x0000;
+
+
+    //setup the sram for capture
+    setup_spix4w(); //write
+    sram_select();
+    spiWx4(CMDWRITE); //write command
+    spiWx4(0);
+    spiWx4(0);
+    spiWx4(0); //3 byte address
+    //for(i=0;i<8;i++){
+    //    spiWx8(0xff);
+    //}
+    //sram_deselect();
+
+    gpio_set_mode(GPIOC, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT,GPIO10|GPIO11|GPIO12);
+
+    FPGA_REG_03|=(0b10001000);//clear sample counter | start capture
+
+    cdcprintf("Samples cleared: %04X\r\n",FPGA_REG_04);
+    cdcprintf("PIN STATES| active: %01b in_full: %01b out_nempty: %01b\r\n",(gpio_get(GPIOC,GPIO10)!=0),(gpio_get(GPIOC,GPIO11)!=0),(gpio_get(GPIOC,GPIO12)!=0) );
+//set_io bp_active 137 #C10
+//set_io bp_fifo_in_full 136 #C11
+//set_io bp_fifo_out_nempty 135 #C12
+
+	//Bus pirate state machine is in reset, fill FIFO with commands
+	FPGA_REG_07=0xFE00; //LA start command
+    FPGA_REG_07=0x81FF;//all IO high command
+	FPGA_REG_07=0x8100;//all IO low command
+	FPGA_REG_07=0x0855;//write 8 bits of 0x55
+	FPGA_REG_07=0x04AA;//write 4 bits of 0xAA
+    FPGA_REG_07=0x08AA;//0xaa
+    FPGA_REG_07=0x0855;//0x55
+    FPGA_REG_07=0x08FF;//0xff
+    FPGA_REG_07=0x0800;//0x00
+    FPGA_REG_07=0x84FF;//delay for 0xFF cycles
+
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+        FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x84FF;
+    FPGA_REG_07=0x84FF;
+
+    FPGA_REG_07=0x81FF;//all IO high
+	//while(FPGA_REG_08&&0b1);
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+
+    FPGA_REG_07=0x84FF;
+
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0x08AA;
+    FPGA_REG_07=0x0855;
+    FPGA_REG_07=0xFF00; //LA stop
+
+	//TODO: some complete operations signal!
+
+    //while();
+    //while(FPGA_REG_03&0b100000); //wait for complete
+    FPGA_REG_03&=~(0b1<<7);
+    delayus(2);
+    //samples=0;
+    while(true){
+        i=GPIOC_IDR;
+        i=i&(0b1<<10);
+        if(i==0){
+                break;
+        }else if(bpsm_active>0xfff){
+            cdcprintf("PIN STATES| active: %01b in_full: %01b out_nempty: %01b\r\n",(gpio_get(GPIOC,GPIO10)!=0),(gpio_get(GPIOC,GPIO11)!=0),(gpio_get(GPIOC,GPIO12)!=0) );
+            cdcprintf("BPSM state: %04X\r\n",FPGA_REG_09);
+            cdcprintf("BPSM command: %04X\r\n",FPGA_REG_10);
+            return;
+        }else{
+            bpsm_active=bpsm_active+1;
+        }
+    }
+
+    cdcprintf("OP took: %08X cycles\r\n",bpsm_active);
+
+    //cdcprintf("FPGA_REG_3: %08b\r\n",FPGA_REG_03);
+
+    sram_deselect();
+    samples=FPGA_REG_04;
+    cdcprintf("Samples captured: %04X\r\n",samples);
+    //cdcprintf("FPGA_REG_3: %04X\r\n",FPGA_REG_03);
+
+    //TODO: read samples back to cdc2
+    cdcputc2((uint8_t)(samples>>8));
+    cdcputc2((uint8_t)(samples));
+
+    cdcprintf("Dumping samples\r\n");
+    setup_spix4w();
+	sram_select();
+	spiWx4(CMDREADQUAD); //read command
+	spiWx4(0);
+	spiWx4(0);
+	spiWx4(0); //3 byte address
+	setup_spix4r(); //read
+	spiRx4(); //dummy byte * 3 for fast quad read command
+	spiRx4(); //dummy byte
+    spiRx4(); //dummy byte
+    for(i=0;i<samples;i++){
+        cdcputc2(spiRx8());
+    }
+    sram_deselect();
+    temp=0xff;
+
+}*/
+
 

@@ -9,6 +9,36 @@ enum
 #ifdef BP_USE_DUMMY1
 	DUMMY2,
 #endif
+#ifdef BP_USE_HWSPI
+	HWSPI,
+#endif
+#ifdef BP_USE_HWUSART
+	HWUSART,
+#endif
+#ifdef BP_USE_HWI2C
+	HWI2C,
+#endif
+#ifdef BP_USE_LA
+	LA,
+#endif
+#ifdef BP_USE_SW2W
+	SW2W,
+#endif
+#ifdef BP_USE_SW3W
+	SW3W,
+#endif
+#ifdef BP_USE_DIO
+	DIO,
+#endif
+#ifdef BP_USE_LCDSPI
+	LCDSPI,
+#endif
+#ifdef BP_USE_LCDI2C	// future
+	LCDI2C,
+#endif
+#ifdef BP_USE_1WIRE
+	ONEWIRE,
+#endif
 	MAXPROTO
 };
 
@@ -34,7 +64,7 @@ typedef struct _protocol
 	void (*protocol_setup_exc)(void);		// real setup
 	void (*protocol_cleanup)(void);			// cleanup for HiZ
 	void (*protocol_pins)(void);			// display pin config
-	void (*protocol_settings)(void);		// display settings 
+	void (*protocol_settings)(void);		// display settings
 	void (*protocol_help)(void);			// display protocol specific help
 	char protocol_name[10];				// friendly name (promptname)
 } protocol;

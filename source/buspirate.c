@@ -141,9 +141,9 @@ int main(void)
     }else{
         gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
     }
-#ifdef LADEBUG
-logicAnalyzerSetup();
-#endif
+
+    logicAnalyzerSetup();
+
 	while (1)
 	{
 		doUI();

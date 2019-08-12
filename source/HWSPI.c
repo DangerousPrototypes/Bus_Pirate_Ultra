@@ -1,0 +1,259 @@
+
+#include <stdint.h>
+#include "buspirate.h"
+#include <libopencm3/stm32/spi.h>
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/rcc.h>
+#include "HWSPI.h"
+#include "cdcacm.h"
+#include "UI.h"
+#include "FPGA.h"
+
+
+static uint32_t cpol, cpha, br, dff, lsbfirst, csidle, od;
+
+
+void HWSPI_start(void)
+{
+	cdcprintf("set CS=%d", !csidle);
+
+	HWSPI_setcs(0);
+
+	modeConfig.wwr=0;
+}
+
+void HWSPI_startr(void)
+{
+	cdcprintf("set CS=%d", !csidle);
+
+	HWSPI_setcs(0);
+
+	modeConfig.wwr=1;
+}
+
+void HWSPI_stop(void)
+{
+	cdcprintf("set CS=%d", csidle);
+
+	HWSPI_setcs(1);
+
+	modeConfig.wwr=0;
+
+}
+
+void HWSPI_stopr(void)
+{
+	cdcprintf("set CS=%d", csidle);
+
+	HWSPI_setcs(1);
+
+	modeConfig.wwr=0;
+}
+
+uint32_t HWSPI_send(uint32_t d)
+{
+	uint16_t returnval;
+
+	//TODO: lsb ??
+	if((modeConfig.numbits>=1)&&(modeConfig.numbits<=8))
+	{
+
+		returnval=HWSPI_xfer(((uint16_t)modeConfig.numbits<<8)|(uint16_t)d);
+	}
+	else
+	{
+		cdcprintf("Only 1 to 8 bits are implemented, but N bits are possible! Abuse me!");
+		modeConfig.error=1;
+		returnval=0;
+	}
+
+	return (uint16_t) returnval;
+}
+
+uint32_t HWSPI_read(void)
+{
+	uint16_t returnval;
+/*
+	//TODO: check lsb??
+	if((modeConfig.numbits==8)||(modeConfig.numbits==16))
+	{
+		if(modeConfig.numbits==8) spi_set_dff_8bit(BP_SPI);			// is there a less overhead way of doing this?
+		if(modeConfig.numbits==16) spi_set_dff_16bit(BP_SPI);
+
+		returnval = HWSPI_xfer(0xFF);					// is 0xFF ok?
+//		returnval = spi_xfer(BP_SPI, 0xFF);					// is 0xFF ok?
+	}
+	else
+	{
+		cdcprintf("Only 8 or 16 bits are allowed, use SW3W instead");
+		modeConfig.error=1;
+		returnval=0;
+	}
+*/
+	return (uint16_t) returnval;
+}
+
+void HWSPI_macro(uint32_t macro)
+{
+}
+void HWSPI_setup(void)
+{
+    //cdcprintf("Loading FPGA...");
+    //uploadfpga();
+    //cdcprintf("done!\r\n");
+
+
+    //setup io
+    //`define reg_bpio_oe wreg[6'h00][BP_PINS-1:0]
+    //`define reg_bpio_od wreg[6'h00][BP_PINS-1+8:8]
+    //`define reg_bpio_hl wreg[6'h01][BP_PINS-1:0]
+    //`define reg_bpio_dir wreg[6'h01][BP_PINS-1+8:8]
+    FPGA_REG_00=0x00FF; //normal output|output enable all pins
+    FPGA_REG_01=0x0000; //direction output(only non-spi pins)|low(unimplemented)
+}
+
+void HWSPI_setup_exc(void)
+{
+
+
+}
+
+void HWSPI_cleanup(void)
+{
+
+}
+
+void HWSPI_pins(void)
+{
+	cdcprintf("CS\tMISO\tCLK\tMOSI");
+}
+
+void HWSPI_settings(void)
+{
+	cdcprintf("HWSPI (br cpol cpha cs)=(%d %d %d %d)", (br>>3), (cpol>>1)+1, cpha+1, csidle+1);
+}
+
+void HWSPI_printSPIflags(void)
+{
+	uint32_t temp;
+
+	/*temp=SPI_SR(BP_SPI);
+
+	if(temp&SPI_SR_BSY) cdcprintf(" BSY");
+	if(temp&SPI_SR_OVR) cdcprintf(" OVR");
+	if(temp&SPI_SR_MODF) cdcprintf(" MODF");
+	if(temp&SPI_SR_CRCERR) cdcprintf(" CRCERR");
+	if(temp&SPI_SR_UDR) cdcprintf(" USR");
+	if(temp&SPI_SR_CHSIDE) cdcprintf(" CHSIDE");
+//	if(temp&SPI_SR_TXE) cdcprintf(" TXE");
+//	if(temp&SPI_SR_RXNE) cdcprintf(" RXNE");
+*/
+
+}
+
+void HWSPI_help(void)
+{
+	cdcprintf("Peer to peer 3 or 4 wire full duplex protocol. Very\r\n");
+	cdcprintf("high clockrates upto 20MHz are possible.\r\n");
+	cdcprintf("\r\n");
+	cdcprintf("More info: https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus\r\n");
+	cdcprintf("\r\n");
+
+
+	cdcprintf("BPCMD\t {,] |                 DATA (1..32bit)               | },]\r\n");
+	cdcprintf("CMD\tSTART| D7  | D6  | D5  | D4  | D3  | D2  | D1  | D0  | STOP\r\n");
+
+	if(cpha)
+	{
+		cdcprintf("MISO\t-----|{###}|{###}|{###}|{###}|{###}|{###}|{###}|{###}|------\r\n");
+		cdcprintf("MOSI\t-----|{###}|{###}|{###}|{###}|{###}|{###}|{###}|{###}|------\r\n");
+	}
+	else
+	{
+		cdcprintf("MISO\t---{#|##}{#|##}{#|##}{#|##}{#|##}{#|##}{#|##}{#|##}--|------\r\n");
+		cdcprintf("MOSI\t---{#|##}{#|##}{#|##}{#|##}{#|##}{#|##}{#|##}{#|##}--|------\r\n");
+	}
+
+	if(cpol>>1)
+		cdcprintf("CLK     \"\"\"\"\"|\"\"__\"|\"\"__\"|\"\"__\"|\"\"__\"|\"\"__\"|\"\"__\"|\"\"__\"|\"\"__\"|\"\"\"\"\"\"\r\n");
+	else
+		cdcprintf("CLK\t_____|__\"\"_|__\"\"_|__\"\"_|__\"\"_|__\"\"_|__\"\"_|__\"\"_|__\"\"_|______\r\n");
+
+	if(csidle)
+		cdcprintf("CS\t\"\"___|_____|_____|_____|_____|_____|_____|_____|_____|___\"\"\"\r\n");
+	else
+		cdcprintf("CS\t__\"\"\"|\"\"\"\"\"|\"\"\"\"\"|\"\"\"\"\"|\"\"\"\"\"|\"\"\"\"\"|\"\"\"\"\"|\"\"\"\"\"|\"\"\"\"\"|\"\"\"___\r\n");
+
+	cdcprintf("\r\nCurrent mode is CPHA=%d and CPOL=%d\r\n",cpha, cpol>>1);
+	cdcprintf("\r\n");
+	cdcprintf("Connection:\r\n");
+	cdcprintf("\tMOSI \t------------------ MOSI\r\n");
+	cdcprintf("\tMISO \t------------------ MISO\r\n");
+	cdcprintf("{BP}\tCLK\t------------------ CLK\t{DUT}\r\n");
+	cdcprintf("\tCS\t------------------ CS\r\n");
+	cdcprintf("\tGND\t------------------ GND\r\n");
+}
+
+
+// helpers for binmode and other protocols
+void HWSPI_setcpol(uint32_t val)
+{
+	cpol=val;
+}
+
+void HWSPI_setcpha(uint32_t val)
+{
+	cpha=val;
+}
+
+void HWSPI_setbr(uint32_t val)
+{
+	br=val;
+}
+
+void HWSPI_setdff(uint32_t val)
+{
+	dff=val;
+}
+
+void HWSPI_setlsbfirst(uint32_t val)
+{
+	lsbfirst=val;
+}
+
+void HWSPI_setcsidle(uint32_t val)
+{
+	csidle=val;
+}
+
+void HWSPI_setcs(uint8_t cs)
+{
+
+
+
+	if(cs==0)		// 'start'
+	{
+		if(csidle) FPGA_REG_07=(0x8100);
+			else FPGA_REG_07=(0x81FF);
+	}
+	else			// 'stop'
+	{
+		if(csidle) FPGA_REG_07=(0x81FF);
+			else FPGA_REG_07=(0x8100);
+	}
+
+}
+
+uint16_t HWSPI_xfer(uint16_t d)
+{
+	FPGA_REG_07=(0x0800|(d&0x00FF));//write 8 bits of d
+	cdcprintf("CMD: %04X\r\n",(0x0800|(d&0x00FF)));
+	return 0x0000;
+}
+
+
+
+
+
+
+

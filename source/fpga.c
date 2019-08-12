@@ -46,7 +46,7 @@ int uploadfpga(void)
 	uint32_t i, returnval, bitstream_length=0, addr=0;
 
 	// reset FPGA+program FPGA
-	//cdcprintf("Resetting FPGA..\r\n");
+	//spi_init_master(BP_FPGA_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_2, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE, SPI_CR1_CPHA_CLK_TRANSITION_2, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
 	gpio_clear(BP_FPGA_CRESET_PORT, BP_FPGA_CRESET_PIN);		// go into reset
 	gpio_clear(BP_FPGA_CS_PORT, BP_FPGA_CS_PIN);			// if CS is low during reset, fpga becomes spi slave
 	delayms(10);							// wait at least 200ns
@@ -124,6 +124,11 @@ void fpgainit(void)
 {
 	// enable peripheral
 	rcc_periph_clock_enable(BP_FPGA_SPI_CLK);
+
+	//inputs from fpga: bp_active,bp_fifo_in_full,bp_fifo_out_nempty
+    gpio_set_mode(BP_FPGA_ACTIVE_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT,BP_FPGA_ACTIVE_PIN);
+    gpio_set_mode(BP_FPGA_FIFO_IN_FULL_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT,BP_FPGA_FIFO_IN_FULL_PIN);
+    gpio_set_mode(BP_FPGA_FIFO_OUT_NEMPTY_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT,BP_FPGA_FIFO_OUT_NEMPTY_PIN);
 
 	// SPI pins of FPGA
 	gpio_set_mode(BP_FPGA_MOSI_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FPGA_MOSI_PIN);
@@ -215,7 +220,7 @@ https://github.com/leaflabs/libmaple/blob/master/libmaple/include/libmaple/fsmc.
 
 // 55ns SRAM timings?
 #define DATAST   0x8 //4
-#define ADDSET   0x1 //1
+#define ADDSET   0x0 //1
 
 	// fsmc setup (bank3 is used) 0x6c000000
 	//           WREN     SRAM     16b     MBKEN   EXTMOD

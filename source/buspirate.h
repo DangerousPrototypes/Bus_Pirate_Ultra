@@ -19,8 +19,19 @@ extern volatile uint32_t systicks;
 #include	"platform/beta1.h"				// BP Ultra may 2019
 
 // included protocols
-#define BP_USE_DUMMY1
-#define BP_USE_DUMMY2
+// enable protocols
+//#define		BP_USE_1WIRE
+//#define		BP_USE_HWUSART
+//#define		BP_USE_HWI2C
+#define		BP_USE_HWSPI
+//#define		BP_USE_SW2W
+//#define		BP_USE_SW3W
+//#define 	BP_USE_DIO
+//#define		BP_USE_LCDSPI
+//#define		BP_USE_LCDI2C
+//#define		BP_USE_LA
+#define 	BP_USE_DUMMY1
+#define 	BP_USE_DUMMY2
 
 
 
