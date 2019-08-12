@@ -11,7 +11,7 @@
 `include "spimaster.v"
 `include "fifo.v"
 //`include "ram.v"
-`define SIMULATION
+//`define SIMULATION
 
 module top #(
   parameter MC_DATA_WIDTH = 16,
@@ -23,8 +23,8 @@ module top #(
   parameter FIFO_DEPTH = 512
 ) (
   input clock,
-  inout wire [BP_PINS-1:0] bpio_io,
-  output wire [BP_PINS-1:0] bpio_dir, bpio_od,
+  inout wire [BP_PINS-1:0] bpio_buffer_io,
+  output wire [BP_PINS-1:0] bpio_buffer_dir, bpio_buffer_od,
   output wire[LA_CHIPS-1:0] sram_clock,
   output wire[LA_CHIPS-1:0] sram_cs,
   inout[LA_WIDTH-1:0] sram_sio,
@@ -54,7 +54,7 @@ module top #(
     // Bus Pirate IO pins
     wire [BP_PINS-1:0] bpio_toe, bpio_tdo, bpio_tdi;
     // BP IO pin control wires
-    wire [BP_PINS-1:0] bpio_oe,bpio_di,bpio_do;
+    wire [BP_PINS-1:0] bpio_oe,bpio_di,bpio_do,bpio_dir;
     // DIO control regiter for pins not used by the peripheral
     reg [BP_PINS-1:0] bpio_dio_tris_d, bpio_dio_port_d;
 
@@ -66,20 +66,20 @@ module top #(
       //interface
       .oe(`reg_bpio_oe), //bp_oe//output enable 1=true
       .od(`reg_bpio_od), //open drain 1=true
-      .dir(bpio_dir),//direction 1=input
+      .dir(`reg_bpio_dir),//direction 1=input
       .din(bpio_do),//data in (value when buffer is output)
       .dout(bpio_di),//data out (value when buffer is input)
       //hardware driver
-      .bufdir(bpio_dir), //74LVC1T45 DIR pin LOW for Hi-Z
-      .bufod(bpio_od), //74LVC1G07 OD pin HIGH for Hi-Z
+      .bufdir(bpio_buffer_dir), //74LVC1T45 DIR pin LOW for Hi-Z
+      .bufod(bpio_buffer_od), //74LVC1G07 OD pin HIGH for Hi-Z
       .bufdat_tristate_oe(bpio_toe), //tristate data pin output enable
       .bufdat_tristate_dout(bpio_tdo), //tristate data pin data out
       .bufdat_tristate_din(bpio_tdi)  //tristate data pin data in
       );
       `define BP_PERIPHERAL_PINS 3
       assign bpio_do[BP_PINS-1:`BP_PERIPHERAL_PINS]=bpio_dio_port_d[BP_PINS-1:`BP_PERIPHERAL_PINS];
-      assign bpio_dir[BP_PINS-1:`BP_PERIPHERAL_PINS]=bpio_dio_tris_d[BP_PINS-1:`BP_PERIPHERAL_PINS];
-      assign bpio_dir[`BP_PERIPHERAL_PINS-1:0]=`reg_bpio_dir;
+      //assign bpio_dir[BP_PINS-1:`BP_PERIPHERAL_PINS]=bpio_dio_tris_d[BP_PINS-1:`BP_PERIPHERAL_PINS];
+      //assign bpio_dir[`BP_PERIPHERAL_PINS-1:0]=wreg[6'h01][`BP_PERIPHERAL_PINS-1+8:8];//`reg_bpio_dir[`BP_PERIPHERAL_PINS-1:0];
     // PWM
     //TODO: N:1 mux freq measure and PWM on IO pins?
     wire pwm_out;
@@ -214,10 +214,14 @@ module top #(
     always @(posedge clock)
       begin
 
+      rreg[9][$clog2(`STATE_CLEANUP):0]<=bpsm_state;
+
+
       //some manual reset crap...need global reset pin, but this still may be needed accorting to various posts I've read
       if(reset_count<2) begin
         reset_count<=reset_count+1;
         reset<=1'b1;
+        rreg[9]<=16'h00;
       end
       else
       begin
@@ -240,6 +244,7 @@ module top #(
                  if(in_fifo_out_nempty) begin
                      bp_busy <= 1'b1;
                      //error <= 1'b0;
+                     rreg[10]<=in_fifo_out_data;
                      bpsm_state<=`STATE_POP_FIFO; //default pop, otherwise handed to the next state forced below...
                      casez(in_fifo_out_data[15:8])
                        `CMD_PERIPHERAL_WRITE:
@@ -254,13 +259,13 @@ module top #(
                            la_start<=1'b0;
                        `CMD_DIO_WRITE:
                            bpio_dio_port_d<= in_fifo_out_data[BP_PINS-1:0];
-                       `CMD_DIO_READ:
+                       /*`CMD_DIO_READ:
                           begin
                           out_fifo_in_data_d<=bpio_di;//this may need a delay!!!
                           out_fifo_in_shift<=1'b1;
                           end
                        `CMD_DIO_TRIS:
-                           bpio_dio_tris_d <= in_fifo_out_data[BP_PINS-1:0];
+                           bpio_dio_tris_d <= in_fifo_out_data[BP_PINS-1:0];*/
                        `CMD_DELAY:
                            begin
                            bpsm_state <= `STATE_DELAY;
@@ -442,7 +447,7 @@ module top #(
       .PIN_TYPE(6'b1010_01),
       .PULLUP(1'b0)
     ) bpio_tio [BP_PINS-1:0] (
-      .PACKAGE_PIN(bpio_io),
+      .PACKAGE_PIN(bpio_buffer_io),
       .OUTPUT_ENABLE(bpio_toe),
       .D_OUT_0(bpio_tdo),
       .D_IN_0(bpio_tdi)

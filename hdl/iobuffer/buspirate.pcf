@@ -8,21 +8,21 @@ set_io clock 20 # friendly name, fpga pin
 set_io -nowarn reset 55  #wrong pin, just holder
 
 # Bus Pirate bpio_fer control pins
-set_io bpio_dir[0] 79 #74LVC1T45 DIR
-set_io bpio_od[0] 76 #74LVC1G07 A
-set_io bpio_io[0] 78 #74LVC1T45 A
-set_io bpio_dir[1] 75
-set_io bpio_od[1] 73
-set_io bpio_io[1] 74
-set_io bpio_dir[2] 82
-set_io bpio_od[2] 80
-set_io bpio_io[2] 81
-set_io bpio_dir[3] 107
-set_io bpio_od[3] 105
-set_io bpio_io[3] 106
-set_io bpio_dir[4] 104
-set_io bpio_od[4] 101
-set_io bpio_io[4] 102
+set_io bpio_buffer_dir[0] 79 #74LVC1T45 DIR
+set_io bpio_buffer_od[0] 76 #74LVC1G07 A
+set_io bpio_buffer_io[0] 78 #74LVC1T45 A
+set_io bpio_buffer_dir[1] 75
+set_io bpio_buffer_od[1] 73
+set_io bpio_buffer_io[1] 74
+set_io bpio_buffer_dir[2] 82
+set_io bpio_buffer_od[2] 80
+set_io bpio_buffer_io[2] 81
+set_io bpio_buffer_dir[3] 107
+set_io bpio_buffer_od[3] 105
+set_io bpio_buffer_io[3] 106
+set_io bpio_buffer_dir[4] 104
+set_io bpio_buffer_od[4] 101
+set_io bpio_buffer_io[4] 102
 
 # Peek-behind bpio_fer/latch (74AC573)
 set_io lat_oe 90 #latch output enable

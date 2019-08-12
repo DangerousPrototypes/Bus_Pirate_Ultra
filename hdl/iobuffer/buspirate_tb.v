@@ -17,8 +17,8 @@ module buspirate_tb();
 
   reg clk, rst;
 
-  wire [BP_PINS-1:0] bpio_io;
-  wire [BP_PINS-1:0] bpio_dir, bpio_od,bpio_contention, bpio_state;
+  wire [BP_PINS-1:0] bpio_buffer_io;
+  wire [BP_PINS-1:0] bpio_buffer_dir, bpio_buffer_od,bpio_contention, bpio_state;
   reg [BP_PINS-1:0] bpio_test_input; //load test input values here
   wire [LA_CHIPS-1:0] sram_clock;
   wire [LA_CHIPS-1:0] sram_cs;
@@ -52,9 +52,9 @@ module buspirate_tb();
     )buspirate(
     .clock(clk),
     //.reset(rst),
-    .bpio_io(bpio_io),
-    .bpio_dir(bpio_dir),
-    .bpio_od(bpio_od),
+    .bpio_buffer_io(bpio_buffer_io),
+    .bpio_buffer_dir(bpio_buffer_dir),
+    .bpio_buffer_od(bpio_buffer_od),
     .sram_clock(sram_clock),
     .sram_cs(sram_cs),
     .sram_sio(sram_sio),
@@ -80,9 +80,9 @@ module buspirate_tb();
         .iopin_contention(bpio_contention),
         .iopin_input(bpio_test_input),
       //hardware driver (reversed input/outputs from above)
-        .bufdir(bpio_dir),
-        .bufod(bpio_od),
-        .bufio(bpio_io)
+        .bufdir(bpio_buffer_dir),
+        .bufod(bpio_buffer_od),
+        .bufio(bpio_buffer_io)
       );
 
     initial begin
