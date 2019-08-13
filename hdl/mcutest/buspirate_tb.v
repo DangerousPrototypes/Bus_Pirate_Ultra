@@ -14,6 +14,7 @@ module buspirate_tb();
   reg [MC_ADD_WIDTH-1:0] mc_add;
   wire [MC_DATA_WIDTH-1:0] mc_data;
   reg [MC_DATA_WIDTH-1:0] mc_data_reg;
+  wire  irq0, irq1;
 
   assign mc_data=(mc_oe)?mc_data_reg:16'hzzzz;
 
@@ -24,7 +25,9 @@ module buspirate_tb();
     .mc_ce(mc_ce),
     .mc_we(mc_we),
     .mc_add(mc_add),
-    .mc_data(mc_data)
+    .mc_data(mc_data),
+    .irq0(irq0),
+    .irq1(irq1)
     );
 
 	// Clock signal
@@ -42,7 +45,7 @@ module buspirate_tb();
 			mc_we <= 1;
 			mc_ce <= 1;
 		#1	rst <= 0;
-			mc_add <= 6'h00;
+			mc_add <= 6'h3f;
 
 	// read
 		#1	mc_ce <= 0;

@@ -15,10 +15,12 @@ void printbuff(uint8_t *buff, uint16_t buffsize);
 void writeflash(uint32_t addr, uint8_t *buff, int size);
 void erasesector(uint32_t addr);
 void formatflash(void);
-void showdir(void);
+void showdir(uint8_t type);
 void addfile(char *name, uint8_t type, uint8_t *ptr, uint32_t size);
 void chiperase(void);
 file_struct *findfile(char *name, uint8_t type);
+file_struct *findfileindex(uint8_t index);
+int delfile(char *name, uint8_t type);
 
 #define FLCMD_REMS	0x90		// Read Electronic Manufacturer ID & Device ID (REMS) 
 #define FLCMD_RDID	0x9F		// Read Identification (RDID)  

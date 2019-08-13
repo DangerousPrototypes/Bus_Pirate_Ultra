@@ -70,6 +70,11 @@ uint32_t dummy2_period(void)
 	cdcprintf("-DUMMY2- period()=%08X", returnval);
 	return returnval;
 }
+void dummy2_isr(uint8_t num)
+{
+	(void)num;
+	return;
+}
 void dummy2_macro(uint32_t macro)
 {
 	cdcprintf("-DUMMY2- macro(%08X)", macro);

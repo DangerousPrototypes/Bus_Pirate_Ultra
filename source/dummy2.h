@@ -16,6 +16,7 @@ uint32_t dummy2_period(void);
 void dummy2_macro(uint32_t macro);
 void dummy2_setup(void);
 void dummy2_setup_exc(void);
+void dummy2_isr(uint8_t num);
 void dummy2_cleanup(void);
 void dummy2_pins(void);
 void dummy2_settings(void);

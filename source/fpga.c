@@ -10,33 +10,24 @@
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/fsmc.h>
+#include <libopencm3/stm32/dma.h>
 
-
-void upload(void)
-{
-	int i;
-
-	cdcprintf("\r\nuploading\r\n");
-
-
-	for(i=0; i<=1000; i++)
-	{
-		progressbar(i, 1000);
-		delayms(10);
-	}
-}
-
-int uploadfpga(uint32_t addr, uint32_t size)
+int bitstreaminfo(uint32_t addr, uint32_t size)
 {
 	uint32_t i, offset;
-	int returnval;
 	char header[532];
 	char description[256];
 	char capabilities[256];
 	char date[10], version[10];
 
+	if(size < 8192)		// TODO: find the bitstream size for 384 LUT devices
+	{
+		cdcprintf("bitstream size is too less\r\n");
+		return 0;
+	}
+
 	// retrieve info from bitstream 
-	// info is embedded between 0xff, 0x00 <description>, 0x00, <capabilities>, 0x00, 0xFF <bitstream>
+	// info is embedded between 0xff, 0x00 <description>, 0x00, <capabilities>, 0x00,<datecodes>, 0x00,<version>, 0x00, 0xFF <bitstream>
 	readflash(addr, (uint8_t *)header, 532);
 
 	i=0;
@@ -77,6 +68,15 @@ int uploadfpga(uint32_t addr, uint32_t size)
 	cdcprintf(" capabilities: %s\r\n", capabilities);
 	cdcprintf(" date: %s\r\n", date);
 	cdcprintf(" version: %s\r\n", version);
+
+	return 1;	// seems valid
+}
+
+
+int uploadfpga(uint32_t addr, uint32_t size)
+{
+	uint32_t i;
+	int returnval;
 
 	// reset FPGA+program FPGA
 	cdcprintf("Resetting FPGA..\r\n");
@@ -142,8 +142,9 @@ int uploadfpga(uint32_t addr, uint32_t size)
 
 void fpgainit(void)
 {
-	// enable peripheral
+	// enable peripherals needed 
 	rcc_periph_clock_enable(BP_FPGA_SPI_CLK);
+	rcc_periph_clock_enable(BP_FPGA_DMACTRL_CLK);
 
 	// SPI pins of FPGA
 	gpio_set_mode(BP_FPGA_MOSI_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, BP_FPGA_MOSI_PIN);
@@ -228,22 +229,96 @@ https://github.com/leaflabs/libmaple/blob/master/libmaple/include/libmaple/fsmc.
 #define FSMC_BCR_MTYP_SRAM              (0x0 << 2)
 #define FSMC_BCR_MBKEN_BIT              0
 #define FSMC_BCR_MBKEN                  (1U << FSMC_BCR_MBKEN_BIT)
-
-#define FSMC_BTR_DATAST                 (0xFF << 8)
-#define FSMC_BTR_ADDSET                 0xF
 */
 
-// 55ns SRAM timings?
-#define DATAST   0x4
-#define ADDSET   0x1
 
 	// fsmc setup (bank3 is used) 0x6c000000
 	//           WREN     SRAM     16b     MBKEN   EXTMOD
 	FSMC_BCR3=((1<<12) | (0<<2) | (1<<4) | (1<<0) | (1<<14));
-	FSMC_BTR3=(DATAST << 8) | ADDSET;
-	FSMC_BWTR3=(DATAST << 8) | ADDSET;
+	FSMC_BTR3=(FSMC_DATAST << 8) | FSMC_ADDSET;
+	FSMC_BWTR3=(FSMC_DATAST << 8) | FSMC_ADDSET;
 	
 }
 
+static int received=0;
+static int transfered=0;
+
+void writefpga(uint16_t *data, int size)
+{
+	uint8_t timeout=DMA_TIMEOUT;
+	transfered=0;
+
+	dma_channel_reset(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN);				// clear DMA registers
+
+	dma_set_peripheral_address(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN, FPGA_BASE);		// assume fpga-base/reg0 as data register
+	dma_set_memory_address(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN, (uint32_t)data);
+	dma_set_number_of_data(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN, size);			// num of bytes
+	dma_set_read_from_memory(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN);				// memory --> fpga
+	dma_enable_memory_increment_mode(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN);			// increment memory
+	dma_disable_peripheral_increment_mode(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN);		// don't increment peripheral
+	dma_set_peripheral_size(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN, DMA_CCR_PSIZE_16BIT);	// 16 bits peripheral access
+	dma_set_memory_size(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN, DMA_CCR_MSIZE_16BIT);		// 16 bits memory access
+	dma_set_priority(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN, DMA_CCR_PL_VERY_HIGH);		// move as fast as possible
+
+	dma_enable_transfer_complete_interrupt(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN);
+
+	dma_enable_mem2mem_mode(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN);				// do we need the enable too?
+	dma_enable_channel(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN);				// go!
+
+	while((transfered==0)&&(timeout--)) delayus(1);
+
+}
+
+
+void readfpga(uint16_t *data, int size)
+{
+	uint8_t timeout=DMA_TIMEOUT;
+	received=0;
+
+	dma_channel_reset(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN);				// clear DMA registers
+
+	dma_set_peripheral_address(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN, FPGA_BASE);		// assume fpga-base/reg0 as data register
+	dma_set_memory_address(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN, (uint32_t)data);
+	dma_set_number_of_data(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN, size);			// num of bytes
+	dma_set_read_from_peripheral(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN);			// fpga --> memory
+	dma_enable_memory_increment_mode(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN);			// increment memory
+	dma_disable_peripheral_increment_mode(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN);		// don't increment peripheral
+	dma_set_peripheral_size(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN, DMA_CCR_PSIZE_16BIT);	// 16 bits peripheral access
+	dma_set_memory_size(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN, DMA_CCR_MSIZE_16BIT);		// 16 bits memory access
+	dma_set_priority(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN, DMA_CCR_PL_VERY_HIGH);		// move as fast as possible
+
+	dma_enable_transfer_complete_interrupt(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN);
+
+	dma_enable_mem2mem_mode(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN);				// do we need the enable too?
+	dma_enable_channel(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN);				// go!
+
+	while((received==0)&&(timeout--)) delayus(1);
+}
+
+void dma1_channel6_isr(void)				// receive isr
+{
+	if ((DMA1_ISR &DMA_ISR_TCIF6) != 0) {
+		DMA1_IFCR |= DMA_IFCR_CTCIF6;
+
+		received = 1;
+	}
+
+	dma_disable_transfer_complete_interrupt(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN);
+
+	dma_disable_channel(BP_FPGA_DMACTRL, BP_FPGA2MEM_DMACHAN);
+}
+
+void dma1_channel7_isr(void)				// send isr
+{
+	if ((DMA1_ISR &DMA_ISR_TCIF7) != 0) {
+		DMA1_IFCR |= DMA_IFCR_CTCIF7;
+
+		transfered = 1;
+	}
+
+	dma_disable_transfer_complete_interrupt(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN);
+
+	dma_disable_channel(BP_FPGA_DMACTRL, BP_MEM2FPGA_DMACHAN);
+}
 
 

@@ -29,6 +29,7 @@ typedef struct _protocol
 	void (*protocol_clk)(void);			// toggle clk (?)
 	uint32_t (*protocol_bitr)(void);		// read 1 bit (?)
 	uint32_t (*protocol_periodic)(void);		// service to regular poll whether a byte has arrived or something interesting has happened
+	void (*protocol_isr)(uint8_t);			// interrupt service routine
 	void (*protocol_macro)(uint32_t);		// macro
 	void (*protocol_setup)(void);			// setup UI
 	void (*protocol_setup_exc)(void);		// real setup
@@ -48,4 +49,5 @@ uint32_t nullfunc3(void);
 void nullfunc4(uint32_t c);
 void nohelp(void);
 uint32_t noperiodic(void);
+void noisr(uint8_t num);
 

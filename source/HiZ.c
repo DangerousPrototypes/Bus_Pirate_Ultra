@@ -1,6 +1,7 @@
 
 #include <stdint.h>
 #include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/exti.h>
 #include "buspirate.h"
 #include "HiZ.h"
 #include "cdcacm.h"
@@ -35,6 +36,11 @@ void HiZsetup_exc(void)
 	gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);
 	modeConfig.pullups=0;
 	gpio_set(BP_VPUEN_PORT, BP_VPUEN_PIN);
+
+	//disable interrupts from fpga
+	exti_disable_request(EXTI2);
+	exti_disable_request(EXTI3);
+
 
 	// aux and pwm
 	(void)getAUX();

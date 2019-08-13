@@ -84,6 +84,11 @@ uint32_t noperiodic(void)
 	return 0;
 }
 
+void noisr(uint8_t num)
+{
+	(void) num;
+}
+
 // all protocols and their interaction is handled here
 // buspirateNG.h has the conditional defines for protocols
 
@@ -103,6 +108,7 @@ struct _protocol protocols[MAXPROTO]={
 	nullfunc1,				// toggle clk (?)
 	nullfunc3,				// read 1 bit (?)
 	noperiodic,				// service to regular poll whether a byte ahs arrived
+	noisr, 			// interrupt service routine
 	nullfunc4,				// macro
 	HiZsetup,				// setup UI
 	HiZsetup_exc,				// real setup
@@ -388,6 +394,7 @@ struct _protocol protocols[MAXPROTO]={
     dummy1_clk,				// toggle clk (?)
     dummy1_bitr,				// read 1 bit (?)
     dummy1_period,				// service to regular poll whether a byte ahs arrived
+    dummy1_isr,					// interrupt service routine
     dummy1_macro,				// macro
     dummy1_setup,				// setup UI
     dummy1_setup_exc,			// real setup
@@ -414,6 +421,7 @@ struct _protocol protocols[MAXPROTO]={
     dummy2_clk,				// toggle clk (?)
     dummy2_bitr,				// read 1 bit (?)
     dummy2_period,				// service to regular poll whether a byte ahs arrived
+    dummy2_isr,					// interrupt service routine
     dummy2_macro,				// macro
     dummy2_setup,				// setup UI
     dummy2_setup_exc,			// real setup
@@ -426,7 +434,6 @@ struct _protocol protocols[MAXPROTO]={
 #endif
 
 };
-
 
 
 

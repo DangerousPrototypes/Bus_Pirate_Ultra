@@ -54,6 +54,8 @@
 #define BP_FPGA_CDONE_PORT	GPIOB
 #define BP_FPGA_CRESET_PORT	GPIOB
 
+#define FSMC_DATAST   0x2
+#define FSMC_ADDSET   0x0
 
 
 /*
@@ -73,6 +75,12 @@ mcu_aux		pc5
 mcu_int0	pe2
 mcu_int1	pe3
 */
+
+// external interrupt
+#define BP_FPGA_INT0_PORT	GPIOE
+#define BP_FPGA_INT0_PIN	GPIO2
+#define BP_FPGA_INT1_PORT	GPIOE
+#define BP_FPGA_INT1_PIN	GPIO3
 
 
 // FSMC
@@ -132,7 +140,12 @@ mcu_int1	pe3
 #define BP_FSMC_NCE_PORT	GPIOG
 #define BP_FSMC_NCE_PIN		GPIO10
 
-
+// dma
+#define BP_FPGA_DMACTRL_CLK	RCC_DMA1
+#define BP_FPGA_DMACTRL		DMA1
+#define BP_MEM2FPGA_DMACHAN	DMA_CHANNEL7
+#define BP_FPGA2MEM_DMACHAN	DMA_CHANNEL6
+#define DMA_TIMEOUT		10
 
 
 // pullups and poewrsupplies

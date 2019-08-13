@@ -13,6 +13,7 @@ uint32_t dummy1_dats(void);
 void dummy1_clk(void);
 uint32_t dummy1_bitr(void);
 uint32_t dummy1_period(void);
+void dummy1_isr(uint8_t num);
 void dummy1_macro(uint32_t macro);
 void dummy1_setup(void);
 void dummy1_setup_exc(void);

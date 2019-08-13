@@ -6,6 +6,9 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/f1/bkp.h>
 #include <libopencm3/cm3/scb.h>
+#include <libopencm3/stm32/exti.h>
+#include <libopencm3/cm3/nvic.h>
+
 
 #include "debug.h"
 #include "cdcacm.h"
@@ -197,6 +200,20 @@ void initUI(void)
 	modeConfig.clkpin=0;
 */
 	modeConfig.subprotocolname=0;
+
+	//setup the interrupt (using EXTI)
+	gpio_set_mode(BP_FPGA_INT0_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT, BP_FPGA_INT0_PIN);
+	gpio_set_mode(BP_FPGA_INT1_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT, BP_FPGA_INT1_PIN);
+	exti_select_source(EXTI2, BP_FPGA_INT0_PORT);
+	exti_select_source(EXTI3, BP_FPGA_INT1_PORT);
+	exti_set_trigger(EXTI2, EXTI_TRIGGER_FALLING);
+	exti_set_trigger(EXTI3, EXTI_TRIGGER_FALLING);
+	exti_disable_request(EXTI2);					// disable for now
+	exti_disable_request(EXTI3);					// disable for now
+	nvic_enable_irq(NVIC_EXTI2_IRQ);
+	nvic_enable_irq(NVIC_EXTI3_IRQ);
+
+
 }
 
 int isbuscmd(char c)
@@ -242,7 +259,7 @@ void doUI(void)
 	uint32_t temp, temp2, temp3, repeat, received, bits;
 	int i;
 
-uint8_t testbuff[256];
+uint16_t testbuff[256];
 file_struct *file;
 
 	go=0;
@@ -616,16 +633,27 @@ file_struct *file;
 						modeConfig.bitorder^=1;
 						modeConfig.numbits=temp3;
 						break;
+				case '*':						// fpga menu
+						break;
 				case '~': 	//selftest();
 
 //showflashID();
-showdir();
-file=findfile("SRAM TEST", 0x01);
+//showdir(0x00);
+//showdir(0x01);
+//showdir(0x02);
 
-cdcprintf("found at %08X size %08x\r\n", file->addr, file->size);
+//file=findfileindex(3);
+//file=findfile("SRAM TEST", 0x01);
+//if(!delfile("IO TEST", 0x01))
+//	cdcprintf("not found!!\r\n");
+//else
+//	cdcprintf("deleted\r\n");
+//cdcprintf("found at %08X size %08x\r\n", file->addr, file->size);
+//bitstreaminfo(file->addr, file->size);
 //formatflash();
-//addfile("SRAM TEST", 0x01, bitstream, 135159);
+//addfile("IRQ TEST", 0x01, bitstream, 135100);
 //addfile("TESTS0R", 0x01, bitstream, 135159);
+//addfile("TESTS0R 2", 0x01, bitstream, 135159);
 //format();
 //showdir();
 
@@ -633,15 +661,30 @@ cdcprintf("found at %08X size %08x\r\n", file->addr, file->size);
 //printbuff(testbuff, 256);
 //cdcgetc();
 //uploadfpga(0x200, 135159);
-uploadfpga(file->addr, file->size);
-cdcprintf("00: %04X\r\n", FPGA_REG(0));
-cdcprintf("01: %04X\r\n", FPGA_REG(1));
-cdcprintf("02: %04X\r\n", FPGA_REG(2));
-cdcprintf("03: %04X\r\n", FPGA_REG(3));
-FPGA_REG(0)=0xFFFF;
-cdcprintf("00: %04X\r\n", FPGA_REG(0));
-FPGA_REG(0)=0x0000;
-cdcprintf("00: %04X\r\n", FPGA_REG(0));
+//uploadfpga(file->addr, file->size);
+//cdcprintf("00: %04X\r\n", FPGA_REG(0));
+//cdcprintf("01: %04X\r\n", FPGA_REG(1));
+//cdcprintf("02: %04X\r\n", FPGA_REG(2));
+//cdcprintf("03: %04X\r\n", FPGA_REG(3));
+//FPGA_REG(0)=0xFFFF;
+//cdcprintf("00: %04X\r\n", FPGA_REG(0));
+//FPGA_REG(0)=0x0000;
+//cdcprintf("00: %04X\r\n", FPGA_REG(0));
+
+//file=findfileindex(0);
+//bitstreaminfo(file->addr, file->size);
+//uploadfpga(file->addr, file->size);
+//file=findfileindex(1);
+//bitstreaminfo(file->addr, file->size);
+//uploadfpga(file->addr, file->size);
+//file=findfileindex(2);
+//bitstreaminfo(file->addr, file->size);
+//uploadfpga(file->addr, file->size);
+for(i=0; i<16; i++) testbuff[i]=i;
+printbuff(testbuff, 16);
+writefpga(testbuff, 8);
+readfpga(testbuff, 8);
+printbuff(testbuff, 16);
 
 						break;
 				default:	cdcprintf("Unknown command: %c", c);
@@ -1345,7 +1388,7 @@ void jumptobootloader(void)
 	BKP_DR1=BOOT_MAGIC_VALUE;
 	pwr_enable_backup_domain_write_protect();
 	rcc_periph_clock_disable(RCC_PWR);
-	rcc_periph_clock_enable(RCC_BKP);
+	rcc_periph_clock_disable(RCC_BKP);
 
 	SCB_AIRCR=0x0004|(0x5Fa<<16);
 	while(1);
@@ -1362,3 +1405,22 @@ void selftest(void)
 {
 	cdcprintf("Not implemented\r\n");
 }
+
+
+
+
+void exti2_isr(void)
+{
+	protocols[modeConfig.mode].protocol_isr(0);
+	exti_reset_request(EXTI2);
+}
+
+void exti3_isr(void)
+{
+	protocols[modeConfig.mode].protocol_isr(1);
+	exti_reset_request(EXTI3);
+}
+
+
+
+

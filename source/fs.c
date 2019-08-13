@@ -236,12 +236,9 @@ void formatflash(void)
 {
 	uint8_t buffer[256];
 	uint32_t *superblock;
-	file_struct *file;
 	int i;
 
 	superblock=(uint32_t*)buffer;
-	file=(file_struct*)buffer;
-
 	for(i=0; i<256; i++) buffer[i]=0xFF;
 
 
@@ -255,7 +252,7 @@ void formatflash(void)
 }
 
 
-void showdir(void)
+void showdir(uint8_t type)
 {
 	uint8_t buffer1[256], buffer2[256];
 	uint32_t *superblock, offset;
@@ -293,13 +290,13 @@ void showdir(void)
 		while((file[j].type!=0xFF)&&(j<8))
 		{
 			offset=(file[j].addr+file[j].size+256)&0xFFFFFF00;
-			if(file[j].type==0x00)				// skip deleted files
+			if((file[j].type==0x00)||((file[j].type!=type)&&type!=0x00))	// skip deleted files and other files 
 			{
 				j++;
 				continue;
 			}
 
-			cdcprintf(" %s.%s stored @ %08X, len=%d\r\n", file[j].name, filetype[file[j].type], file[j].addr, file[j].size);
+			cdcprintf("%d: %s.%s stored @ %08X, len=%d\r\n", (i*8)+j, file[j].name, filetype[file[j].type], file[j].addr, file[j].size);
 			num_files++;
 			j++;
 		}
@@ -361,7 +358,7 @@ void addfile(char *name, uint8_t type, uint8_t *ptr, uint32_t size)
 
 	writeflash(superblock[i-1], buffer2, 256);	// write directory entry
 							// write file to flash
-	for(i=0; i<(size+256); i+=256)
+	for(i=0; i<((size+256)&0xFFFFFF00l); i+=256)
 	{	
 		writeflash(offset+i, ptr+i, 256);
 		progressbar(i, ((size+256)&0xFFFFFF00));
@@ -432,4 +429,87 @@ file_struct *findfile(char *name, uint8_t type)
 	return &result;
 }
 
+file_struct *findfileindex(uint8_t index)
+{
+	uint8_t buffer1[256], buffer2[256];
+	uint32_t *superblock;
+	file_struct *file;
+	int i;
+
+	superblock=(uint32_t*)buffer1;
+	file=(file_struct*)buffer2;
+
+	// clear result
+	for(i=0; i<15; i++) result.name[i]=0x00;
+	result.type=0x00;
+	result.addr=0;
+	result.size=0;
+
+	readflash(SUPERBLOCK_LOCATION, buffer1, 256);
+	readflash(superblock[(index>>3)], buffer2, 256);
+
+	for(i=0; i<15; i++) result.name[i]=file[(index&0x07)].name[i];
+	result.type=file[(index&0x07)].type;
+	result.addr=file[(index&0x07)].addr;
+	result.size=file[(index&0x07)].size;
+
+	return &result;
+}
+
+
+int delfile(char *name, uint8_t type)
+{
+	int i, j, found;
+	uint8_t buffer1[256], buffer2[256];
+	uint32_t *superblock;
+	file_struct *file;
+
+	// clear result
+	for(i=0; i<15; i++) result.name[i]=0x00;
+	result.type=0x00;
+	result.addr=0;
+	result.size=0;
+
+
+	i=0;
+	found=0;
+	superblock=(uint32_t*)buffer1;
+	file=(file_struct*)buffer2;
+
+	readflash(SUPERBLOCK_LOCATION, buffer1, 256);
+
+	// travel through the directory block
+	while((superblock[i]!=0xFFFFFFFFl)&&(i<64)&&(!found))
+	{
+		if(superblock[i]==0x00000000)				// skip if directoryblock is deleted
+		{
+			i++;
+			continue;
+		}
+
+		readflash(superblock[i], buffer2, 256);
+
+		j=0;
+
+		while((file[j].type!=0xFF)&&(j<8)&&(!found))
+		{
+			if(file[j].type==0x00)				// skip deleted files
+			{
+				j++;
+				continue;
+			}
+			if((strcmp(file[j].name, name)==0)&&(file[j].type==type))
+			{
+				found=1;
+				file[j].type=0x00;
+				writeflash(superblock[i], buffer2, 256);	// write updated directory
+				return 1;
+			}
+
+			j++;
+		}
+		i++;
+	}
+	return 0;
+}
 
