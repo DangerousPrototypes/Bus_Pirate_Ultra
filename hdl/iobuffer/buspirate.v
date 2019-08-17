@@ -11,7 +11,7 @@
 `include "spimaster.v"
 `include "fifo.v"
 //`include "ram.v"
-//`define SIMULATION
+`define SIMULATION
 
 module top #(
   parameter MC_DATA_WIDTH = 16,
@@ -218,7 +218,7 @@ module top #(
 
 
       //some manual reset crap...need global reset pin, but this still may be needed accorting to various posts I've read
-      if(reset_count<2) begin
+      if(reset_count<3) begin
         reset_count<=reset_count+1;
         reset<=1'b1;
         rreg[9]<=16'h00;
@@ -235,6 +235,9 @@ module top #(
            bpsm_state <= `STATE_IDLE;
            peripheral_trigger <= 0;
            bp_busy <= 0;
+           out_fifo_in_shift<=0;
+           in_fifo_out_pop<=1'b0;
+           la_start<=1'b0;
        end
        else
        begin
@@ -245,13 +248,18 @@ module top #(
                      bp_busy <= 1'b1;
                      //error <= 1'b0;
                      rreg[10]<=in_fifo_out_data;
+
+                     //return the command so we can track progress from MCU
+                     out_fifo_in_data_d<=in_fifo_out_data;
+                     out_fifo_in_shift<=1'b1;
                      bpsm_state<=`STATE_POP_FIFO; //default pop, otherwise handed to the next state forced below...
+
                      casez(in_fifo_out_data[15:8])
                        `CMD_PERIPHERAL_WRITE:
                           begin
                           peripheral_data_in_d <= in_fifo_out_data; //use extra register so we can pop the FIFO on this loop
                           peripheral_trigger <= 1'b1;
-                          bpsm_state <= `STATE_PERIPHERAL_WAIT;
+                          bpsm_state<=`STATE_PERIPHERAL_WAIT;
                           end
                        `CMD_LASTART:
                            la_start<=1'b1;
@@ -284,6 +292,7 @@ module top #(
            end //case STATE_IDLE
 
            `STATE_DELAY: begin
+                out_fifo_in_shift<=1'b0;
                 if (delay_counter == 0) begin
                     bpsm_state <= `STATE_POP_FIFO;
                 end else begin
@@ -292,6 +301,7 @@ module top #(
             end
 
             `STATE_PERIPHERAL_WAIT: begin
+                out_fifo_in_shift<=1'b0; //THIS IS DANGEROUS! if peripheral is done by this point we wont have an extra clock before the next shift!!!! Keep this in mind!
                 peripheral_trigger <= 0;
                 if (!peripheral_trigger && !peripheral_busy && !out_fifo_in_full) begin
                     bpsm_state <= `STATE_POP_FIFO;
@@ -299,6 +309,13 @@ module top #(
                     out_fifo_in_shift<=1'b1;
                 end
             end
+
+            //tried to deal with the issue above and gave up....
+            /*`STATE_RETURN_COMMAND: begin
+              out_fifo_in_shift<=1'b0;
+              bpsm_state<=bpsm_next_state;
+            end*/
+
 
             //when a word enters the FIFO and nempty goes high
             //that first word is already in the output
@@ -458,7 +475,7 @@ module top #(
       //peripheral_busy<=1'b0;
       reset<=1'b0;
       count<=3'b000;
-      reset_count<=0;
+      reset_count<=3'b000;
       rreg[6'b00000] <= 16'b0000000000000000;				// test values
       rreg[6'b00001] <= 16'b0000000000000000;
       rreg[6'b00010] <= 16'b0000000000000000;

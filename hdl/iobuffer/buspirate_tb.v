@@ -106,8 +106,8 @@ module buspirate_tb();
       `WRITE(6'h00,16'h00FB);//od|oe
       `WRITE(6'h01,16'h0004);//hl|dir
       bpio_test_input<=5'b11111;
-      `WRITE(6'h03,16'b10000000);//pause BPSM
-      `WRITE(6'h07,16'hFE00);//IO pins low
+      `WRITE(6'h03,16'b10001000);//pause BPSM
+      `WRITE(6'h07,16'hFE00);//start logic analyzer
       `WRITE(6'h07,16'h81FF);//IO pins high
       `WRITE(6'h07,16'h8100); //IO pins low
       `WRITE(6'h07,16'h08aa); //write SPI data
@@ -115,7 +115,7 @@ module buspirate_tb();
       `WRITE(6'h07,16'h0800);
       `WRITE(6'h07,16'h840F); //delay 0x0f
       `WRITE(6'h07,16'h81FF); //IO pins high
-      `WRITE(6'h07,16'hFF00); //IO pins low
+      `WRITE(6'h07,16'hFF00); //stop logic analyzer
       `WRITE(6'h03,16'b00000000);//trigger BP SM
       repeat(200)@(posedge clk);
       $finish;
