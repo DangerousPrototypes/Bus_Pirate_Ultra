@@ -268,6 +268,7 @@ void doUI(void)
 
 	uint32_t temp, temp2, temp3, repeat, received, bits;
 	int i;
+	uint16_t bytecodeIndex=0;
 
 
 
@@ -330,7 +331,10 @@ void doUI(void)
 						cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);		// advance 1
 						if(cmdbuff[cmdtail]==')')
 						{
-							protocols[modeConfig.mode].protocol_macro(temp);
+							//protocols[modeConfig.mode].protocol_macro(temp);
+							bytecodes[bytecodeIndex].command=c;
+							bytecodes[bytecodeIndex].data=temp;
+
 						}
 						else
 						{
@@ -338,65 +342,72 @@ void doUI(void)
 							cdcprintf("Error parsing macro");
 						}
 						break;
-				case '[':	modeConfig.wwr=0;
-						protocols[modeConfig.mode].protocol_start();
+				case '[':	//modeConfig.wwr=0;
+						//protocols[modeConfig.mode].protocol_start();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case ']':	modeConfig.wwr=0;
-						protocols[modeConfig.mode].protocol_stop();
+				case ']':	//modeConfig.wwr=0;
+						//protocols[modeConfig.mode].protocol_stop();
+						bytecodes[bytecodeIndex].command=c;
 						break;
-				case '{':	modeConfig.wwr=1;
-						protocols[modeConfig.mode].protocol_startR();
+				case '{':	//modeConfig.wwr=1;
+						//protocols[modeConfig.mode].protocol_startR();
+						bytecodes[bytecodeIndex].command=c;
 						break;
-				case '}':	modeConfig.wwr=0;
-						protocols[modeConfig.mode].protocol_stopR();
+				case '}':	//modeConfig.wwr=0;
+						//protocols[modeConfig.mode].protocol_stopR();
+						bytecodes[bytecodeIndex].command=c;
 						break;
-				case '/':	protocols[modeConfig.mode].protocol_clkh();
+				case '/':	//protocols[modeConfig.mode].protocol_clkh();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case '\\':	protocols[modeConfig.mode].protocol_clkl();
+				case '\\':	//protocols[modeConfig.mode].protocol_clkl();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case '^':	protocols[modeConfig.mode].protocol_clk();
+				case '^':	//protocols[modeConfig.mode].protocol_clk();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case '-':	protocols[modeConfig.mode].protocol_dath();
+				case '-':	//protocols[modeConfig.mode].protocol_dath();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case '_':	protocols[modeConfig.mode].protocol_datl();
+				case '_':	//protocols[modeConfig.mode].protocol_datl();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case '.':	protocols[modeConfig.mode].protocol_dats();
+				case '.':	//protocols[modeConfig.mode].protocol_dats();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case '!':	protocols[modeConfig.mode].protocol_bitr();
+				case '!':	//protocols[modeConfig.mode].protocol_bitr();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
 				case '&':	repeat=getrepeat();
-						if(repeat<10) repeat=10;			// minimum is 10us!
-						cdcprintf("BPSM-delay: %d", (0x8400|(uint8_t)repeat));
-						/*while(repeat--)
-						{
-							delayus(1);
-						}*/
-						FPGA_REG_07=(0x8400|(uint8_t)repeat);//delay for repeat cycles
+                        bytecodes[bytecodeIndex].command=c;
+                        bytecodes[bytecodeIndex].repeat=repeat;
+						//cdcprintf("BPSM-delay: %d", (0x8400|(uint8_t)repeat));
+                        //FPGA_REG_07=(0x8400|(uint8_t)repeat);//delay for repeat cycles
 						break;
 				case '%':	repeat=getrepeat();
 						//cdcprintf("Delaying %d ms", repeat);
-						while(repeat--)
-						{
-							//delayms(1);
-							FPGA_REG_07=(0x8400|(uint8_t)0x0F);//delay for repeat cycles
-							cdcprintf("BPSM-delay: %d", (0x8400|(uint8_t)0x0F));
-						}
+                        bytecodes[bytecodeIndex].command=c;
+                        bytecodes[bytecodeIndex].repeat=repeat;
+						//FPGA_REG_07=(0x8400|(uint8_t)0x0F);//delay for repeat cycles
 						break;
 				case 'a':	if(modeConfig.mode!=HIZ)
 						{
-							cdcprintf("SET AUX=0");
-							setAUX(0);
-						}
+							//cdcprintf("SET AUX=0");
+							//setAUX(0);
+                            bytecodes[bytecodeIndex].command=c;
+  						}
 						else
 						{
 							cdcprintf("Can't set AUX in HiZ mode!");
 							modeConfig.error=1;
 						}
 						break;
-				case 'A':	if(modeConfig.mode!=HIZ)
+				case 'A':	if(modeConfig.mode!=HIZ) //mode may have changed.... this will not work cross mode MOVE TO PROCESSOR???
 						{
-							cdcprintf("SET AUX=1");
-							setAUX(1);
+							//cdcprintf("SET AUX=1");
+							//setAUX(1);
+                            bytecodes[bytecodeIndex].command=c;
 						}
 						else
 						{
@@ -406,7 +417,8 @@ void doUI(void)
 						break;
 				case '@':	if(modeConfig.mode!=HIZ)
 						{
-							cdcprintf("AUX=%d", getAUX());
+							//cdcprintf("AUX=%d", getAUX());
+							bytecodes[bytecodeIndex].command=c;
 						}
 						else
 						{
@@ -416,12 +428,13 @@ void doUI(void)
 						break;
 				case 'b':	if(modeConfig.mode!=HIZ)
 						{
-							temp=askint(VPUMENU, 1, 3, 1);
-							modeConfig.vpumode=temp-1;
-							gpio_clear(BP_VPU50EN_PORT, BP_VPU50EN_PIN);			// Vpu=ext
-							gpio_clear(BP_VPU33EN_PORT, BP_VPU33EN_PIN);
+							//temp=askint(VPUMENU, 1, 3, 1);
+							modeConfig.vpumode=1;
+							//gpio_clear(BP_VPU50EN_PORT, BP_VPU50EN_PIN);			// Vpu=ext
+							//gpio_clear(BP_VPU33EN_PORT, BP_VPU33EN_PIN);
+							bytecodes[bytecodeIndex].command=c;
 						}
-						switch(modeConfig.vpumode)
+						/*switch(modeConfig.vpumode)
 						{
 							case 1:								// 3v3
 								gpio_set(BP_VPU33EN_PORT, BP_VPU33EN_PIN);
@@ -432,12 +445,13 @@ void doUI(void)
 							default:
 								gpio_clear(BP_VPU50EN_PORT, BP_VPU50EN_PIN);
 								gpio_clear(BP_VPU33EN_PORT, BP_VPU33EN_PIN);
-						}
+						}*/
 						break;
 				case 'd':	if(modeConfig.mode!=HIZ)
 						{
-							uint16_t adc = voltage(BP_ADC_CHAN, 1);
-							cdcprintf("ADC=%d.%02dV", adc/1000, (adc%1000)/10);
+							//uint16_t adc = voltage(BP_ADC_CHAN, 1);
+							//cdcprintf("ADC=%d.%02dV", adc/1000, (adc%1000)/10);
+							bytecodes[bytecodeIndex].command=c;
 						}
 						else
 						{
@@ -447,14 +461,15 @@ void doUI(void)
 						break;
 				case 'D':	if(modeConfig.mode!=HIZ)
 						{
-							cdcprintf("Press any key to exit\r\n");
-							while(!cdcbyteready())
+							//cdcprintf("Press any key to exit\r\n");
+							/*while(!cdcbyteready())
 							{
 								uint16_t adc = voltage(BP_ADC_CHAN, 1);
 								cdcprintf("ADC=%d.%02dV\r", adc/1000, (adc%1000)/10);
 								delayms(250);
 							}
-							cdcgetc();
+							cdcgetc();*/
+							bytecodes[bytecodeIndex].command=c;
 						}
 						else
 						{
@@ -468,13 +483,15 @@ void doUI(void)
 						break;
 				case 'G':	if(modeConfig.mode!=HIZ)
 						{
-							temp=askint(PWMMENUPERIOD, 1, 0xFFFFFFFF, 1000);
+							/*temp=askint(PWMMENUPERIOD, 1, 0xFFFFFFFF, 1000);
 							temp2=askint(PWMMENUOC, 1, 0xFFFFFFFF, 200);
 							setPWM(temp, temp2);			// enable PWM
 							if(modeConfig.pwm)
 								cdcprintf("\r\nPWM on");
 							else
 								cdcprintf("\r\nPWM off");
+								*/
+								bytecodes[bytecodeIndex].command=c;
 						}
 						else
 						{
@@ -482,59 +499,72 @@ void doUI(void)
 						}
 						break;
 				case 'h':
-				case '?':	printhelp();
+				case '?':	//printhelp();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case 'H':	protocols[modeConfig.mode].protocol_help();
+				case 'H':	//protocols[modeConfig.mode].protocol_help();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case 'i':	versioninfo();
+				case 'i':	//versioninfo();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case 'l':	modeConfig.bitorder=0;
-						cdcprintf("Bitorder: MSB");
+				case 'l':	//modeConfig.bitorder=0;
+						//cdcprintf("Bitorder: MSB");
+						bytecodes[bytecodeIndex].command=c;
 						break;
-				case 'L':	modeConfig.bitorder=1;
-						cdcprintf("Bitorder: LSB");
+				case 'L':	//modeConfig.bitorder=1;
+						//cdcprintf("Bitorder: LSB");
+						bytecodes[bytecodeIndex].command=c;
 						break;
-				case 'm':	changemode();
+				case 'm':	//changemode();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case 'o':	changedisplaymode();
+				case 'o':	//changedisplaymode();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case 'p':	gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);	// always permitted
-						cdcprintf("pullups: disabled");
-						modeConfig.pullups=0;
+				case 'p':	//gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);	// always permitted
+						//cdcprintf("pullups: disabled");
+						//modeConfig.pullups=0;
+						bytecodes[bytecodeIndex].command=c;
 						break;
 				case 'P':	if(modeConfig.mode!=0)		// reset vpu mode to externale??
 						{
-							gpio_set(BP_VPUEN_PORT, BP_VPUEN_PIN);
+						    bytecodes[bytecodeIndex].command=c;
+							/*gpio_set(BP_VPUEN_PORT, BP_VPUEN_PIN);
 							cdcprintf("pullups: enabled\r\n");
 							delayms(10);
 							uint16_t vpu = voltage(BP_VPU_CHAN, 1);
 							cdcprintf("Vpu=%d.%02dV (mode=%s)", vpu/1000, (vpu%1000)/10, vpumodes[modeConfig.vpumode]);
-							modeConfig.pullups=1;
+							modeConfig.pullups=1;*/
 						}
 						else
 						{
-							cdcprintf("Cannot enable pullups in HiZ");
+							cdcprintf("Cannot enable pull-ups in HiZ");
 							modeConfig.error=1;
 						}
 						break;
 				case 'r':	repeat=getrepeat();
-						while(repeat--)
+						/*while(repeat--)
 						{
 							received=protocols[modeConfig.mode].protocol_read();
 							cdcprintf("RX: ");
 							printnum(received);
 							if(repeat) cdcprintf("\r\n");
-						}
+						}*/
+						bytecodes[bytecodeIndex].command=c;
+						bytecodes[bytecodeIndex].repeat=repeat;
 						break;
-				case 'v':	showstates();
+				case 'v':	//showstates();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case 'w':	gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);	// always permitted to shut power off
-						cdcprintf("PSU: disabled");
-						modeConfig.psu=0;
+				case 'w':	//gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);	// always permitted to shut power off
+						//cdcprintf("PSU: disabled");
+						//modeConfig.psu=0;
+						bytecodes[bytecodeIndex].command=c;
 						break;
 				case 'W':	if(modeConfig.mode!=0)
 						{
-							gpio_set(BP_PSUEN_PORT, BP_PSUEN_PIN);
+							/*gpio_set(BP_PSUEN_PORT, BP_PSUEN_PIN);
 							cdcprintf("PSU: enabled\r\n");
 							delayms(10);
 							uint16_t v33 = voltage(BP_3V3_CHAN, 1);
@@ -546,7 +576,8 @@ void doUI(void)
 								gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);
 							}
 							else
-								modeConfig.psu=1;
+								modeConfig.psu=1;*/
+                            bytecodes[bytecodeIndex].command=c;
 						}
 						else
 						{
@@ -566,9 +597,13 @@ void doUI(void)
 				case '8':
 				case '9':	temp=getint();
 						bits=getnumbits();		// sequence is important! TODO: make freeform
-						if(bits) modeConfig.numbits=bits;
+						//if(bits) modeConfig.numbits=bits;
 						repeat=getrepeat();
-						if (modeConfig.numbits<32) temp&=((1<<modeConfig.numbits)-1);
+						bytecodes[bytecodeIndex].command=c;
+						bytecodes[bytecodeIndex].data=temp;
+						bytecodes[bytecodeIndex].repeat=repeat;
+						bytecodes[bytecodeIndex].option1=bits;
+						/*if (modeConfig.numbits<32) temp&=((1<<modeConfig.numbits)-1);
 						while(repeat--)
 						{
 							//cdcprintf("TX: ");
@@ -581,9 +616,10 @@ void doUI(void)
 								//printnum(received);
 							}
 							//if(repeat) cdcprintf("\r\n");
-						}
+						}*/
 						break;
-				case '\"':	temp=1;
+				case '\"': //NOT SURE HOW TO HANDLE THIS YET... ALSO THERE IS A BUG IF ONLY ONE CHAR "H" says unterminated
+				       /*	temp=1;
 						modeConfig.error=1;
 						cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);
 						while((((cmdtail+temp)&(CMDBUFFSIZE-1))!=cmdhead)&&(cmdbuff[((cmdtail+temp)&(CMDBUFFSIZE-1))]!='\"'))
@@ -611,17 +647,21 @@ void doUI(void)
 
 						}
 						else
-							cdcprintf("missing terminating \"");
+							cdcprintf("missing terminating \"");*/
 				case 0x00:
 				case ' ':	break;
 				case ',':	break;	// reuse this command??
-				case '$':	jumptobootloader();
+				case '$':	//jumptobootloader();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
-				case '#':	reset();
+				case '#':	//reset();
+                        bytecodes[bytecodeIndex].command=c;
 						break;
 				case '=':	cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);
 						temp=getint();
-						temp2=modeConfig.displaymode;		// remember old displaymode
+						bytecodes[bytecodeIndex].command=c;
+						bytecodes[bytecodeIndex].data=temp;
+						/*temp2=modeConfig.displaymode;		// remember old displaymode
 						temp3=modeConfig.numbits;		// remember old numbits
 						modeConfig.numbits=32;
 						for(i=0; i<4; i++)
@@ -630,11 +670,14 @@ void doUI(void)
 							modeConfig.displaymode=i;
 							printnum(temp);
 						}
-						modeConfig.numbits=temp3;
+						modeConfig.numbits=temp3;*/
 						break;
 				case '|':	cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);
 						temp=getint();
-						temp2=modeConfig.displaymode;		// remember old displaymode
+						bytecodes[bytecodeIndex].command=c;
+						bytecodes[bytecodeIndex].data=temp;
+
+						/*temp2=modeConfig.displaymode;		// remember old displaymode
 						modeConfig.bitorder^=1;
 						temp3=modeConfig.numbits;		// remember old numbits
 						modeConfig.numbits=32;
@@ -645,11 +688,11 @@ void doUI(void)
 							printnum(orderbits(temp));
 						}
 						modeConfig.bitorder^=1;
-						modeConfig.numbits=temp3;
+						modeConfig.numbits=temp3;*/
 						break;
 				case '~':
                         //logicAnalyzerCaptureStop();
-                        logicAnalyzerTest();
+                        //logicAnalyzerTest();
 						break;
 				default:	cdcprintf("Unknown command: %c", c);
 						modeConfig.error=1;
@@ -657,6 +700,7 @@ void doUI(void)
 						//cmdtail=cmdhead-1;
 						break;
 			}
+			bytecodeIndex=bytecodeIndex+1;
 			cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);	// advance to next char/command
 			if((c!=' ')&&(c!=0x00)&&(c!=',')) cdcprintf("\r\n");
 
