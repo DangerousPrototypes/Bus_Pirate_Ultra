@@ -15,7 +15,7 @@ static uint32_t cpol, cpha, br, dff, lsbfirst, csidle, od;
 
 void HWSPI_start(void)
 {
-	cdcprintf("set CS=%d", !csidle);
+	//cdcprintf("set CS=%d", !csidle);
 
 	HWSPI_setcs(0);
 
@@ -24,7 +24,7 @@ void HWSPI_start(void)
 
 void HWSPI_startr(void)
 {
-	cdcprintf("set CS=%d", !csidle);
+	//cdcprintf("set CS=%d", !csidle);
 
 	HWSPI_setcs(0);
 
@@ -33,7 +33,7 @@ void HWSPI_startr(void)
 
 void HWSPI_stop(void)
 {
-	cdcprintf("set CS=%d", csidle);
+	//cdcprintf("set CS=%d", csidle);
 
 	HWSPI_setcs(1);
 
@@ -43,7 +43,7 @@ void HWSPI_stop(void)
 
 void HWSPI_stopr(void)
 {
-	cdcprintf("set CS=%d", csidle);
+	//cdcprintf("set CS=%d", csidle);
 
 	HWSPI_setcs(1);
 
@@ -52,13 +52,15 @@ void HWSPI_stopr(void)
 
 uint32_t HWSPI_send(uint32_t d)
 {
-	uint16_t returnval;
+	uint16_t returnval, bpsm_command;
 
 	//TODO: lsb ??
 	if((modeConfig.numbits>=1)&&(modeConfig.numbits<=8))
 	{
+	    bpsm_command=(0x0800|(((uint16_t)modeConfig.numbits<<8)|((uint16_t)d&0x00FF)));
+        FPGA_REG_07=bpsm_command;//write n bits of d
+        cdcprintf("BPSM-pwrite: %04X\r\n",d);
 
-		returnval=HWSPI_xfer(((uint16_t)modeConfig.numbits<<8)|(uint16_t)d);
 	}
 	else
 	{
@@ -166,7 +168,7 @@ void HWSPI_help(void)
 	if(cpha)
 	{
 		cdcprintf("MISO\t-----|{###}|{###}|{###}|{###}|{###}|{###}|{###}|{###}|------\r\n");
-		cdcprintf("MOSI\t-----|{###}|{###}|{###}|{###}|{###}|{###}|{###}|{###}|------\r\n");
+        cdcprintf("MOSI\t-----|{###}|{###}|{###}|{###}|{###}|{###}|{###}|{###}|------\r\n");
 	}
 	else
 	{
@@ -228,26 +230,28 @@ void HWSPI_setcsidle(uint32_t val)
 
 void HWSPI_setcs(uint8_t cs)
 {
-
-
+    uint16_t bpsm_command;
 
 	if(cs==0)		// 'start'
 	{
-		if(csidle) FPGA_REG_07=(0x8100);
-			else FPGA_REG_07=(0x81FF);
+		if(csidle) bpsm_command=(0x8100);
+			else bpsm_command=(0x81FF);
 	}
 	else			// 'stop'
 	{
-		if(csidle) FPGA_REG_07=(0x81FF);
-			else FPGA_REG_07=(0x8100);
+		if(csidle) bpsm_command=(0x81FF);
+			else bpsm_command=(0x8100);
 	}
+
+	FPGA_REG_07=bpsm_command;
+	cdcprintf("BPSM-io: %04X\r\n",bpsm_command);
 
 }
 
 uint16_t HWSPI_xfer(uint16_t d)
 {
 	FPGA_REG_07=(0x0800|(d&0x00FF));//write 8 bits of d
-	cdcprintf("CMD: %04X\r\n",(0x0800|(d&0x00FF)));
+	cdcprintf("BPSM-pwrite: %04X\r\n",(0x0800|(d&0x00FF)));
 	return 0x0000;
 }
 

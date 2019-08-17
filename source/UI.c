@@ -26,6 +26,8 @@ uint32_t cmdhead, cmdtail, cursor;		// TODO swap head an tail?
 char cmdbuff[CMDBUFFSIZE];
 struct _modeConfig modeConfig;
 
+void serviceAsyncCommandFIFO();
+
 // global constants
 const char vpumodes[][4] = {
 "EXT\0",
@@ -218,6 +220,45 @@ int isbuscmd(char c)
 	}
 }
 
+
+void serviceAsyncCommandFIFO(){
+    uint16_t fifo;
+
+    if(gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN)){
+
+        //read from the FIFO
+        fifo=FPGA_REG_07;
+        cdcprintf("FIFO: %04X\r\n",fifo);
+
+        if(!(fifo&0x8000)){//first bit is 0, this is a peripheral read/write command
+            cdcprintf("FPGA Peripheral write %d bits: %02X\r\n", (uint8_t)(fifo>>8),(uint8_t)fifo);
+        }else{
+            switch(fifo>>8){
+            case 0xfe:
+                cdcprintf("FPGA: Logic analyzer start\r\n");
+                break;
+            case 0xff:
+                cdcprintf("FPGA: Logic analyzer stop\r\n");
+                logicAnalyzerCaptureStop();
+                break;
+            case 0x81:
+                cdcprintf("FPGA DIO write: %02X\r\n",(uint8_t)fifo);
+                break;
+            //case 0x82:
+            //case 0x83:
+            case 0x84:
+                cdcprintf("FPGA delay: %02X\r\n", (uint8_t)fifo);
+                break;
+            default:
+                cdcprintf("Unknown command %04X\r\n",fifo);
+                break;
+
+            }
+        }
+    }
+
+}
+
 // one big loop eating all user input. executed/interpretted it when the user presses enter
 //
 void doUI(void)
@@ -279,6 +320,8 @@ void doUI(void)
 				}
 			}
 
+			serviceAsyncCommandFIFO(); //read from FPGA out FIFO and show the current status
+
 			switch (c)
 			{
 				case '(':
@@ -323,7 +366,7 @@ void doUI(void)
 						break;
 				case '&':	repeat=getrepeat();
 						if(repeat<10) repeat=10;			// minimum is 10us!
-						cdcprintf("Delaying %d us", repeat);
+						cdcprintf("BPSM-delay: %d", (0x8400|(uint8_t)repeat));
 						/*while(repeat--)
 						{
 							delayus(1);
@@ -331,11 +374,12 @@ void doUI(void)
 						FPGA_REG_07=(0x8400|(uint8_t)repeat);//delay for repeat cycles
 						break;
 				case '%':	repeat=getrepeat();
-						cdcprintf("Delaying %d ms", repeat);
+						//cdcprintf("Delaying %d ms", repeat);
 						while(repeat--)
 						{
 							//delayms(1);
 							FPGA_REG_07=(0x8400|(uint8_t)0x0F);//delay for repeat cycles
+							cdcprintf("BPSM-delay: %d", (0x8400|(uint8_t)0x0F));
 						}
 						break;
 				case 'a':	if(modeConfig.mode!=HIZ)
@@ -527,16 +571,16 @@ void doUI(void)
 						if (modeConfig.numbits<32) temp&=((1<<modeConfig.numbits)-1);
 						while(repeat--)
 						{
-							cdcprintf("TX: ");
-							printnum(temp);
-							cdcprintf(" ");
+							//cdcprintf("TX: ");
+							//printnum(temp);
+							//cdcprintf(" ");
 							received=protocols[modeConfig.mode].protocol_send(orderbits(temp));		// reshuffle bits if necessary
 							if(modeConfig.wwr)
 							{
-								cdcprintf(", RX: ");
-								printnum(received);
+								//cdcprintf(", RX: ");
+								//printnum(received);
 							}
-							if(repeat) cdcprintf("\r\n");
+							//if(repeat) cdcprintf("\r\n");
 						}
 						break;
 				case '\"':	temp=1;
@@ -625,14 +669,12 @@ void doUI(void)
 			}
 		}
 
-		//stop logic capture and dump data
-		//TODO:destinguish between bus activity and other commands
-		//only dump if bus command executed
-		logicAnalyzerCaptureStop();
 
-//		if(modeConfig.logicanalyzerstop==0xff){
-//			cdcprintf("\x07Logic analyzer full before end of command!\r\n");
-//		}
+        //this needs to be managed so we don't overflow the FIFO...
+        FPGA_REG_07=0xFF00; //LA stop command
+        FPGA_REG_03&=~(0b1<<7); //release statemachine from reset
+
+
 
 		if(modeConfig.subprotocolname)
 			cdcprintf("%s-(%s)> ", protocols[modeConfig.mode].protocol_name, modeConfig.subprotocolname);
@@ -1023,6 +1065,7 @@ void getuserinput(void)
 	{
 
 		//binmode
+		serviceAsyncCommandFIFO();
 
         if(cdcbyteready2())
 		{

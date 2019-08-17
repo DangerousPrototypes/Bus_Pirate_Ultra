@@ -143,8 +143,8 @@ void logicAnalyzerCaptureStart(void){
 
 void logicAnalyzerCaptureStop(void){
     uint16_t bpsm_active,i,samples;
-    FPGA_REG_07=0xFF00; //LA stop
-    FPGA_REG_03&=~(0b1<<7); //release statemachine from reset
+    //FPGA_REG_07=0xFF00; //LA stop
+    //FPGA_REG_03&=~(0b1<<7); //release statemachine from reset
     //delayms(2);
     bpsm_active=0;
     while(true){
@@ -163,15 +163,15 @@ void logicAnalyzerCaptureStop(void){
         }
     }
     sram_deselect();
-    cdcprintf("OP took: %08X cycles\r\n",bpsm_active);
+    //cdcprintf("OP took: %08X cycles\r\n",bpsm_active);
 
 
     samples=FPGA_REG_04;
-    cdcprintf("Samples captured: %04X\r\n",samples);
+    //cdcprintf("Samples captured: %04X\r\n",samples);
     cdcputc2((uint8_t)(samples>>8));
     cdcputc2((uint8_t)(samples));
 
-    cdcprintf("Dumping samples\r\n");
+    //cdcprintf("Dumping samples\r\n");
     setup_spix4w();
 	sram_select();
 	spiWx4(CMDREADQUAD); //read command
