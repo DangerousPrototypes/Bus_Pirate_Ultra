@@ -285,7 +285,7 @@
 
 1562674165 r:\libopencm3\lib\lm3s\vector_nvic.c
 
-1563202824 source:c:\msys64\home\ian\buspirate\source\buspirate.c
+1565610179 source:c:\msys64\home\ian\buspirate\source\buspirate.c
 	<stdlib.h>
 	<libopencm3/stm32/rcc.h>
 	<libopencm3/stm32/gpio.h>
@@ -482,16 +482,16 @@
 
 1563106674 c:\msys64\home\ian\buspirate\source\cdcacm.h
 
-1563106957 c:\msys64\home\ian\buspirate\source\buspirate.h
+1565604223 c:\msys64\home\ian\buspirate\source\buspirate.h
 	"platform/beta1.h"
 
-1563195092 c:\msys64\home\ian\buspirate\source\platform\beta1.h
+1565607296 c:\msys64\home\ian\buspirate\source\platform\beta1.h
 
 1563106674 c:\msys64\home\ian\buspirate\source\delay.h
 
-1563125503 c:\msys64\home\ian\buspirate\source\fpga.h
+1565603366 c:\msys64\home\ian\buspirate\source\fpga.h
 
-1563125503 c:\msys64\home\ian\buspirate\source\fs.h
+1563208254 c:\msys64\home\ian\buspirate\source\fs.h
 
 1563106674 source:c:\msys64\home\ian\buspirate\source\delay.c
 	<stdlib.h>
@@ -1169,7 +1169,7 @@
 	<stdarg.h>
 	<stddef.h>
 
-1563125503 source:c:\msys64\home\ian\buspirate\source\fpga.c
+1565612455 source:c:\msys64\home\ian\buspirate\source\fpga.c
 	<stdint.h>
 	"cdcacm.h"
 	"delay.h"
@@ -1182,7 +1182,7 @@
 
 1562673744 c:\msys64\home\ian\buspirate\source\bitstream.h
 
-1563125503 source:c:\msys64\home\ian\buspirate\source\fs.c
+1565612289 source:c:\msys64\home\ian\buspirate\source\fs.c
 	<stdint.h>
 	"buspirate.h"
 	<libopencm3/stm32/spi.h>
@@ -1267,9 +1267,9 @@
 	<libopencm3/usb/usbd.h>
 	"usb_private.h"
 
-1563202569 c:\msys64\home\ian\buspirate\source\la.h
+1565612000 c:\msys64\home\ian\buspirate\source\la.h
 
-1563203739 source:c:\msys64\home\ian\buspirate\source\la.c
+1565956036 source:c:\msys64\home\ian\buspirate\source\la.c
 	<stdint.h>
 	<libopencm3/stm32/gpio.h>
 	<libopencm3/stm32/rcc.h>
@@ -1282,7 +1282,7 @@
 	"delay.h"
 	"fpga.h"
 
-1563106957 source:c:\msys64\home\ian\buspirate\source\adc.c
+1563208254 source:c:\msys64\home\ian\buspirate\source\adc.c
 	<stdint.h>
 	"buspirate.h"
 	<libopencm3/stm32/rcc.h>
@@ -1290,9 +1290,9 @@
 	<libopencm3/stm32/gpio.h>
 	"ADC.h"
 
-1563106957 c:\msys64\home\ian\buspirate\source\adc.h
+1563208254 c:\msys64\home\ian\buspirate\source\adc.h
 
-1563106957 source:c:\msys64\home\ian\buspirate\source\auxpin.c
+1563208254 source:c:\msys64\home\ian\buspirate\source\auxpin.c
 	<stdint.h>
 	"buspirate.h"
 	<libopencm3/stm32/gpio.h>
@@ -1302,23 +1302,23 @@
 	"UI.h"
 	"AUXpin.h"
 
-1563106957 c:\msys64\home\ian\buspirate\source\ui.h
+1563208254 c:\msys64\home\ian\buspirate\source\ui.h
 
-1563106957 c:\msys64\home\ian\buspirate\source\auxpin.h
+1563208254 c:\msys64\home\ian\buspirate\source\auxpin.h
 
-1563106957 source:c:\msys64\home\ian\buspirate\source\dummy1.c
+1563208254 source:c:\msys64\home\ian\buspirate\source\dummy1.c
 	<stdint.h>
 	"dummy1.h"
 	"cdcacm.h"
 
-1563106957 c:\msys64\home\ian\buspirate\source\dummy1.h
+1563208254 c:\msys64\home\ian\buspirate\source\dummy1.h
 
-1563106957 source:c:\msys64\home\ian\buspirate\source\dummy2.c
+1563208254 source:c:\msys64\home\ian\buspirate\source\dummy2.c
 	<stdint.h>
 	"dummy2.h"
 	"cdcacm.h"
 
-1563106957 c:\msys64\home\ian\buspirate\source\dummy2.h
+1563208254 c:\msys64\home\ian\buspirate\source\dummy2.h
 
 1562674022 r:\libopencm3\include\libopencm3\stm32\fsmc.h
 	<libopencm3/cm3/common.h>
@@ -1327,7 +1327,7 @@
 
 1562674022 r:\libopencm3\include\libopencm3\stm32\f4\fmc.h
 
-1563106957 source:c:\msys64\home\ian\buspirate\source\hiz.c
+1563208254 source:c:\msys64\home\ian\buspirate\source\hiz.c
 	<stdint.h>
 	<libopencm3/stm32/gpio.h>
 	"buspirate.h"
@@ -1336,9 +1336,9 @@
 	"UI.h"
 	"AUXpin.h"
 
-1563106957 c:\msys64\home\ian\buspirate\source\hiz.h
+1563208254 c:\msys64\home\ian\buspirate\source\hiz.h
 
-1563106957 source:c:\msys64\home\ian\buspirate\source\protocols.c
+1563208254 source:c:\msys64\home\ian\buspirate\source\protocols.c
 	<stdint.h>
 	"cdcacm.h"
 	"buspirate.h"
@@ -1358,9 +1358,9 @@
 	"dummy1.h"
 	"dummy2.h"
 
-1563106957 c:\msys64\home\ian\buspirate\source\protocols.h
+1566053014 c:\msys64\home\ian\buspirate\source\protocols.h
 
-1563190364 source:c:\msys64\home\ian\buspirate\source\ui.c
+1566052873 source:c:\msys64\home\ian\buspirate\source\ui.c
 	<stdlib.h>
 	<stdint.h>
 	<libopencm3/stm32/gpio.h>
@@ -1377,7 +1377,23 @@
 	"AUXpin.h"
 	"ADC.h"
 	"delay.h"
+	"LA.h"
+	"fs.h"
 	"fpga.h"
+	<libopencm3/stm32/spi.h>
 
 1562674022 r:\libopencm3\include\libopencm3\stm32\f1\bkp.h
+
+1565604945 c:\msys64\home\ian\buspirate\source\hwspi.h
+
+1565952950 source:c:\msys64\home\ian\buspirate\source\hwspi.c
+	<stdint.h>
+	"buspirate.h"
+	<libopencm3/stm32/spi.h>
+	<libopencm3/stm32/gpio.h>
+	<libopencm3/stm32/rcc.h>
+	"HWSPI.h"
+	"cdcacm.h"
+	"UI.h"
+	"FPGA.h"
 

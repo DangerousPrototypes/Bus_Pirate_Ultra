@@ -50,6 +50,10 @@ void HWSPI_stopr(void)
 	modeConfig.wwr=0;
 }
 
+void HWSPI_send_test(uint32_t d){
+    cdcprintf("SPI write: %04X\r\n",d);
+}
+
 uint32_t HWSPI_send(uint32_t d)
 {
 	uint16_t returnval, bpsm_command;
