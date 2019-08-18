@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.77 (w)1999-2016 BSI
-[*] Sun Aug 11 12:44:53 2019
+[*] Fri Aug 16 08:42:36 2019
 [*]
 [dumpfile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.vcd"
-[dumpfile_mtime] "Sun Aug 11 12:39:51 2019"
-[dumpfile_size] 62778
+[dumpfile_mtime] "Fri Aug 16 08:33:54 2019"
+[dumpfile_size] 55685
 [savefile] "C:\Users\ian\Desktop\buspirateultra\hdl\iobuffer\buspirate_tb.gtkw"
-[timestart] 997000
+[timestart] 0
 [size] 1920 1017
 [pos] -1 -1
-*-18.147940 4503000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-18.147940 3370000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] buspirate_tb.
 [treeopen] buspirate_tb.buspirate.
 [sst_width] 211
@@ -52,6 +52,8 @@ buspirate_tb.buspirate.SPI_MASTER.mosi
 buspirate_tb.buspirate.SPI_MASTER.state
 buspirate_tb.buspirate.SPI_MASTER.sclk
 buspirate_tb.buspirate.SPI_MASTER.rst
+@29
+buspirate_tb.buspirate.reset
 @200
 -FIFO_IN
 -FIFO_OUT
@@ -68,7 +70,7 @@ buspirate_tb.buspirate.FIFO_IN.in_pos[7:0]
 buspirate_tb.buspirate.FIFO_IN.in_shift
 @22
 buspirate_tb.buspirate.FIFO_IN.out_data[15:0]
-buspirate_tb.buspirate.bpsm_state[3:0]
+buspirate_tb.buspirate.bpsm_state[4:0]
 @28
 buspirate_tb.buspirate.FIFO_IN.out_pop
 buspirate_tb.buspirate.in_fifo_out_pop
@@ -80,7 +82,6 @@ buspirate_tb.buspirate.bp_active
 buspirate_tb.buspirate.la_start
 buspirate_tb.buspirate.sram_clock_source
 buspirate_tb.buspirate.sram_cs[1:0]
-@29
 buspirate_tb.buspirate.sram_auto_clock
 [pattern_trace] 1
 [pattern_trace] 0
