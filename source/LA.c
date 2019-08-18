@@ -131,13 +131,13 @@ void logicAnalyzerCaptureStart(void){
     spiWx4(0);          //3 byte address
     spiWx4(0);
     spiWx4(0);
-    FPGA_REG_03|=(0b10001000);//clear sample counter, pause BP state machine
+    FPGA_REG_03|=(0b00001000);//clear sample counter
 
     //cdcprintf("Samples cleared: %04X\r\n",FPGA_REG_04);
     //cdcprintf("PIN STATES| active: %01b in_full: %01b out_nempty: %01b\r\n",(gpio_get(GPIOC,GPIO10)!=0),(gpio_get(GPIOC,GPIO11)!=0),(gpio_get(GPIOC,GPIO12)!=0) );
 
 	//Bus pirate state machine is in reset, fill FIFO with commands
-	FPGA_REG_07=0xFE00; //LA start command
+	//FPGA_REG_07=0xFE00; //LA start command
 }
 
 

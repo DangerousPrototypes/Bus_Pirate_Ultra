@@ -63,7 +63,7 @@ uint32_t HWSPI_send(uint32_t d)
 	{
 	    bpsm_command=(0x0800|(((uint16_t)modeConfig.numbits<<8)|((uint16_t)d&0x00FF)));
         FPGA_REG_07=bpsm_command;//write n bits of d
-        cdcprintf("BPSM-pwrite: %04X\r\n",d);
+        //cdcprintf("BPSM-pwrite: %04X\r\n",d);
 
 	}
 	else

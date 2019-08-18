@@ -23,10 +23,15 @@
 
 // globals
 uint32_t cmdhead, cmdtail, cursor;		// TODO swap head an tail?
+uint16_t bytecodePreprocessed, bytecodeProcessed, bytecodePostprocessed;
 char cmdbuff[CMDBUFFSIZE];
 struct _modeConfig modeConfig;
 
+struct _bytecode bytecodes[256];
+
 void serviceAsyncCommandFIFO();
+void postProcess();
+void processByteCode();
 
 // global constants
 const char vpumodes[][4] = {
@@ -268,8 +273,7 @@ void doUI(void)
 
 	uint32_t temp, temp2, temp3, repeat, received, bits;
 	int i;
-	uint16_t bytecodeIndex=0;
-
+	uint8_t cancelPreprocessor=0;
 
 
 	go=0;
@@ -285,11 +289,17 @@ void doUI(void)
 
 	while(1)
 	{
+	    //modeConfig.mode=1;
 		getuserinput();
 
-		//command received, start logic capture
-		//TODO: destinguish between bus and non-bus commands
-		logicAnalyzerCaptureStart();
+		//flush the FIFO, need a better way to reset FPGA to known state...
+		//while(gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN));
+		    //temp=FPGA_REG_07;
+
+		bytecodePreprocessed=0;
+		bytecodeProcessed=0;
+		bytecodePostprocessed=0;
+		cancelPreprocessor=0;
 
 
 		//cdcprintf2("cmd=%s\r\n", cmdbuff+cmdtail);
@@ -306,6 +316,11 @@ void doUI(void)
 			go=1;
 
 		cdcprintf("\r\n");
+
+		bytecodes[bytecodePreprocessed].command=0xFE; //start LA command...
+		bytecodes[bytecodePreprocessed].blocking=0; //start LA command...
+		bytecodePreprocessed=bytecodePreprocessed+1;
+
 		while((go==1)&&(cmdtail!=cmdhead))
 		{
 			c=cmdbuff[cmdtail];
@@ -321,10 +336,32 @@ void doUI(void)
 				}
 			}
 
-			serviceAsyncCommandFIFO(); //read from FPGA out FIFO and show the current status
 
 			switch (c)
 			{
+                case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+                    bytecodes[bytecodePreprocessed].command=0x00; //write to bus
+                    bytecodes[bytecodePreprocessed].data=getint();
+                    bytecodes[bytecodePreprocessed].option1=getnumbits();
+                    bytecodes[bytecodePreprocessed].repeat=getrepeat();
+                    bytecodes[bytecodePreprocessed].blocking=0;
+                    break;
+                case '&':
+				case '%':
+                case 'r':
+                    bytecodes[bytecodePreprocessed].command=c;
+                    bytecodes[bytecodePreprocessed].repeat=getrepeat();
+                    bytecodes[bytecodePreprocessed].blocking=0;
+                    break;
 				case '[':
 				case ']':
 				case '{':
@@ -336,9 +373,23 @@ void doUI(void)
 				case '_':
 				case '.':
 				case '!':
+                    bytecodes[bytecodePreprocessed].command=c;
+                    bytecodes[bytecodePreprocessed].blocking=0;
+				    break;
                 case 'a':
                 case '@':
                 case 'A':
+                    if(modeConfig.mode!=HIZ)
+                    {
+                        bytecodes[bytecodePreprocessed].command=c;
+                        bytecodes[bytecodePreprocessed].blocking=0;
+                    }
+                    else
+                    {
+                        cdcprintf("Can't set AUX in HiZ mode!");
+                        modeConfig.error=1;
+                    }
+				    break;
                 case 'd':
                 case 'D':
                 case 'f':
@@ -350,41 +401,23 @@ void doUI(void)
 				case 'i':
 				case 'l':
 				case 'L':
-				case 'm':
-				case 'o':
+				//case 'm':
+				//case 'o':
 				case 'p':
 				case 'P':
 				case 'v':
 				case 'w':
 				case 'W':
-				    bytecodes[bytecodeIndex].command=c;
+                case '~':
+				    bytecodes[bytecodePreprocessed].command=c;
+				    bytecodes[bytecodePreprocessed].blocking=1;
 				    break;
-				case '&':
-				case '%':
-                case 'r':
-                    bytecodes[bytecodeIndex].command=c;
-                    bytecodes[bytecodeIndex].repeat=getrepeat();
-                    break;
-				case '0':
-				case '1':
-				case '2':
-				case '3':
-				case '4':
-				case '5':
-				case '6':
-				case '7':
-				case '8':
-				case '9':
-                    bytecodes[bytecodeIndex].command=0x00; //write to bus
-                    bytecodes[bytecodeIndex].data=getint();
-                    bytecodes[bytecodeIndex].option1=getnumbits();
-                    bytecodes[bytecodeIndex].repeat=getrepeat();
-                    break;
                 case '=': //do bitwise and other math here.... =0x10|0x20, =0x10<<1, =0x10*8, etc
 				case '|':
                     cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);
-                    bytecodes[bytecodeIndex].command=c;
-                    bytecodes[bytecodeIndex].data=getint();
+                    bytecodes[bytecodePreprocessed].command=c;
+                    bytecodes[bytecodePreprocessed].data=getint();
+                    bytecodes[bytecodePreprocessed].blocking=1;
                     break;
 				case '\"':
 				    break; //HOW TO DEAL WITH STRING??? INDEX IN BIG ARRAY? NULL TERMINATED IN ARRAY?
@@ -394,8 +427,9 @@ void doUI(void)
                     cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);		// advance 1
                     if(cmdbuff[cmdtail]==')')
                     {
-                        bytecodes[bytecodeIndex].command=c;
-                        bytecodes[bytecodeIndex].data=temp;
+                        bytecodes[bytecodePreprocessed].command=c;
+                        bytecodes[bytecodePreprocessed].data=temp;
+                        bytecodes[bytecodePreprocessed].blocking=1;
                     }
                     else
                     {
@@ -403,16 +437,26 @@ void doUI(void)
                         cdcprintf("Error parsing macro");
                     }
                     break;
+                case 'm':
+                    changemode();
+                    cancelPreprocessor=1;
+                    break;
+				case 'o':
+                    changedisplaymode();
+                    cancelPreprocessor=1;
+                    break;
 				case '$':
 				    jumptobootloader();
+				    cancelPreprocessor=1;
   					break;
 				case '#':
 				    reset();
+				    cancelPreprocessor=1;
                     break;
-				case '~':
+				//case '~':
                         //logicAnalyzerCaptureStop();
                         //logicAnalyzerTest();
-						break;
+						//break;
 				case 0x00:  break;
 				case ' ':	break;
 				case ',':	break;	// reuse this command??
@@ -423,9 +467,12 @@ void doUI(void)
                     //cmdtail=cmdhead-1;
                     break;
 			}
-			bytecodeIndex=bytecodeIndex+1;
+
 			cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);	// advance to next char/command
-			if((c!=' ')&&(c!=0x00)&&(c!=',')) cdcprintf("\r\n");
+			if((c!=' ')&&(c!=0x00)&&(c!=',')){
+                //cdcprintf("\r\n");
+                bytecodePreprocessed=bytecodePreprocessed+1;
+			}
 
 			if(modeConfig.error)			// something went wrong
 			{
@@ -436,11 +483,19 @@ void doUI(void)
 			}
 		}
 
-
-        //this needs to be managed so we don't overflow the FIFO...
-        FPGA_REG_07=0xFF00; //LA stop command
-        FPGA_REG_03&=~(0b1<<7); //release statemachine from reset
-
+        if(!cancelPreprocessor&&bytecodePreprocessed>1){
+            bytecodes[bytecodePreprocessed].command=0xFF; //stop LA command...
+            bytecodes[bytecodePreprocessed].blocking=0;
+            bytecodePreprocessed=bytecodePreprocessed+1;
+            FPGA_REG_03|=(0b1<<7);//put statemachine in reset
+            logicAnalyzerCaptureStart();
+            while(bytecodePostprocessed<bytecodePreprocessed){
+                processByteCode();
+                postProcess();
+            }
+            logicAnalyzerCaptureStop();
+        }
+        cdcprintf("\r\n");
 
 
 		if(modeConfig.subprotocolname)
@@ -459,244 +514,210 @@ void doUI(void)
 		go=0;
 	}
 }
-
-uint32_t consumeMaths(){
-
-    uint32_t value1, value2;
-    uint8_t opr;
-
-    switch(opr){
-    case '|':
-            value1=value1|value2;
-            break;
-    case '^':
-            value1=value1^value2;
-            break;
-    case '<':
-            value1=value1<<value2;
-            break;
-    case '>':
-            value1=value1>>value2;
-            break;
-    case '~':
-            value1=value1~value2;
-            break;
-    case '&':
-            value1=value1&value2;
-            break;
-    case '+':
-            value1=value1+value2;
-            break;
-    case '*':
-            value1=value1*value2;
-            break;
-    case '/':
-            value1=value1/value2;
-            break;
-    case '-':
-            value1=value1-value2;
-            break;
-    default:
-        break;
-
-
-    }
-    return value1;
-
-}
-
+//TODO: add statemachine halt statement to queue so we can keep loading the FIFO even while we wait for blocking commands to occur!!!!
 void processByteCode(){
-    switch (bytecodes[bytecodeIndex].command)
+
+    uint16_t i;
+
+
+    //process byte code until fgpa full or we hit a blocking command....
+    while((bytecodeProcessed<bytecodePreprocessed) && !gpio_get(BP_FPGA_FIFO_IN_FULL_PORT,BP_FPGA_FIFO_IN_FULL_PIN))
     {
-        case 'r':
-                while(bytecodes[bytecodeIndex].repeat--)
-                {
+        switch (bytecodes[bytecodeProcessed].command)
+        {
+            case 0x00:
+                    //bytecodes[bytecodePreprocessed].option1=bits;
+                    //if (modeConfig.numbits<32) temp&=((1<<modeConfig.numbits)-1);
+                    //while(bytecodes[bytecodeProcessed].repeat--)
+                    //{//TODO: how to handle in lower layer, send custom bit numbers...
+                        protocols[modeConfig.mode].protocol_send(orderbits(bytecodes[bytecodeProcessed].data));		// reshuffle bits if necessary
+                    //}
+                    break;
+            case 'r':
+                //while(bytecodes[bytecodeProcessed].repeat--)
+                //{
                     protocols[modeConfig.mode].protocol_read();
-                }
+                //}
                 break;
-        case 0x00:
-                //bytecodes[bytecodeIndex].option1=bits;
-                //if (modeConfig.numbits<32) temp&=((1<<modeConfig.numbits)-1);
-                while(bytecodes[bytecodeIndex].repeat--)
-                {
-                    protocols[modeConfig.mode].protocol_send(orderbits(bytecodes[bytecodeIndex].data));		// reshuffle bits if necessary
-                }
-                break;
-        case '\"': //NOT SURE HOW TO HANDLE THIS YET... ALSO THERE IS A BUG IF ONLY ONE CHAR "H" says unterminated
-               break;
-        case '(':   protocols[modeConfig.mode].protocol_macro(bytecodes[bytecodeIndex].data);
-                break;
-        case '[':   modeConfig.wwr=0; //WWR should be handled on the backend processing!!!
-                protocols[modeConfig.mode].protocol_start();
-                break;
-        case ']':   modeConfig.wwr=0;
-                protocols[modeConfig.mode].protocol_stop();
-                break;
-        case '{':   modeConfig.wwr=1;
-                protocols[modeConfig.mode].protocol_startR();
-                break;
-        case '}':   modeConfig.wwr=0;
-                protocols[modeConfig.mode].protocol_stopR();
-                break;
-        case '/':   protocols[modeConfig.mode].protocol_clkh();
-                break;
-        case '\\':  protocols[modeConfig.mode].protocol_clkl();
-                break;
-        case '^':   protocols[modeConfig.mode].protocol_clk();
-                break;
-        case '-':   protocols[modeConfig.mode].protocol_dath();
-                break;
-        case '_':   protocols[modeConfig.mode].protocol_datl();
-                break;
-        case '.':   protocols[modeConfig.mode].protocol_dats();
-                break;
-        case '!':   protocols[modeConfig.mode].protocol_bitr();
-                break;
-        case '&':
-                FPGA_REG_07=(0x8400|(uint8_t)bytecodes[bytecodeIndex].repeat);//delay for repeat cycles
-                break;
-        case '%':
-                for(i=0;i<bytecodes[bytecodeIndex].repeat;i++)
-                    FPGA_REG_07=(0x8400|(uint8_t)0x0F);//delay for repeat cycles
-                break;
-        case 'a':	if(modeConfig.mode!=HIZ)
-                {
+            case '&':
+                    FPGA_REG_07=(0x8400|(uint8_t)bytecodes[bytecodeProcessed].repeat);//delay for repeat cycles
+                    //bytecodes[bytecodeProcessed].fpgaCommand=
+                    break;
+            case '%':
+                    for(i=0;i<bytecodes[bytecodeProcessed].repeat;i++)
+                        FPGA_REG_07=(0x8400|(uint8_t)0x0F);//delay for repeat cycles
+                    break;
+            case '\"': //NOT SURE HOW TO HANDLE THIS YET... ALSO THERE IS A BUG IF ONLY ONE CHAR "H" says unterminated
+                   break;
+            case '(':   protocols[modeConfig.mode].protocol_macro(bytecodes[bytecodeProcessed].data); //macro... should return if blocking or not??? hum
+                    break;
+            case '[':   modeConfig.wwr=0; //WWR should be handled on the backend processing!!!
+                    protocols[modeConfig.mode].protocol_start();
+                    break;
+            case ']':   modeConfig.wwr=0;
+                    protocols[modeConfig.mode].protocol_stop();
+                    break;
+            case '{':   modeConfig.wwr=1;
+                    protocols[modeConfig.mode].protocol_startR();
+                    break;
+            case '}':   modeConfig.wwr=0;
+                    protocols[modeConfig.mode].protocol_stopR();
+                    break;
+            case '/':   protocols[modeConfig.mode].protocol_clkh();
+                    break;
+            case '\\':  protocols[modeConfig.mode].protocol_clkl();
+                    break;
+            case '^':   protocols[modeConfig.mode].protocol_clk();
+                    break;
+            case '-':   protocols[modeConfig.mode].protocol_dath();
+                    break;
+            case '_':   protocols[modeConfig.mode].protocol_datl();
+                    break;
+            case '.':   protocols[modeConfig.mode].protocol_dats();
+                    break;
+            case '!':   protocols[modeConfig.mode].protocol_bitr();
+                    break;
+            case 'a':
                     //setAUX(0);
-                }
-                else
-                {
-                    cdcprintf("Can't set AUX in HiZ mode!");
-                    modeConfig.error=1;
-                }
-                break;
-        case 'A':	if(modeConfig.mode!=HIZ)
-                {
-                    //cdcprintf("SET AUX=1");
+                    break;
+            case 'A':
                     //setAUX(1);
-
-                }
-                else
-                {
-                    cdcprintf("Can't set AUX in HiZ mode!");
-                    modeConfig.error=1;
-                }
-                break;
-        case '@':	if(modeConfig.mode!=HIZ)
-                {
+                    break;
+            case '@':
                     //cdcprintf("AUX=%d", getAUX());
-                }
-                else
-                {
-                    cdcprintf("Can't read AUX in HiZ mode!");
-                    modeConfig.error=1;
-                }
-                break;
-        case 'g':
-                //setPWM(0, 0);				// disable PWM
-                break;
-        //below here are all blocking commands that wait for all previous commands to finish....
-        default:
-                //do nothing, increment the position counter and wait to handle command in postprocessing loop....
-                break;
+                    break;
+            case 'g':
+                    //setPWM(0, 0);				// disable PWM
+                    break;
+            case 0xfe:
+                    FPGA_REG_07=0xfe00;
+                    break;
+            case 0xff:
+                    FPGA_REG_07=0xff00;
+                    break;
+                //below here are all blocking commands that wait for all previous commands to finish....
+            default:
+                    //ADD HALT STATEMENT TO COMMAND QUEUE!
+                    if(bytecodes[bytecodeProcessed].blocking==1)
+                        FPGA_REG_07=0xfd00;
+                    break;
+        }
+        bytecodeProcessed=bytecodeProcessed+1;
     }
+
+    FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
 }
 
+void postProcess(){
+    uint16_t temp, result;
+    uint16_t i, temp2, temp3;
 
+    if((bytecodeProcessed>bytecodePostprocessed) && gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN))
+    {//process next byte
 
-void processByteCode(){
-		switch (bytecodes[bytecodeIndex].command)
+            result=FPGA_REG_07;
+
+            if(bytecodes[bytecodePostprocessed].blocking && result!=0xfd00){
+                cdcprintf("FPGA out of sync\r\n");
+            }
+
+            switch (bytecodes[bytecodePostprocessed].command)
 			{
-                case 'r':
-						while(bytecodes[bytecodeIndex].repeat--)
-						{
-							protocols[modeConfig.mode].protocol_read();
-						}
-						break;
 				case 0x00:
-						//bytecodes[bytecodeIndex].option1=bits;
-						//if (modeConfig.numbits<32) temp&=((1<<modeConfig.numbits)-1);
-						while(bytecodes[bytecodeIndex].repeat--)
-						{
-							protocols[modeConfig.mode].protocol_send(orderbits(bytecodes[bytecodeIndex].data));		// reshuffle bits if necessary
-						}
+                        if(result!=(0x0800|(((uint16_t)bytecodes[bytecodePostprocessed].option1<<8)|((uint16_t)bytecodes[bytecodePostprocessed].data&0x00FF)))){
+                            cdcprintf("FPGA out of sync\r\n");
+                        }
+                        cdcprintf("TX: ");
+                        printnum((uint8_t)result);
+                        cdcprintf("RX: ");
+                        printnum((uint8_t)FPGA_REG_07); //TODO: use statemachine, can't depend on this word always being there!
+                        cdcprintf("\r\n");
+						break;
+                case 'r':
+                        if(result!=(0x0800|(((uint16_t)bytecodes[bytecodePostprocessed].option1<<8)|((uint16_t)bytecodes[bytecodePostprocessed].data&0x00FF)))){
+                            cdcprintf("FPGA out of sync\r\n");
+                        }
+						//while(bytecodes[bytecodeIndex].repeat--)
+						//{
+							//protocols[modeConfig.mode].protocol_read();
+
+                        cdcprintf("RX: ");
+                        printnum((uint8_t)FPGA_REG_07);
+                        cdcprintf("\r\n");
+						//}
 						break;
 				case '\"': //NOT SURE HOW TO HANDLE THIS YET... ALSO THERE IS A BUG IF ONLY ONE CHAR "H" says unterminated
 				       break;
-				case '(':   protocols[modeConfig.mode].protocol_macro(bytecodes[bytecodeIndex].data);
+				case '(':   //protocols[modeConfig.mode].protocol_macro(bytecodes[bytecodeIndex].data);
 						break;
 				case '[':   modeConfig.wwr=0; //WWR should be handled on the backend processing!!!
-                        protocols[modeConfig.mode].protocol_start();
+                        //protocols[modeConfig.mode].protocol_start_post(result);
 						break;
 				case ']':   modeConfig.wwr=0;
-						protocols[modeConfig.mode].protocol_stop();
+						//protocols[modeConfig.mode].protocol_stop_post(result);
 						break;
 				case '{':   modeConfig.wwr=1;
-						protocols[modeConfig.mode].protocol_startR();
+						//protocols[modeConfig.mode].protocol_startR_post(result);
 						break;
 				case '}':   modeConfig.wwr=0;
-						protocols[modeConfig.mode].protocol_stopR();
+						//protocols[modeConfig.mode].protocol_stopR_post(result);
 						break;
-				case '/':   protocols[modeConfig.mode].protocol_clkh();
+				case '/':   //protocols[modeConfig.mode].protocol_clkh_post(result);
 						break;
-				case '\\':  protocols[modeConfig.mode].protocol_clkl();
+				case '\\': // protocols[modeConfig.mode].protocol_clkl_post(result);
 						break;
-				case '^':   protocols[modeConfig.mode].protocol_clk();
+				case '^':  // protocols[modeConfig.mode].protocol_clk_post(result);
 						break;
-				case '-':   protocols[modeConfig.mode].protocol_dath();
+				case '-':  // protocols[modeConfig.mode].protocol_dath_post(result);
 						break;
-				case '_':   protocols[modeConfig.mode].protocol_datl();
+				case '_':  // protocols[modeConfig.mode].protocol_datl_post(result);
 						break;
-				case '.':   protocols[modeConfig.mode].protocol_dats();
+				case '.':  // protocols[modeConfig.mode].protocol_dats_post(result);
 						break;
-				case '!':   protocols[modeConfig.mode].protocol_bitr();
+				case '!':  // protocols[modeConfig.mode].protocol_bitr_post(result);
 						break;
 				case '&':
-                        FPGA_REG_07=(0x8400|(uint8_t)bytecodes[bytecodeIndex].repeat);//delay for repeat cycles
+                        //TODO: compare command to verify we are in the right place in the data....
+                        if(result!=(0x8400|(uint8_t)bytecodes[bytecodeProcessed].repeat)){
+                            cdcprintf("FPGA out of sync\r\n");
+                        }
+						cdcprintf("Delay: %dus", bytecodes[bytecodePostprocessed].repeat);
 						break;
-				case '%':
-                        for(i=0;i<bytecodes[bytecodeIndex].repeat;i++)
-                            FPGA_REG_07=(0x8400|(uint8_t)0x0F);//delay for repeat cycles
+                case '%':
+                        //TODO: compare command to verify we are in the right place in the data....
+                        if(result!=(0x8400|0x0f)){
+                            cdcprintf("FPGA out of sync\r\n");
+                        }
+                        cdcprintf("Delay: %dms", bytecodes[bytecodePostprocessed].repeat);
+                        for(i=1;i<bytecodes[bytecodePostprocessed].repeat;i++)
+                            temp=FPGA_REG_07;//delay for repeat cycled (CURRENTLY NOT SAFE!!!! NEED STATEMACHINE!!)
+                    break;
+				case 'a':
+                        cdcprintf("Set AUX: 0");
 						break;
-				case 'a':	if(modeConfig.mode!=HIZ)
-						{
-							//setAUX(0);
-  						}
-						else
-						{
-							cdcprintf("Can't set AUX in HiZ mode!");
-							modeConfig.error=1;
-						}
+				case 'A':
+                        cdcprintf("Set AUX: 1");
 						break;
-				case 'A':	if(modeConfig.mode!=HIZ)
-						{
-							//cdcprintf("SET AUX=1");
-							//setAUX(1);
-
-						}
-						else
-						{
-							cdcprintf("Can't set AUX in HiZ mode!");
-							modeConfig.error=1;
-						}
+				case '@':
+                        cdcprintf("AUX=%d", getAUX());
 						break;
-				case '@':	if(modeConfig.mode!=HIZ)
-						{
-							//cdcprintf("AUX=%d", getAUX());
-						}
-						else
-						{
-							cdcprintf("Can't read AUX in HiZ mode!");
-							modeConfig.error=1;
-						}
-						break;
+                case 0xfe:
+                        if(result!=0xfe00){
+                            cdcprintf("FPGA out of sync\r\n");
+                        }
+                        cdcprintf("LA: start\r\n");
+                        break;
+                case 0xff:
+                        if(result!=0xff00){
+                            cdcprintf("FPGA out of sync\r\n");
+                        }
+                        cdcprintf("LA: stop\r\n");
+                        break;
 				case 'g':
-                        //setPWM(0, 0);				// disable PWM
+                        setPWM(0, 0);				// disable PWM
 						break;
                 //below here are all blocking commands that wait for all previous commands to finish....
 				case 'G':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         if(modeConfig.mode!=HIZ)
 						{
 							temp=askint(PWMMENUPERIOD, 1, 0xFFFFFFFF, 1000);
@@ -713,114 +734,57 @@ void processByteCode(){
 							cdcprintf("Can't use PWM in HiZ mode!");
 						}
 						break;
-                case 'd':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
-                        if(modeConfig.mode!=HIZ)
-						{
-							uint16_t adc = voltage(BP_ADC_CHAN, 1);
-							cdcprintf("ADC=%d.%02dV", adc/1000, (adc%1000)/10);
-						}
-						else
-						{
-							cdcprintf("Can't read ADC in HiZ mode!");
-							modeConfig.error=1;
-						}
+				case 'd':
+                        temp = voltage(BP_ADC_CHAN, 1);
+                        FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
+                        cdcprintf("ADC: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
 						break;
 				case 'D':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
-                        if(modeConfig.mode!=HIZ)
-						{
-							cdcprintf("Press any key to exit\r\n");
-							while(!cdcbyteready())
-							{
-								uint16_t adc = voltage(BP_ADC_CHAN, 1);
-								cdcprintf("ADC=%d.%02dV\r", adc/1000, (adc%1000)/10);
-								delayms(250);
-							}
-							cdcgetc();
-						}
-						else
-						{
-							cdcprintf("Can't read ADC in HiZ mode!");
-							modeConfig.error=1;
-						}
+                        cdcprintf("Press any key to exit\r\n");
+                        while(!cdcbyteready())
+                        {
+                            temp = voltage(BP_ADC_CHAN, 1);
+                            cdcprintf("ADC: %d.%02dV\r", temp/1000, (temp%1000)/10);
+                            delayms(250);
+                        }
+                        cdcgetc();
 						break;
 				case 'f':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
-                        cdcprintf("freq=%ld Hz", getfreq());
+                        cdcprintf("Freq: %ld Hz", getfreq());
 						break;
 
 				case 'h':
 				case '?':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         printhelp();
 						break;
 				case 'H':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         protocols[modeConfig.mode].protocol_help();
 						break;
 				case 'i':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         versioninfo();
 						break;
 				case 'l':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         modeConfig.bitorder=0;
 						cdcprintf("Bitorder: MSB");
 						break;
 				case 'L':
-				      /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         modeConfig.bitorder=1;
 						cdcprintf("Bitorder: LSB");
 						break;
-				case 'm':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
-                        changemode();
-						break;
-				case 'o':
-				      /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
-                        changedisplaymode();
-						break;
 				case 'p':
-				      /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);	// always permitted
-						cdcprintf("pullups: disabled");
+						cdcprintf("Pull-ups: disabled");
 						modeConfig.pullups=0;
 						break;
 				case 'P':
-				      /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         if(modeConfig.mode!=0)		// reset vpu mode to externale??
 						{
 
 							gpio_set(BP_VPUEN_PORT, BP_VPUEN_PIN);
-							cdcprintf("pullups: enabled\r\n");
+							cdcprintf("Pull-ups: enabled\r\n");
 							delayms(10);
-							uint16_t vpu = voltage(BP_VPU_CHAN, 1);
-							cdcprintf("Vpu=%d.%02dV", vpu/1000, (vpu%1000)/10);
+							temp = voltage(BP_VPU_CHAN, 1);
+							cdcprintf("Vpu: %d.%02dV", temp/1000, (temp%1000)/10);
 							modeConfig.pullups=1;
 						}
 						else
@@ -830,39 +794,28 @@ void processByteCode(){
 						}
 						break;
 				case 'v':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         showstates();
 						break;
 				case 'w':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);	// always permitted to shut power off
 						cdcprintf("PSU: disabled");
 						modeConfig.psu=0;
 						break;
 				case 'W':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         if(modeConfig.mode!=0)
 						{
 							gpio_set(BP_PSUEN_PORT, BP_PSUEN_PIN);
 							cdcprintf("PSU: enabled\r\n");
 							delayms(10);
-							uint16_t v33 = voltage(BP_3V3_CHAN, 1);
-							uint16_t v50 = voltage(BP_5V0_CHAN, 1);
-							cdcprintf("V33=%d.%02dV, V50=%d.%02dV", v33/100, (v33%1000)/10, v50/1000, (v50%1000)/10);
-							if((voltage(BP_3V3_CHAN, 1)<3000)||(voltage(BP_5V0_CHAN, 1)<4500))
+							temp = voltage(BP_3V3_CHAN, 1);
+							cdcprintf("Vout/Vref: %d.%02dV", temp/100, (temp%1000)/10);
+							if((voltage(BP_3V3_CHAN, 1)<3000))
 							{
 								cdcprintf("\r\nShort circuit!");
 								gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);
 							}
 							else
 								modeConfig.psu=1;
-                            bytecodes[bytecodeIndex].command=c;
 						}
 						else
 						{
@@ -870,10 +823,7 @@ void processByteCode(){
 							modeConfig.error=1;
 						}
 						break;
-				case '=':
-				        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
+				case '=': //TODO: add binary math
 						temp2=modeConfig.displaymode;		// remember old displaymode
 						temp3=modeConfig.numbits;		// remember old numbits
 						modeConfig.numbits=32;
@@ -881,14 +831,11 @@ void processByteCode(){
 						{
 							cdcprintf("=");
 							modeConfig.displaymode=i;
-							printnum(bytecodes[bytecodeIndex].data);
+							printnum(bytecodes[bytecodePostprocessed].data);
 						}
 						modeConfig.numbits=temp3;
 						break;
 				case '|':
-				        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
 						temp2=modeConfig.displaymode;		// remember old displaymode
 						modeConfig.bitorder^=1;
 						temp3=modeConfig.numbits;		// remember old numbits
@@ -897,25 +844,32 @@ void processByteCode(){
 						{
 							cdcprintf("|");
 							modeConfig.displaymode=i;
-							printnum(orderbits(bytecodes[bytecodeIndex].data));
+							printnum(orderbits(bytecodes[bytecodePostprocessed].data));
 						}
 						modeConfig.bitorder^=1;
 						modeConfig.numbits=temp3;
 						break;
 				case '~':
-                        /*if(bpsm_active){ //this is a blocking command!
-                            //rewind the tail
-                        }*/
                         //logicAnalyzerCaptureStop();
                         //logicAnalyzerTest();
 						break;
 				default:
-                        cdcprintf("Unknown command: %c", c);
+                        cdcprintf("Unknown command: %c", bytecodes[bytecodePostprocessed].command);
 						modeConfig.error=1;
-						//go=0;
-						//cmdtail=cmdhead-1;
 						break;
-			}}
+			}
+			if(bytecodes[bytecodePostprocessed].blocking) //TODO: there is a clock glitch on the logic analyzer clock when this happens...
+            {
+    			FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
+			}
+			bytecodePostprocessed=bytecodePostprocessed+1;
+
+
+    }
+}
+
+
+
 
 // display teh versioninfo about the buspirate
 // when not in HiZ mode it dumps info about the pins/voltags etc.
@@ -1117,7 +1071,7 @@ void changemode(void)
 	consumewhitechars();			// eat whitechars
 	mode=getint();
 
-	if((mode>MAXPROTO)||(mode==0))
+	if((mode>MAXPROTO))
 	{
 		cdcprintf("\r\nIllegal mode!\r\n");
 		modeConfig.error=1;
@@ -1288,8 +1242,6 @@ void getuserinput(void)
 	while(!go)
 	{
 
-		//binmode
-		serviceAsyncCommandFIFO();
 
         if(cdcbyteready2())
 		{

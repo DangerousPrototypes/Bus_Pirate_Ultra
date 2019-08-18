@@ -48,10 +48,9 @@ typedef struct _bytecode
     uint32_t data;
     uint32_t repeat;
     uint16_t option1;
-    uint16_t option2;
+    uint8_t blocking;
+    uint16_t fgpaCommand;
 }bytecode;
-
-extern struct _bytecode bytecodes[256];
 
 
 typedef struct _protocol
