@@ -118,10 +118,10 @@ module top #(
 
     //for simulation debugging...
     `ifdef SIMULATION
-      wire [15:0] FPGA_REG_03;
-      assign FPGA_REG_03=wreg[6'h03];
-      wire [15:0] FPGA_REG_04;
-      assign FPGA_REG_04=rreg[6'h04];
+      wire [15:0] reg_la_sample_count;
+      assign reg_la_sample_count=`reg_la_sample_count;
+      //wire [15:0] FPGA_REG_04;
+      //assign FPGA_REG_04=rreg[6'h04];
     `endif
 
     //FIFO
@@ -200,21 +200,23 @@ module top #(
     `define STATE_PERIPHERAL_WAIT 7
     `define STATE_POP_FIFO 8
     `define STATE_CLEANUP 9
+    `define STATE_HALT 10
 
     `define CMD_PERIPHERAL_WRITE 8'b0???????
     `define CMD_LASTART 8'b11111110
     `define CMD_LASTOP 8'b11111111
+    `define CMD_HALT 8'b11111101
     `define CMD_DIO_WRITE 8'b10000001
     `define CMD_DIO_READ 8'b10000010
     `define CMD_DIO_TRIS 8'b10000011
     `define CMD_DELAY 8'b10000100
 
-    reg [$clog2(`STATE_CLEANUP):0] bpsm_state;
+    reg [$clog2(`STATE_HALT):0] bpsm_state;
 
     always @(posedge clock)
       begin
 
-      rreg[9][$clog2(`STATE_CLEANUP):0]<=bpsm_state;
+      rreg[9][$clog2(`STATE_HALT):0]<=bpsm_state;
 
 
       //some manual reset crap...need global reset pin, but this still may be needed accorting to various posts I've read
@@ -233,11 +235,9 @@ module top #(
 
       if(`reg_bpsm_reset||reset) begin
            bpsm_state <= `STATE_IDLE;
-           peripheral_trigger <= 0;
-           bp_busy <= 0;
-           out_fifo_in_shift<=0;
+           peripheral_trigger <= 1'b0;
+           out_fifo_in_shift<=1'b0;
            in_fifo_out_pop<=1'b0;
-           la_start<=1'b0;
        end
        else
        begin
@@ -279,6 +279,8 @@ module top #(
                            bpsm_state <= `STATE_DELAY;
                            delay_counter<=in_fifo_out_data[7:0];
                            end
+                      `CMD_HALT:
+                          bpsm_state <= `STATE_HALT;
                        default: begin
                            //$display("ERROR: unknown command!");
                            //$display(bpsm_state);
@@ -332,6 +334,13 @@ module top #(
                  in_fifo_out_pop<=1'b0;
                  bpsm_state <= `STATE_IDLE;
               end
+            //TODO:THERE IS A CLOCK GLITCH ON RE-ENABLE!
+            `STATE_HALT: begin
+              `reg_bpsm_reset<=1'b1; //self reset
+                out_fifo_in_shift<=1'b0;
+                in_fifo_out_pop<=1'b1;
+                //bpsm_state <= `STATE_IDLE;
+             end
 
           endcase //bpsm_state
         end //if reset else bpsm_state
@@ -476,6 +485,8 @@ module top #(
       reset<=1'b0;
       count<=3'b000;
       reset_count<=3'b000;
+      bp_busy <= 1'b0;
+      la_start<=1'b0;
       rreg[6'b00000] <= 16'b0000000000000000;				// test values
       rreg[6'b00001] <= 16'b0000000000000000;
       rreg[6'b00010] <= 16'b0000000000000000;
