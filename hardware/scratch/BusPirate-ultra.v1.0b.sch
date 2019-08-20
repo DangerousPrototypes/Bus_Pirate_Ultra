@@ -34968,7 +34968,7 @@ H     X    L   :(  (contention)</text>
 <instance part="GND82" gate="G$1" x="314.96" y="78.74" smashed="yes"/>
 <instance part="U5" gate="SUPPLY" x="505.46" y="330.2"/>
 <instance part="J1" gate="J" x="711.2" y="55.88"/>
-<instance part="GND69" gate="G$1" x="701.04" y="50.8" smashed="yes"/>
+<instance part="GND69" gate="G$1" x="701.04" y="48.26" smashed="yes"/>
 </instances>
 <busses>
 </busses>
@@ -35631,10 +35631,9 @@ H     X    L   :(  (contention)</text>
 <junction x="314.96" y="81.28"/>
 </segment>
 <segment>
-<pinref part="J1" gate="J" pin="7"/>
-<wire x1="711.2" y1="53.34" x2="706.12" y2="53.34" width="0.1524" layer="91"/>
+<pinref part="J1" gate="J" pin="8"/>
 <pinref part="GND69" gate="G$1" pin="GND"/>
-<wire x1="706.12" y1="53.34" x2="701.04" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="711.2" y1="50.8" x2="701.04" y2="50.8" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="3V3" class="0">
@@ -36067,9 +36066,9 @@ H     X    L   :(  (contention)</text>
 <label x="513.08" y="299.72" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="J1" gate="J" pin="6"/>
-<wire x1="711.2" y1="55.88" x2="706.12" y2="55.88" width="0.1524" layer="91"/>
-<label x="706.12" y="55.88" size="1.778" layer="95" align="center-right"/>
+<pinref part="J1" gate="J" pin="7"/>
+<wire x1="711.2" y1="53.34" x2="706.12" y2="53.34" width="0.1524" layer="91"/>
+<label x="706.12" y="53.34" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="N$7" class="0">
@@ -36123,17 +36122,17 @@ H     X    L   :(  (contention)</text>
 <label x="779.78" y="101.6" size="1.778" layer="95" rot="R180"/>
 </segment>
 <segment>
-<label x="147.32" y="307.34" size="1.778" layer="95" align="center-left"/>
-<pinref part="U2" gate="U" pin="FSMC_A8/FT/PF14"/>
-<wire x1="147.32" y1="307.34" x2="144.78" y2="307.34" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="IC23" gate="IC" pin="!SHDN"/>
 <wire x1="335.28" y1="322.58" x2="330.2" y2="322.58" width="0.1524" layer="91"/>
 <wire x1="330.2" y1="322.58" x2="325.12" y2="322.58" width="0.1524" layer="91"/>
 <pinref part="R4" gate="R" pin="1"/>
 <junction x="330.2" y="322.58"/>
 <label x="325.12" y="322.58" size="1.778" layer="95" align="center-right"/>
+</segment>
+<segment>
+<pinref part="U2" gate="U" pin="PE5/FT/FSMC_A21"/>
+<wire x1="38.1" y1="330.2" x2="35.56" y2="330.2" width="0.1524" layer="91"/>
+<label x="35.56" y="330.2" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="N$18" class="0">
@@ -36330,13 +36329,6 @@ H     X    L   :(  (contention)</text>
 <label x="35.56" y="393.7" size="1.778" layer="95" align="center-right"/>
 <pinref part="U2" gate="U" pin="PA14/FT/JTCK-SWCLK"/>
 <wire x1="38.1" y1="393.7" x2="35.56" y2="393.7" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="ADC6" class="0">
-<segment>
-<pinref part="U2" gate="U" pin="ADC12_IN14/PC4"/>
-<wire x1="144.78" y1="375.92" x2="147.32" y2="375.92" width="0.1524" layer="91"/>
-<label x="147.32" y="375.92" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="UART_RX" class="0">
@@ -37268,12 +37260,6 @@ H     X    L   :(  (contention)</text>
 <wire x1="38.1" y1="426.72" x2="35.56" y2="426.72" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$28" class="0">
-<segment>
-<pinref part="U2" gate="U" pin="PA0/WKUP/USART2_CTS('0')/ADC123_IN0/TIM2_CH1_ETR/TIM5_CH1/TIM8_ETR"/>
-<wire x1="38.1" y1="429.26" x2="35.56" y2="429.26" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="N$36" class="0">
 <segment>
 <pinref part="U2" gate="U" pin="ADC3_IN4/PF6"/>
@@ -37671,9 +37657,9 @@ H     X    L   :(  (contention)</text>
 <label x="490.22" y="66.04" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U2" gate="U" pin="ADC12_IN8/TIM3_CH3('00'OR'10')/TIM8_CH2N/TIM1_CH2N('01')/PB0"/>
-<wire x1="144.78" y1="299.72" x2="147.32" y2="299.72" width="0.1524" layer="91"/>
-<label x="147.32" y="299.72" size="1.778" layer="95" align="center-left"/>
+<pinref part="U2" gate="U" pin="PG1/FT/FSMC_A11"/>
+<wire x1="38.1" y1="297.18" x2="35.56" y2="297.18" width="0.1524" layer="91"/>
+<label x="35.56" y="297.18" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="MCU_AUX11" class="0">
@@ -37683,9 +37669,9 @@ H     X    L   :(  (contention)</text>
 <label x="490.22" y="63.5" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="U2" gate="U" pin="ADC12_IN15/PC5"/>
-<wire x1="144.78" y1="373.38" x2="147.32" y2="373.38" width="0.1524" layer="91"/>
-<label x="147.32" y="373.38" size="1.778" layer="95" align="center-left"/>
+<pinref part="U2" gate="U" pin="FSMC_A8/FT/PF14"/>
+<wire x1="144.78" y1="307.34" x2="147.32" y2="307.34" width="0.1524" layer="91"/>
+<label x="147.32" y="307.34" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="MCU_AUX12" class="0">
@@ -38495,9 +38481,9 @@ H     X    L   :(  (contention)</text>
 <label x="35.56" y="416.56" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="J1" gate="J" pin="1"/>
-<wire x1="711.2" y1="68.58" x2="706.12" y2="68.58" width="0.1524" layer="91"/>
-<label x="706.12" y="68.58" size="1.778" layer="95" align="center-right"/>
+<pinref part="J1" gate="J" pin="6"/>
+<wire x1="711.2" y1="55.88" x2="706.12" y2="55.88" width="0.1524" layer="91"/>
+<label x="706.12" y="55.88" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="DISPLAY_SPI_MOSI" class="0">
@@ -38507,9 +38493,9 @@ H     X    L   :(  (contention)</text>
 <label x="35.56" y="411.48" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="J1" gate="J" pin="3"/>
-<wire x1="711.2" y1="63.5" x2="706.12" y2="63.5" width="0.1524" layer="91"/>
-<label x="706.12" y="63.5" size="1.778" layer="95" align="center-right"/>
+<pinref part="J1" gate="J" pin="4"/>
+<wire x1="711.2" y1="60.96" x2="706.12" y2="60.96" width="0.1524" layer="91"/>
+<label x="706.12" y="60.96" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="DISPLAY_SPI_MISO" class="0">
@@ -38519,9 +38505,9 @@ H     X    L   :(  (contention)</text>
 <label x="35.56" y="414.02" size="1.778" layer="95" align="center-right"/>
 </segment>
 <segment>
-<pinref part="J1" gate="J" pin="2"/>
-<wire x1="711.2" y1="66.04" x2="706.12" y2="66.04" width="0.1524" layer="91"/>
-<label x="706.12" y="66.04" size="1.778" layer="95" align="center-right"/>
+<pinref part="J1" gate="J" pin="5"/>
+<wire x1="711.2" y1="58.42" x2="706.12" y2="58.42" width="0.1524" layer="91"/>
+<label x="706.12" y="58.42" size="1.778" layer="95" align="center-right"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -38582,22 +38568,26 @@ H     X    L   :(  (contention)</text>
 </net>
 <net name="DISPLAY_CS" class="0">
 <segment>
-<pinref part="J1" gate="J" pin="4"/>
-<wire x1="711.2" y1="60.96" x2="706.12" y2="60.96" width="0.1524" layer="91"/>
-<label x="706.12" y="60.96" size="1.778" layer="95" align="center-right"/>
+<pinref part="J1" gate="J" pin="1"/>
+<wire x1="711.2" y1="68.58" x2="706.12" y2="68.58" width="0.1524" layer="91"/>
+<label x="706.12" y="68.58" size="1.778" layer="95" align="center-right"/>
+</segment>
+<segment>
+<pinref part="U2" gate="U" pin="FSMC_A6/FT/PF12"/>
+<wire x1="144.78" y1="312.42" x2="147.32" y2="312.42" width="0.1524" layer="91"/>
+<label x="147.32" y="312.42" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="DISPLAY_D/P" class="0">
 <segment>
-<pinref part="J1" gate="J" pin="5"/>
-<wire x1="711.2" y1="58.42" x2="706.12" y2="58.42" width="0.1524" layer="91"/>
-<label x="706.12" y="58.42" size="1.778" layer="95" align="center-right"/>
+<pinref part="J1" gate="J" pin="2"/>
+<wire x1="711.2" y1="66.04" x2="706.12" y2="66.04" width="0.1524" layer="91"/>
+<label x="706.12" y="66.04" size="1.778" layer="95" align="center-right"/>
 </segment>
-</net>
-<net name="N$62" class="0">
 <segment>
-<pinref part="J1" gate="J" pin="8"/>
-<wire x1="711.2" y1="50.8" x2="706.12" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="U2" gate="U" pin="FSMC_NIOS16/FT/PF11"/>
+<wire x1="144.78" y1="314.96" x2="147.32" y2="314.96" width="0.1524" layer="91"/>
+<label x="147.32" y="314.96" size="1.778" layer="95" align="center-left"/>
 </segment>
 </net>
 <net name="N$63" class="0">
@@ -38610,6 +38600,30 @@ H     X    L   :(  (contention)</text>
 <segment>
 <pinref part="J1" gate="J" pin="10"/>
 <wire x1="711.2" y1="45.72" x2="706.12" y2="45.72" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="DISPLAY_PWM" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="ADC12_IN8/TIM3_CH3('00'OR'10')/TIM8_CH2N/TIM1_CH2N('01')/PB0"/>
+<wire x1="144.78" y1="299.72" x2="147.32" y2="299.72" width="0.1524" layer="91"/>
+<label x="147.32" y="299.72" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="J1" gate="J" pin="3"/>
+<wire x1="711.2" y1="63.5" x2="706.12" y2="63.5" width="0.1524" layer="91"/>
+<label x="706.12" y="63.5" size="1.778" layer="95" align="center-right"/>
+</segment>
+</net>
+<net name="N$28" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="PD11/FT/FSMC_A16/USART3_CTS('11')"/>
+<wire x1="38.1" y1="358.14" x2="35.56" y2="358.14" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$48" class="0">
+<segment>
+<pinref part="U2" gate="U" pin="ADC12_IN15/PC5"/>
+<wire x1="144.78" y1="373.38" x2="147.32" y2="373.38" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
