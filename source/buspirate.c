@@ -13,6 +13,7 @@
 #include "LA.h"
 #include "UI.h"
 #include "ADC.h"
+#include "PSU.h"
 
 
 
@@ -72,12 +73,9 @@ int main(void)
 
 	AFIO_MAPR |= AFIO_MAPR_SWJ_CFG_JTAG_OFF_SW_ON;		// disable jtag/enable swd
 
-	// setup pins (move to a seperate function??)
-#ifdef BP_CONTROLS_USBPU
+	// setup pins (move to a separate function??)
 	gpio_set_mode(BP_USB_PULLUP_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_USB_PULLUP_PIN);	// USB d+ pullup
 	gpio_clear(BP_USB_PULLUP_PORT, BP_USB_PULLUP_PIN);							// pull down
-#endif
-
 
 	// setup systick
 	systick_set_clocksource(STK_CSR_CLKSOURCE_AHB_DIV8);	// 9000000 Hz
@@ -89,17 +87,9 @@ int main(void)
 	// init the delay timer
 	initdelay();
 
-#ifdef BP_CONTROLS_USBPU
 	// enable USB pullup
-
 	delayms(100);
 	gpio_set(BP_USB_PULLUP_PORT, BP_USB_PULLUP_PIN);
-#else
-	//toggle the usb pullup
-	gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO12);
-	gpio_clear(GPIOA, GPIO12);
-	delayms(100);
-#endif
 
 	// setup USB
 	cdcinit();
@@ -119,25 +109,14 @@ int main(void)
 	gpio_set_mode(BP_LED_USB_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_USB_PIN);
 	gpio_clear(BP_LED_USB_PORT, BP_LED_USB_PIN);
 
-	//control lines
-	gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);								// active hi
-	gpio_set_mode(BP_PSUEN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_PSUEN_PIN);		// PSU disable
-
-	gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);								// active hi
-	gpio_set_mode(BP_VPUEN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPUEN_PIN);		// VPU disable
-
-	gpio_clear(BP_VPU50EN_PORT, BP_VPU50EN_PIN);								// active low
-	gpio_set_mode(BP_VPU50EN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPU50EN_PIN);	// VPU3v3 disable
-
-	gpio_clear(BP_VPU33EN_PORT, BP_VPU33EN_PIN);								// active low
-	gpio_set_mode(BP_VPU33EN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPU33EN_PIN);	// VPU5v0 disable
-
-
 	// ADC
 	initADC();
 
+	// DAC/PSU
+	psuinit();
+
     if(uploadfpga()==1){
-       gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
+        gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
     }else{
         gpio_clear(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
     }

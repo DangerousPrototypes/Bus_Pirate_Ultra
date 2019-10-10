@@ -21,9 +21,8 @@
 #define BP_DELAYTIMER_CLOCK	RCC_TIM4
 
 // usb
-#define BP_CONTROLS_USBPU
 #define	BP_USB_PULLUP_PORT	GPIOE
-#define BP_USB_PULLUP_PIN	GPIO4
+#define BP_USB_PULLUP_PIN	GPIO6
 
 // flash storage
 #define BP_FS_SPI		    SPI3
@@ -31,11 +30,32 @@
 #define BP_FS_CLK_PIN		GPIO3
 #define BP_FS_MOSI_PIN		GPIO5
 #define BP_FS_MISO_PIN		GPIO4
-#define BP_FS_CS_PIN		GPIO7		// misuse RX pin on debug header?
+#define BP_FS_CS_PIN		GPIO15		// misuse RX pin on debug header?
 #define BP_FS_CLK_PORT		GPIOB
 #define BP_FS_MOSI_PORT		GPIOB
 #define BP_FS_MISO_PORT		GPIOB
-#define BP_FS_CS_PORT		GPIOB
+#define BP_FS_CS_PORT		GPIOG
+
+// LCD
+#define BP_LCD_SPI		    SPI1
+#define BP_LCD_SPI_CLK		RCC_SPI1
+#define BP_LCD_CLK_PIN		GPIO5
+#define BP_LCD_MOSI_PIN	GPIO7
+#define BP_LCD_MISO_PIN	GPIO6
+#define BP_LCD_CS_PIN		GPIO12
+#define BP_LCD_DP_PIN      GPIO11
+#define BP_LCD_RESET_PIN    GPIO4
+#define BP_LCD_AUX2_PIN    GPIO5
+#define BP_LCD_CLK_PORT	GPIOA
+#define BP_LCD_MOSI_PORT	GPIOA
+#define BP_LCD_MISO_PORT	GPIOA
+#define BP_LCD_CS_PORT		GPIOF
+#define BP_LCD_DP_PORT      GPIOF
+#define BP_LCD_RESET_PORT    GPIOC
+#define BP_LCD_AUX2_PORT    GPIOC
+
+
+
 
 // FPGA
 #define BP_FPGA_SPI		    SPI2
@@ -148,8 +168,8 @@ mcu_int1	pe3
 #define BP_VPU33EN_PIN		GPIO0
 #define BP_VPUEN_PORT		GPIOF
 #define BP_VPUEN_PIN		GPIO15
-#define BP_PSUEN_PORT		GPIOF
-#define BP_PSUEN_PIN		GPIO14
+#define BP_PSUEN_PORT		GPIOE
+#define BP_PSUEN_PIN		GPIO5
 
 // adc
 #define BP_ADC			ADC1
@@ -158,6 +178,7 @@ mcu_int1	pe3
 #define BP_VPU_CHAN		7	// 7= on pint Vext 14= before 4066
 #define BP_3V3_CHAN		5
 #define BP_5V0_CHAN		4
+#define BP_VOUT_CHAN	2
 #define BP_USB_CHAN		3
 
 #define	BP_ADC_PORT		GPIOB
@@ -168,9 +189,10 @@ mcu_int1	pe3
 #define BP_5V0_PIN		GPIO4
 #define BP_VPU_PORT		GPIOA
 #define BP_VPU_PIN		GPIO7
-#define BP_VSUP_PORT		GPIOA
+#define BP_VSUP_PORT    GPIOA
 #define BP_VSUP_PIN		GPIO3
-
+#define BP_VOUT_PORT    GPIOA
+#define BP_VOUT_PIN		GPIO2
 
 
 

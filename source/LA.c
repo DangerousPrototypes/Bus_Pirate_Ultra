@@ -156,7 +156,7 @@ void logicAnalyzerCaptureStop(void){
             cdcprintf("BP state machine timeout!\r\n");
             cdcprintf("PIN STATES| active: %01b in_full: %01b out_nempty: %01b\r\n",(gpio_get(GPIOC,GPIO10)!=0),(gpio_get(GPIOC,GPIO11)!=0),(gpio_get(GPIOC,GPIO12)!=0) );
             cdcprintf("BPSM state: %04X\r\n",FPGA_REG_09);
-            cdcprintf("BPSM command: %04X\r\n",FPGA_REG_10);
+           // cdcprintf("BPSM command: %04X\r\n",FPGA_REG_10);
             return;
         }else{
             bpsm_active=bpsm_active+1;

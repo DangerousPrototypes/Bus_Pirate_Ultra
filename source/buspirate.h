@@ -30,8 +30,8 @@ extern volatile uint32_t systicks;
 //#define		BP_USE_LCDSPI
 //#define		BP_USE_LCDI2C
 //#define		BP_USE_LA
-#define 	BP_USE_DUMMY1
-#define 	BP_USE_DUMMY2
+//#define 	BP_USE_DUMMY1
+//#define 	BP_USE_DUMMY2
 
 
 

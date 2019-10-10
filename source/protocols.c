@@ -44,7 +44,7 @@
 
 
 // nulfuncs
-// these are the dummy functions when something ain't used 
+// these are the dummy functions when something ain't used
 
 void nullfunc1(void)
 {
@@ -53,7 +53,7 @@ void nullfunc1(void)
 }
 
 uint32_t nullfunc2(uint32_t c)
-{	
+{
 	(void) c;
 	cdcprintf("ERROR: command has no effect here");
 	modeConfig.error=1;
@@ -61,15 +61,22 @@ uint32_t nullfunc2(uint32_t c)
 }
 
 uint32_t nullfunc3(void)
-{	
+{
 	cdcprintf("ERROR: command has no effect here");
 	modeConfig.error=1;
 	return 0x0000;
 }
 
 void nullfunc4(uint32_t c)
-{	
+{
 	(void) c;
+	cdcprintf("ERROR: command has no effect here");
+	modeConfig.error=1;
+}
+
+uint32_t nullfunc5(uint32_t c,uint32_t r,uint8_t b)
+{
+    (void) c;
 	cdcprintf("ERROR: command has no effect here");
 	modeConfig.error=1;
 }
@@ -89,11 +96,12 @@ uint32_t noperiodic(void)
 
 struct _protocol protocols[MAXPROTO]={
 {
+    //pre-process
 	nullfunc1,				// start
 	nullfunc1,				// start with read
 	nullfunc1,				// stop
 	nullfunc1,				// stop with read
-	nullfunc2,				// send(/read) max 32 bit
+	nullfunc5,				// send(/read) max 32 bit
 	nullfunc3,				// read max 32 bit
 	nullfunc1,				// set clk high
 	nullfunc1,				// set clk low
@@ -104,11 +112,28 @@ struct _protocol protocols[MAXPROTO]={
 	nullfunc3,				// read 1 bit (?)
 	noperiodic,				// service to regular poll whether a byte ahs arrived
 	nullfunc4,				// macro
+	//post process
+	nullfunc1,				// start
+	nullfunc1,				// start with read
+	nullfunc1,				// stop
+	nullfunc1,				// stop with read
+	nullfunc5,				// send(/read) max 32 bit
+	nullfunc3,				// read max 32 bit
+	nullfunc1,				// set clk high
+	nullfunc1,				// set clk low
+	nullfunc1,				// set dat hi
+	nullfunc1,				// set dat lo
+	nullfunc3,				// toggle dat (?)
+	nullfunc1,				// toggle clk (?)
+	nullfunc3,				// read 1 bit (?)
+	noperiodic,				// service to regular poll whether a byte ahs arrived
+	nullfunc4,				// macro
+	//non-pipelined commands
 	HiZsetup,				// setup UI
 	HiZsetup_exc,				// real setup
 	HiZcleanup,				// cleanup for HiZ
 	HiZpins,				// display pin config
-	HiZsettings,				// display settings 
+	HiZsettings,				// display settings
 	nohelp,					// display small help about the protocol
 	"HiZ",					// friendly name (promptname)
 },
@@ -192,6 +217,7 @@ struct _protocol protocols[MAXPROTO]={
 #endif
 #ifdef BP_USE_HWSPI
 {
+    //pre-process
 	HWSPI_start,				// start
 	HWSPI_startr,				// start with read
 	HWSPI_stop,				// stop
@@ -207,11 +233,28 @@ struct _protocol protocols[MAXPROTO]={
 	nullfunc3,				// read 1 bit (?)
 	noperiodic,				// service to regular poll whether a byte ahs arrived
 	HWSPI_macro,				// macro
+	//post-process
+    HWSPI_start_post,				// start
+	HWSPI_startr_post,				// start with read
+	HWSPI_stop_post,				// stop
+	HWSPI_stopr_post,				// stop with read
+	HWSPI_send_post,				// send(/read) max 32 bit
+	HWSPI_read_post,				// read max 32 bit
+	nullfunc1,				// set clk high
+	nullfunc1,				// set clk low
+	nullfunc1,				// set dat hi
+	nullfunc1,				// set dat lo
+	nullfunc3,				// toggle dat (?)
+	nullfunc1,				// toggle clk (?)
+	nullfunc3,				// read 1 bit (?)
+	noperiodic,				// service to regular poll whether a byte ahs arrived
+	HWSPI_macro_post,				// macro
+	//non-pipelined
 	HWSPI_setup,				// setup UI
 	HWSPI_setup_exc,			// real setup
 	HWSPI_cleanup,				// cleanup for HiZ
 	HWSPI_pins,				// display pin config
-	HWSPI_settings,				// display settings 
+	HWSPI_settings,				// display settings
 	HWSPI_help,				// display small help about the protocol
 	"SPI",				// friendly name (promptname)
 },
@@ -237,7 +280,7 @@ struct _protocol protocols[MAXPROTO]={
 	SW2W_setup_exc,				// real setup
 	SW2W_cleanup,				// cleanup for HiZ
 	SW2W_pins,				// display pin config
-	SW2W_settings,				// display settings 
+	SW2W_settings,				// display settings
 	nohelp,					// display small help about the protocol
 	"2WIRE",					// friendly name (promptname)
 },
@@ -263,7 +306,7 @@ struct _protocol protocols[MAXPROTO]={
 	SW3W_setup_exc,				// real setup
 	SW3W_cleanup,				// cleanup for HiZ
 	SW3W_pins,				// display pin config
-	SW3W_settings,				// display settings 
+	SW3W_settings,				// display settings
 	SW3W_help,				// display small help about the protocol
 	"3WIRE",					// friendly name (promptname)
 },
@@ -289,7 +332,7 @@ struct _protocol protocols[MAXPROTO]={
 	LCDSPI_setup_exc,			// real setup
 	LCDSPI_cleanup,				// cleanup for HiZ
 	LCDSPI_pins,				// display pin config
-	LCDSPI_settings,			// display settings 
+	LCDSPI_settings,			// display settings
 	nohelp,					// display small help about the protocol
 	"LCDSPI",				// friendly name (promptname)
 },
@@ -315,7 +358,7 @@ struct _protocol protocols[MAXPROTO]={
 	LCDI2C_setup_exc,			// real setup
 	LCDI2C_cleanup,				// cleanup for HiZ
 	LCDI2C_pins,				// display pin config
-	LCDI2C_settings,			// display settings 
+	LCDI2C_settings,			// display settings
 	nohelp,					// display small help about the protocol
 	"LCDI2C",				// friendly name (promptname)
 },

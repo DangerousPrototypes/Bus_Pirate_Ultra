@@ -1,11 +1,22 @@
 
+//preprocess
 void HWSPI_start(void);
 void HWSPI_startr(void);
 void HWSPI_stop(void);
 void HWSPI_stopr(void);
-uint32_t HWSPI_send(uint32_t d);
+uint32_t HWSPI_send(uint32_t d,uint32_t r,uint8_t b);
 uint32_t HWSPI_read(void);
 void HWSPI_macro(uint32_t macro);
+//post process
+void HWSPI_start_post(void);
+void HWSPI_startr_post(void);
+void HWSPI_stop_post(void);
+void HWSPI_stopr_post(void);
+uint32_t HWSPI_send_post(uint32_t d,uint32_t r,uint8_t b);
+uint32_t HWSPI_read_post(void);
+void HWSPI_macro_post(uint32_t macro);
+
+//non-pipelined commands
 void HWSPI_setup(void);
 void HWSPI_setup_exc(void);
 void HWSPI_cleanup(void);

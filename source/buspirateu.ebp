@@ -132,11 +132,19 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="LA.h" />
+		<Unit filename="lcd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="lcd.h" />
 		<Unit filename="platform\beta1.h" />
 		<Unit filename="protocols.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="protocols.h" />
+		<Unit filename="PSU.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="PSU.h" />
 		<Unit filename="selftest.h" />
 		<Unit filename="src\startup_stm32f10x_hd.S">
 			<Option compilerVar="CC" />

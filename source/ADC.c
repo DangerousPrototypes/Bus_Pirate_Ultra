@@ -6,7 +6,7 @@
 #include <libopencm3/stm32/gpio.h>
 #include "ADC.h"
 
-//initializes and calibrates the ADC 
+//initializes and calibrates the ADC
 void initADC(void)
 {
 	// setup pins
@@ -15,7 +15,7 @@ void initADC(void)
 	gpio_set_mode(BP_5V0_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, BP_5V0_PIN);				// ADC 5v0 regulator
 	gpio_set_mode(BP_VPU_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, BP_VPU_PIN);				// ADC pullup voltage
 	gpio_set_mode(BP_VSUP_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, BP_VSUP_PIN);			// ADC usb powersupply
-
+    gpio_set_mode(BP_VOUT_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, BP_VOUT_PIN);
 	//enable adcclock
 	rcc_periph_clock_enable(BP_ADC_CLK);
 
@@ -33,7 +33,7 @@ void initADC(void)
 	//adc_enable_temperature_sensor();
 
 	// set conversion time (xxms)
-	adc_set_sample_time_on_all_channels(BP_ADC, ADC_SMPR_SMP_1DOT5CYC);
+	adc_set_sample_time_on_all_channels(BP_ADC, ADC_SMPR_SMP_7DOT5CYC);
 
 	// power on after onversion
 	adc_power_on(BP_ADC);
@@ -47,7 +47,7 @@ void initADC(void)
 uint16_t getADC(uint8_t chan)
 {
 	uint8_t channels[16];
-	
+
 	// lets do 1 chan
 	channels[0] = chan;
 

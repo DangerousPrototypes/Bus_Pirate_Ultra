@@ -7,6 +7,7 @@
 #include <libopencm3/stm32/f1/bkp.h>
 #include <libopencm3/cm3/scb.h>
 
+
 #include "debug.h"
 #include "cdcacm.h"
 #include "buspirate.h"
@@ -18,6 +19,8 @@
 #include "LA.h"
 #include "fs.h"
 #include "fpga.h"
+#include "PSU.h"
+#include "lcd.h"
 
 #include <libopencm3/stm32/spi.h>
 
@@ -190,6 +193,11 @@ void initUI(void)
 	modeConfig.clkpin=0;
 */
 	modeConfig.subprotocolname=0;
+	setupLCD();
+	initializeLCD();
+	setBoundingBox(0, 240, 0, 320);
+
+
 }
 
 int isbuscmd(char c)
@@ -350,15 +358,18 @@ void doUI(void)
 				case '8':
 				case '9':
                     bytecodes[bytecodePreprocessed].command=0x00; //write to bus
-                    bytecodes[bytecodePreprocessed].data=getint();
+                    bytecodes[bytecodePreprocessed].data=orderbits(getint());
                     bytecodes[bytecodePreprocessed].option1=getnumbits();
                     bytecodes[bytecodePreprocessed].repeat=getrepeat();
                     bytecodes[bytecodePreprocessed].blocking=0;
+                    if(bytecodes[bytecodePreprocessed].option1<1) //custom user bits or use mode default
+                        bytecodes[bytecodePreprocessed].option1=(uint16_t)modeConfig.numbits;
                     break;
                 case '&':
 				case '%':
                 case 'r':
                     bytecodes[bytecodePreprocessed].command=c;
+                    bytecodes[bytecodePreprocessed].option1=getnumbits();
                     bytecodes[bytecodePreprocessed].repeat=getrepeat();
                     bytecodes[bytecodePreprocessed].blocking=0;
                     break;
@@ -412,6 +423,48 @@ void doUI(void)
 				    bytecodes[bytecodePreprocessed].command=c;
 				    bytecodes[bytecodePreprocessed].blocking=1;
 				    break;
+                /*case 'W':
+                        temp=askint("value", 1, 0xFFFFFFFF, 1000);
+						rcc_periph_clock_enable(RCC_DAC);
+                        gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO4);
+                        dac_disable(CHANNEL_1);
+                        dac_buffer_disable(CHANNEL_1);
+                        dac_disable_waveform_generation(CHANNEL_1);
+                        dac_enable(CHANNEL_1);
+                        dac_set_trigger_source(DAC_CR_TSEL1_SW);
+
+                        dac_load_data_buffer_single(temp, RIGHT12, CHANNEL_1);
+                        dac_software_trigger(CHANNEL_1);
+
+                        //enable the VREG
+                        gpio_set(BP_PSUEN_PORT, BP_PSUEN_PIN);
+                        cancelPreprocessor=1;
+                        break;
+                case 'd':
+                        temp = voltage(BP_USB_CHAN, 1);
+                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
+                        cdcprintf("USB: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
+                         temp = voltage(BP_VOUT_CHAN, 1);
+                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
+                        cdcprintf("VOUT: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
+
+                        FPGA_REG_0A=0b1110;
+                        delayms(1);
+                        temp = voltage(BP_ADC_CHAN, 1);
+                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
+                        cdcprintf("ADC: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
+                        FPGA_REG_0A=0b0000;
+                        delayms(1);
+                        temp = voltage(BP_ADC_CHAN, 1);
+                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
+                        cdcprintf("ADC: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
+                        FPGA_REG_0A=0b0010;
+                        delayms(1);
+                        temp = voltage(BP_ADC_CHAN, 1);
+                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
+                        cdcprintf("ADC: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
+						cancelPreprocessor=1;
+                    break;*/
                 case '=': //do bitwise and other math here.... =0x10|0x20, =0x10<<1, =0x10*8, etc
 				case '|':
                     cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);
@@ -514,7 +567,7 @@ void doUI(void)
 		go=0;
 	}
 }
-//TODO: add statemachine halt statement to queue so we can keep loading the FIFO even while we wait for blocking commands to occur!!!!
+
 void processByteCode(){
 
     uint16_t i;
@@ -530,7 +583,7 @@ void processByteCode(){
                     //if (modeConfig.numbits<32) temp&=((1<<modeConfig.numbits)-1);
                     //while(bytecodes[bytecodeProcessed].repeat--)
                     //{//TODO: how to handle in lower layer, send custom bit numbers...
-                        protocols[modeConfig.mode].protocol_send(orderbits(bytecodes[bytecodeProcessed].data));		// reshuffle bits if necessary
+                        protocols[modeConfig.mode].protocol_send(bytecodes[bytecodeProcessed].data,bytecodes[bytecodeProcessed].repeat,bytecodes[bytecodeProcessed].option1);		// reshuffle bits if necessary
                     //}
                     break;
             case 'r':
@@ -615,24 +668,18 @@ void postProcess(){
     if((bytecodeProcessed>bytecodePostprocessed) && gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN))
     {//process next byte
 
-            result=FPGA_REG_07;
+            /*result=FPGA_REG_07;
 
             if(bytecodes[bytecodePostprocessed].blocking && result!=0xfd00){
                 cdcprintf("FPGA out of sync\r\n");
-            }
+            }*/
 
             switch (bytecodes[bytecodePostprocessed].command)
 			{
 				case 0x00:
-                        if(result!=(0x0800|(((uint16_t)bytecodes[bytecodePostprocessed].option1<<8)|((uint16_t)bytecodes[bytecodePostprocessed].data&0x00FF)))){
-                            cdcprintf("FPGA out of sync\r\n");
-                        }
-                        cdcprintf("TX: ");
-                        printnum((uint8_t)result);
-                        cdcprintf("RX: ");
-                        printnum((uint8_t)FPGA_REG_07); //TODO: use statemachine, can't depend on this word always being there!
-                        cdcprintf("\r\n");
-						break;
+				    //todo: non-blocking wait for additional bytes?
+                    protocols[modeConfig.mode].protocol_send_post(bytecodes[bytecodePostprocessed].data,bytecodes[bytecodePostprocessed].repeat,bytecodes[bytecodePostprocessed].option1);
+                    break;
                 case 'r':
                         if(result!=(0x0800|(((uint16_t)bytecodes[bytecodePostprocessed].option1<<8)|((uint16_t)bytecodes[bytecodePostprocessed].data&0x00FF)))){
                             cdcprintf("FPGA out of sync\r\n");
@@ -678,19 +725,19 @@ void postProcess(){
 						break;
 				case '&':
                         //TODO: compare command to verify we are in the right place in the data....
-                        if(result!=(0x8400|(uint8_t)bytecodes[bytecodeProcessed].repeat)){
+                        if(FPGA_REG_07!=(0x8400|(uint8_t)bytecodes[bytecodeProcessed].repeat)){
                             cdcprintf("FPGA out of sync\r\n");
                         }
 						cdcprintf("Delay: %dus", bytecodes[bytecodePostprocessed].repeat);
 						break;
                 case '%':
                         //TODO: compare command to verify we are in the right place in the data....
-                        if(result!=(0x8400|0x0f)){
+                        if(FPGA_REG_07!=(0x8400|0x0f)){
                             cdcprintf("FPGA out of sync\r\n");
                         }
                         cdcprintf("Delay: %dms", bytecodes[bytecodePostprocessed].repeat);
-                        for(i=1;i<bytecodes[bytecodePostprocessed].repeat;i++)
-                            temp=FPGA_REG_07;//delay for repeat cycled (CURRENTLY NOT SAFE!!!! NEED STATEMACHINE!!)
+                        /*for(i=1;i<bytecodes[bytecodePostprocessed].repeat;i++)
+                            temp=FPGA_REG_07;//delay for repeat cycled (CURRENTLY NOT SAFE!!!! NEED STATEMACHINE!!)*/
                     break;
 				case 'a':
                         cdcprintf("Set AUX: 0");
@@ -702,13 +749,13 @@ void postProcess(){
                         cdcprintf("AUX=%d", getAUX());
 						break;
                 case 0xfe:
-                        if(result!=0xfe00){
+                        if(FPGA_REG_07!=0xfe00){
                             cdcprintf("FPGA out of sync\r\n");
                         }
                         cdcprintf("LA: start\r\n");
                         break;
                 case 0xff:
-                        if(result!=0xff00){
+                        if(FPGA_REG_07!=0xff00){
                             cdcprintf("FPGA out of sync\r\n");
                         }
                         cdcprintf("LA: stop\r\n");
@@ -735,9 +782,11 @@ void postProcess(){
 						}
 						break;
 				case 'd':
-                        temp = voltage(BP_ADC_CHAN, 1);
-                        FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
-                        cdcprintf("ADC: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
+                        //temp = voltage(BP_ADC_CHAN, 1);
+                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
+                        //cdcprintf("ADC: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
+                        temp = voltage(BP_VOUT_CHAN, 1);
+                        cdcprintf("Vout: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
 						break;
 				case 'D':
                         cdcprintf("Press any key to exit\r\n");
@@ -797,24 +846,23 @@ void postProcess(){
                         showstates();
 						break;
 				case 'w':
-                        gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);	// always permitted to shut power off
-						cdcprintf("PSU: disabled");
+                        psuDisable();
+						cdcprintf("Vout: disabled");
 						modeConfig.psu=0;
 						break;
 				case 'W':
                         if(modeConfig.mode!=0)
 						{
-							gpio_set(BP_PSUEN_PORT, BP_PSUEN_PIN);
-							cdcprintf("PSU: enabled\r\n");
-							delayms(10);
-							temp = voltage(BP_3V3_CHAN, 1);
-							cdcprintf("Vout/Vref: %d.%02dV", temp/100, (temp%1000)/10);
-							if((voltage(BP_3V3_CHAN, 1)<3000))
+                            psuSetOutput(0x0000);
+							//delayms(10);
+                            temp = voltage(BP_VOUT_CHAN, 1);
+                            cdcprintf("Vout: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
+							/*if((voltage(BP_3V3_CHAN, 1)<3000))
 							{
 								cdcprintf("\r\nShort circuit!");
 								gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);
 							}
-							else
+							else*/
 								modeConfig.psu=1;
 						}
 						else
@@ -860,6 +908,7 @@ void postProcess(){
 			}
 			if(bytecodes[bytecodePostprocessed].blocking) //TODO: there is a clock glitch on the logic analyzer clock when this happens...
             {
+                result=FPGA_REG_07; //clear the blocking command...
     			FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
 			}
 			bytecodePostprocessed=bytecodePostprocessed+1;
