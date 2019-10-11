@@ -115,6 +115,10 @@ int main(void)
 	// DAC/PSU
 	psuinit();
 
+    setupLCD();
+	initializeLCD();
+	setBoundingBox(0, 240, 0, 320);
+
     if(uploadfpga()==1){
         gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
     }else{

@@ -8,7 +8,11 @@
 
 
 void setBoundingBox(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye){
-
+    uint16_t x,y;
+    uint16_t color, blue, red, green;
+    blue=0b0000000000011111;
+    red =0b1111100000000000;
+    green=0b0000011111100000;
     //setup write area
     //start must always be =< end
     writeLCDcommand(0x2A); //column start and end set
@@ -21,20 +25,59 @@ void setBoundingBox(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye){
     writeLCDdata(ys&0xff); //0
     writeLCDdata(ye>>8);
     writeLCDdata(ye&0xff); //320
-
     writeLCDcommand(0x2C);//Memory Write
+
+    //write some color data...
+    while(true){
+        color=red;
+        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+        for(x=xs;x<xe;x++){
+            for(y=xs;y<ye;y++){
+                spi_xfer(BP_LCD_SPI, (uint16_t) color>>8);
+                spi_xfer(BP_LCD_SPI, (uint16_t) color&0xff);
+            }
+        }
+        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+
+        color=blue;
+        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+        for(x=xs;x<xe;x++){
+            for(y=xs;y<ye;y++){
+                spi_xfer(BP_LCD_SPI, (uint16_t) color>>8);
+                spi_xfer(BP_LCD_SPI, (uint16_t) color&0xff);
+            }
+        }
+        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+
+        color=green;
+        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+        for(x=xs;x<xe;x++){
+            for(y=xs;y<ye;y++){
+                spi_xfer(BP_LCD_SPI, (uint16_t) color>>8);
+                spi_xfer(BP_LCD_SPI, (uint16_t) color&0xff);
+            }
+        }
+        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+    }
+
 }
 
 void writeLCDcommand(uint16_t command){
     //D/C low for command
     gpio_clear(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
-    spi_xfer(BP_LCD_SPI, (uint16_t) command&0xff00);
+    gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+    spi_xfer(BP_LCD_SPI, (uint16_t) command);
+    gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
 }
 void writeLCDdata(uint16_t data){
     //D/C high for data
     gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
-    spi_xfer(BP_LCD_SPI, (uint16_t) data>>8);
-    spi_xfer(BP_LCD_SPI, (uint16_t) data&0xff00);
+    gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+    spi_xfer(BP_LCD_SPI, (uint16_t) data);
+    gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
 }
 
 void setupLCD(void){
@@ -48,15 +91,15 @@ void setupLCD(void){
 
 	// control pins
 	gpio_set_mode(BP_LCD_CS_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LCD_CS_PIN);
-	gpio_set_mode(BP_LCD_DP_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT,BP_LCD_DP_PIN);
-	gpio_set_mode(BP_LCD_RESET_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_OPENDRAIN, BP_LCD_RESET_PIN);
+	gpio_set_mode(BP_LCD_DP_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,BP_LCD_DP_PIN);
+	gpio_set_mode(BP_LCD_RESET_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LCD_RESET_PIN);
 	gpio_set_mode(BP_LCD_AUX2_PORT, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_OPENDRAIN, BP_LCD_AUX2_PIN);
 
 	//PWM
 
 	// setup SPI (cpol=1, cpha=1) +- 1MHz
 	spi_reset(BP_LCD_SPI);
-	spi_init_master(BP_LCD_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_8, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE, SPI_CR1_CPHA_CLK_TRANSITION_2, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
+	spi_init_master(BP_LCD_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_4, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE, SPI_CR1_CPHA_CLK_TRANSITION_2, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
 	spi_set_full_duplex_mode(BP_LCD_SPI);
 	spi_enable(BP_LCD_SPI);
 
@@ -68,11 +111,15 @@ void setupLCD(void){
 }
 
 void initializeLCD(void){
-#define QT020HLCG00 //nicer build quality
-//#define HT020SQV003NS //large metal body frame
+//#define QT020HLCG00 //nicer build quality
+#define HT020SQV003NS //large metal body frame
+
+//gpio_clear(BP_LCD_RESET_PORT,BP_LCD_RESET_PIN);
+delayms(120);
+//gpio_set(BP_LCD_RESET_PORT,BP_LCD_RESET_PIN);
+delayms(120);
 
 writeLCDcommand(0x11);//Sleep out, DC/DC converter, internal oscillator, panel scanning "enable"
-
 delayms(120);
 
 #ifdef QT020HLCG00
@@ -241,7 +288,7 @@ writeLCDcommand(0x21);//Display inversion ON ,default=Display inversion OF
 writeLCDcommand(0xB2); //porch setting,, default=0C/0C/00/33/33
 writeLCDdata(0x7f); //back porch setting  0c
 writeLCDdata(0x7f); //front porch setting 0c
-writeLCDdata(0x01); //PSEN=0, disable seprate porch control
+writeLCDdata(0x01); //PSEN=0, disable separate porch control
 writeLCDdata(0x33); //back/front porch setting in idle mode
 writeLCDdata(0x33); //back/front porch setting in partial mode
 #endif
@@ -257,6 +304,5 @@ writeLCDdata(0x0E);
 writeLCDcommand(0xC6);//FRCTRL=Frame Rate Control in Normal Mode , default=0F
 writeLCDdata(0x1f); //FR in normal mode=39Hz
 #endif
-
 }
 

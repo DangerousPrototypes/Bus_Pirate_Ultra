@@ -193,10 +193,6 @@ void initUI(void)
 	modeConfig.clkpin=0;
 */
 	modeConfig.subprotocolname=0;
-	setupLCD();
-	initializeLCD();
-	setBoundingBox(0, 240, 0, 320);
-
 
 }
 
