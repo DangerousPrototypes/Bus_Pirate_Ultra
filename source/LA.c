@@ -39,8 +39,6 @@ static void getSramId(void){ //should return whole struct
     //return temp;
 }
 
-
-
 void logicAnalyzerSetup(void)
 {
     sram_deselect();
@@ -217,8 +215,6 @@ void setup_spix1rw(void)
 void setup_spix4w(void)
 {
     spi_reset(BP_FPGA_SPI);
-    //la_sram_mode_quad();
-    //la_sram_quad_output();
     FPGA_REG_03&=~(0b1<<2); //clear spi mode
     FPGA_REG_03|=0b11;
 
@@ -230,11 +226,6 @@ void setup_spix4w(void)
 void setup_spix4r(void)
 {
     spi_reset(BP_FPGA_SPI);
-
-    //mcu_quadmode direction pin of FPGA
-    //la_sram_mode_quad();
-    //la_sram_quad_input();
-    //FPGA_REG_02=0x1;
     FPGA_REG_03|=0b1;
     FPGA_REG_03&=~(0b110);
 
@@ -246,53 +237,28 @@ void setup_spix4r(void)
 static uint8_t spiRx4(void)
 {
 	uint8_t received;
-	int i;
-
 	received=0;
-	//sram_clock_high();
     received=((FPGA_REG_02&0x00ff)<<8);
-    //sram_clock_low();
-    //sram_clock_high();
     received|=(FPGA_REG_02&0x00ff);
-    //sram_clock_low();
-
 	return received;
-	//i=FPGA_REG_01;
-	//return (i<<8) | (FPGA_REG_01&0x00ff);
 }
 
 static uint8_t spiRx8(void)
 {
 	uint8_t received;
-	int i;
-
-	//sram_clock_high();
     received=((FPGA_REG_02));
-    //sram_clock_low();
 	return received;
-	//i=FPGA_REG_01;
-	//return (i<<8) | (FPGA_REG_01&0x00ff);
 }
 
 static void spiWx4(uint8_t d)
 {
-
     FPGA_REG_02=(uint16_t) ( ((d)&0x00F0) | ((d>>4)&0x000F) );
-    //sram_clock_high();
-    //sram_clock_low();
     FPGA_REG_02=(uint16_t) ( ((d<<4)&0x00F0) | ((d)&0x000f)  );
-    //sram_clock_high();
-    //sram_clock_low();
-
 }
 
 static void spiWx8(uint8_t d)
 {
-
     FPGA_REG_02=(uint16_t)d&0x00FF;
-    //sram_clock_high();
-    //sram_clock_low();
-
 }
 
 

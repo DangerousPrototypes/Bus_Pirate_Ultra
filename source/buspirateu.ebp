@@ -110,6 +110,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="dummy2.h" />
+		<Unit filename="font.h" />
 		<Unit filename="fpga.c">
 			<Option compilerVar="CC" />
 		</Unit>

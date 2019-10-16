@@ -414,29 +414,17 @@ void doUI(void)
 				case 'P':
 				case 'v':
 				case 'w':
-				case 'W':
+				//case 'W':
                 case '~':
 				    bytecodes[bytecodePreprocessed].command=c;
 				    bytecodes[bytecodePreprocessed].blocking=1;
 				    break;
-                /*case 'W':
+                case 'W':
                         temp=askint("value", 1, 0xFFFFFFFF, 1000);
-						rcc_periph_clock_enable(RCC_DAC);
-                        gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO4);
-                        dac_disable(CHANNEL_1);
-                        dac_buffer_disable(CHANNEL_1);
-                        dac_disable_waveform_generation(CHANNEL_1);
-                        dac_enable(CHANNEL_1);
-                        dac_set_trigger_source(DAC_CR_TSEL1_SW);
-
-                        dac_load_data_buffer_single(temp, RIGHT12, CHANNEL_1);
-                        dac_software_trigger(CHANNEL_1);
-
-                        //enable the VREG
-                        gpio_set(BP_PSUEN_PORT, BP_PSUEN_PIN);
+                        psuSetOutput(temp);
                         cancelPreprocessor=1;
                         break;
-                case 'd':
+                /*case 'd':
                         temp = voltage(BP_USB_CHAN, 1);
                         //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
                         cdcprintf("USB: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
@@ -828,7 +816,7 @@ void postProcess(){
 							gpio_set(BP_VPUEN_PORT, BP_VPUEN_PIN);
 							cdcprintf("Pull-ups: enabled\r\n");
 							delayms(10);
-							temp = voltage(BP_VPU_CHAN, 1);
+							temp = voltage(BP_VOUT_CHAN, 1);
 							cdcprintf("Vpu: %d.%02dV", temp/1000, (temp%1000)/10);
 							modeConfig.pullups=1;
 						}
@@ -1276,6 +1264,9 @@ void getuserinput(void)
 	int go, histptr;
 	char c;
 	uint32_t temp;
+	uint16_t x,y;
+	uint16_t rgb;
+	uint8_t read;
 
 	go=0;
 	cursor=cmdhead;
@@ -1287,6 +1278,7 @@ void getuserinput(void)
 	while(!go)
 	{
 
+        updateLCD(0);
 
         if(cdcbyteready2())
 		{
@@ -1332,6 +1324,53 @@ void getuserinput(void)
                         cdcputs("error.\n");
                     }
 
+                    break;
+                case 0x04:
+                    for(i=0;i<3;i++){
+                        while(!cdcbyteready2());
+                        addr=addr<<8;
+                        addr|=cdcgetc2();
+                    }
+                    addr+=0x30000;
+
+                    for(i=0;i<256;i=i+2){
+                        while(!cdcbyteready2());
+                        page[i+1]=cdcgetc2();
+                        while(!cdcbyteready2());
+                        page[i]=cdcgetc2();
+                    }
+                    /*for(i=0;i<256;i++){
+                        while(!cdcbyteready2());
+                        page[i]=cdcgetc2();
+                    }*/
+                    writePage(addr,page);
+                    //readFlash(addr,buff,256);
+                    cdcputc2(0x4B);
+                    break;
+                case 0x05:
+                    setBoundingBox(0, 240, 0, 320);
+
+                    //setup flash
+                    #define FLCMD_FREAD	0x0B		// Read Data Bytes (READ)
+                    gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);	// cs low
+                    spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_FREAD);
+                    spi_xfer(BP_FS_SPI, (uint16_t) ((0x30000>>16)&0x000000FF));	// address
+                    spi_xfer(BP_FS_SPI, (uint16_t) ((0x30000>>8)&0x000000FF));		//
+                    spi_xfer(BP_FS_SPI, (uint16_t) (0x30000&0x000000FF));		//
+
+                    spi_xfer(BP_FS_SPI, (uint16_t) 0xFF); //read dummy byte
+
+                    gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+                    gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+                    for(temp=0; temp<=153600; temp++)
+                    {
+
+                        read=spi_xfer(BP_FS_SPI, (uint16_t) 0xFF);
+                        spi_xfer(BP_LCD_SPI, (uint16_t)read);
+                    }
+                    gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+                    gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+                    cdcputc2(0x4B);
                     break;
             }//switch
 		}//cdc

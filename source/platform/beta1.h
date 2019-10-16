@@ -162,12 +162,8 @@ mcu_int1	pe3
 
 
 // pullups and poewrsupplies
-#define BP_VPU50EN_PORT		GPIOG
-#define BP_VPU50EN_PIN		GPIO1
-#define BP_VPU33EN_PORT		GPIOG
-#define BP_VPU33EN_PIN		GPIO0
-#define BP_VPUEN_PORT		GPIOF
-#define BP_VPUEN_PIN		GPIO15
+#define BP_VPUEN_PORT		GPIOG
+#define BP_VPUEN_PIN		GPIO0
 #define BP_PSUEN_PORT		GPIOE
 #define BP_PSUEN_PIN		GPIO5
 
@@ -175,20 +171,11 @@ mcu_int1	pe3
 #define BP_ADC			ADC1
 #define BP_ADC_CLK		RCC_ADC1
 #define BP_ADC_CHAN		9
-#define BP_VPU_CHAN		7	// 7= on pint Vext 14= before 4066
-#define BP_3V3_CHAN		5
-#define BP_5V0_CHAN		4
 #define BP_VOUT_CHAN	2
 #define BP_USB_CHAN		3
 
 #define	BP_ADC_PORT		GPIOB
 #define	BP_ADC_PIN		GPIO1
-#define BP_3V3_PORT		GPIOA
-#define BP_3V3_PIN		GPIO5
-#define BP_5V0_PORT		GPIOA
-#define BP_5V0_PIN		GPIO4
-#define BP_VPU_PORT		GPIOA
-#define BP_VPU_PIN		GPIO7
 #define BP_VSUP_PORT    GPIOA
 #define BP_VSUP_PIN		GPIO3
 #define BP_VOUT_PORT    GPIOA

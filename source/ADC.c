@@ -11,9 +11,6 @@ void initADC(void)
 {
 	// setup pins
 	gpio_set_mode(BP_ADC_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, BP_ADC_PIN);				// ADC pin
-	gpio_set_mode(BP_3V3_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, BP_3V3_PIN);				// ADC 3v3 regulator
-	gpio_set_mode(BP_5V0_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, BP_5V0_PIN);				// ADC 5v0 regulator
-	gpio_set_mode(BP_VPU_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, BP_VPU_PIN);				// ADC pullup voltage
 	gpio_set_mode(BP_VSUP_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, BP_VSUP_PIN);			// ADC usb powersupply
     gpio_set_mode(BP_VOUT_PORT, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, BP_VOUT_PIN);
 	//enable adcclock

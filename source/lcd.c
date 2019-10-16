@@ -2,17 +2,184 @@
 #include "delay.h"
 #include "buspirate.h"
 #include "lcd.h"
+#include "font.h"
+#include "fpga.h"
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
 
+/*
+//IO pins voltage write bounding boxes
+//DIO1 - (6,14) to (6+14,14) Ymax=47
+// DIO2-Voout ((n*24)+6) to (n*24)+14+6,14) Ymax = 47
 
-void setBoundingBox(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye){
+
+
+
+*/
+
+void updateLCD(uint8_t initial){
+    uint8_t i,ys;
+    uint32_t temp;
+    ys=14;
+    if(!initial){
+        ys+=10;
+    }
+    //DIO1-8, Vout
+    for(i=0;i<9;i++){
+
+        switch(i){
+            case 8:
+                temp = voltage(BP_VOUT_CHAN, 1);
+                break;
+            default:
+                 FPGA_REG_0A=i;
+                 delayus(10);
+                 temp = voltage(BP_ADC_CHAN, 1);
+                 break;
+        }
+        setBoundingBox( (i*24)+6, (i*24)+6+13, ys, 60);
+        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+        if(initial) writeCharacterToLCD('V'); //V
+        writeByteNumberToLCD((temp%1000)/100);
+        writeCharacterToLCD('.'); //.
+        writeByteNumberToLCD(temp/1000);
+        gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+    }
+
+    if(initial){//this needs to be passed an array of strings from the protocol...
+        //164
+        for(i=0;i<10;i++){
+            setBoundingBox( (i*24)+6, (i*24)+6+13, 165-(14*3), 165);
+            gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+            gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+            switch(i){
+            case 8:
+                writeCharacterToLCD('u');
+                writeCharacterToLCD('o');
+                writeCharacterToLCD('V');
+                break;
+            case 9:
+                writeCharacterToLCD('D');
+                writeCharacterToLCD('N');
+                writeCharacterToLCD('G');
+                break;
+            default:
+                writeCharacterToLCD('Z');
+                writeCharacterToLCD('i');
+                writeCharacterToLCD('H');
+                break;
+            }
+            gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+            gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+        }
+        i=9;
+        setBoundingBox( (i*24)+6, (i*24)+6+13, ys, 60);
+        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+        //writeCharacterToLCD('~'+1);
+        writeCharacterToLCD('~'+2);
+        //writeCharacterToLCD('~'+1);
+        gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+
+
+
+    }
+
+}
+
+
+//const uint32_t font_lut24[]={0x5a5a5b,0x999999,0xb5b5b5,0xd6d6d6};
+const uint32_t font_lut24[]={0x5a5a5b,0x999999,0xd6d6d6,0xb5b5b5}; //QVector(8123, 1239, 2989, 1089)
+uint16_t font_lut16RGB[]={0,0,0,0};
+
+void writeByteNumberToLCD(uint8_t c){
+    writeCharacterToLCD(c+0x30);
+}
+
+void writeCharacterToLCD(uint8_t c){
+    uint8_t i;
+    uint16_t color;
+
+    c=c-0x21;
+
+	for(i=0; i<35; i++)
+	{
+        color=font_lut16RGB[(font[c][i]>>6)&0b11];
+        spi_xfer(BP_LCD_SPI, (uint16_t)color>>8);
+        spi_xfer(BP_LCD_SPI, (uint16_t)color>>0);
+        color=font_lut16RGB[(font[c][i]>>4)&0b11];
+        spi_xfer(BP_LCD_SPI, (uint16_t)color>>8);
+        spi_xfer(BP_LCD_SPI, (uint16_t)color>>0);
+        color=font_lut16RGB[(font[c][i]>>2)&0b11];
+        spi_xfer(BP_LCD_SPI, (uint16_t)color>>8);
+        spi_xfer(BP_LCD_SPI, (uint16_t)color>>0);
+        color=font_lut16RGB[(font[c][i]>>0)&0b11];
+        spi_xfer(BP_LCD_SPI, (uint16_t)color>>8);
+        spi_xfer(BP_LCD_SPI, (uint16_t)color>>0);
+	}
+}
+
+void writeFileToLCD(void){
+    uint32_t bigcount;
+
+	setBoundingBox(0, 240, 0, 320);
+	//setup flash
+	#define FLCMD_FREAD	0x0B		// Read Data Bytes (READ)
+    gpio_clear(BP_FS_CS_PORT, BP_FS_CS_PIN);	// cs low
+	spi_xfer(BP_FS_SPI, (uint16_t) FLCMD_FREAD);
+	spi_xfer(BP_FS_SPI, (uint16_t) ((0x30000>>16)&0x000000FF));	// address
+	spi_xfer(BP_FS_SPI, (uint16_t) ((0x30000>>8)&0x000000FF));		//
+	spi_xfer(BP_FS_SPI, (uint16_t) (0x30000&0x000000FF));		//
+
+	spi_xfer(BP_FS_SPI, (uint16_t) 0xFF); //read dummy byte
+
+    gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+    gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+	for(bigcount=0; bigcount<=153600; bigcount++)
+	{
+        spi_xfer(BP_LCD_SPI, (uint16_t)spi_xfer(BP_FS_SPI, (uint16_t) 0xFF));
+	}
+	gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+    gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+}
+
+
+void clearLCD(void){
+    uint16_t color, blue, red, green, black, white;
     uint16_t x,y;
-    uint16_t color, blue, red, green;
     blue=0b0000000000011111;
     red =0b1111100000000000;
     green=0b0000011111100000;
+    black=0x0000;
+    white=0xffff;
+
+    setBoundingBox(0, 240, 0, 320);
+
+    color=white;
+    gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+    gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+    for(x=0;x<240;x++){
+        for(y=0;y<320;y++){
+            spi_xfer(BP_LCD_SPI, (uint16_t) color>>8);
+            spi_xfer(BP_LCD_SPI, (uint16_t) color&0xff);
+        }
+    }
+    gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+}
+
+void disableLCD(void){
+    writeLCDcommand(0x28);
+}
+
+void enableLCD(void){
+    writeLCDcommand(0x29);
+}
+
+void setBoundingBox(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye){
     //setup write area
     //start must always be =< end
     writeLCDcommand(0x2A); //column start and end set
@@ -26,43 +193,6 @@ void setBoundingBox(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye){
     writeLCDdata(ye>>8);
     writeLCDdata(ye&0xff); //320
     writeLCDcommand(0x2C);//Memory Write
-
-    //write some color data...
-    while(true){
-        color=red;
-        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
-        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-        for(x=xs;x<xe;x++){
-            for(y=xs;y<ye;y++){
-                spi_xfer(BP_LCD_SPI, (uint16_t) color>>8);
-                spi_xfer(BP_LCD_SPI, (uint16_t) color&0xff);
-            }
-        }
-        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-
-        color=blue;
-        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
-        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-        for(x=xs;x<xe;x++){
-            for(y=xs;y<ye;y++){
-                spi_xfer(BP_LCD_SPI, (uint16_t) color>>8);
-                spi_xfer(BP_LCD_SPI, (uint16_t) color&0xff);
-            }
-        }
-        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-
-        color=green;
-        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
-        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-        for(x=xs;x<xe;x++){
-            for(y=xs;y<ye;y++){
-                spi_xfer(BP_LCD_SPI, (uint16_t) color>>8);
-                spi_xfer(BP_LCD_SPI, (uint16_t) color&0xff);
-            }
-        }
-        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-    }
-
 }
 
 void writeLCDcommand(uint16_t command){
@@ -81,6 +211,8 @@ void writeLCDdata(uint16_t data){
 }
 
 void setupLCD(void){
+    uint8_t i,c;
+    uint16_t temp;
   	// enable peripheral
 	rcc_periph_clock_enable(BP_LCD_SPI_CLK);
 
@@ -108,6 +240,17 @@ void setupLCD(void){
 	//CS high for hold
 	gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
 
+	//precalculate the 24bit color values into 16bit RGB for our display
+    for(int i=0; i<4;i++){
+
+       c=((font_lut24[i]&0xff0000)>>16);
+       temp=(uint16_t)((c&0b11111000)<<8);
+       c=((font_lut24[i]&0xff00)>>8);
+       temp|=((c&0b11111100)<<3);
+       c=((font_lut24[i]&0xff));
+       temp|=((c&0b11111000)>>3);
+       font_lut16RGB[i]=temp;
+    }
 }
 
 void initializeLCD(void){

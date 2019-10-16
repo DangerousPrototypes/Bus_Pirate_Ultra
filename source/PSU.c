@@ -26,9 +26,6 @@ void psuinit(void){
     // programmable output voltage supply control
 	gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);								// active hi
 	gpio_set_mode(BP_PSUEN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_PSUEN_PIN);		// PSU disable
-    // on-board pull-up resistors control
-	gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);								// active hi
-	gpio_set_mode(BP_VPUEN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPUEN_PIN);		// VPU disable
 
     // setup DAC
     rcc_periph_clock_enable(RCC_DAC);

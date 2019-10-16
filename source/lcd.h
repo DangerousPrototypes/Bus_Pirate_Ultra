@@ -3,3 +3,8 @@ void writeLCDcommand(uint16_t command);
 void writeLCDdata(uint16_t data);
 void setupLCD(void);
 void initializeLCD(void);
+void clearLCD(void);
+void writeCharacterToLCD(uint8_t c);
+void updateLCD(uint8_t initial);
+void writeFileToLCD(void);
+void writeByteNumberToLCD(uint8_t c);

@@ -14,8 +14,7 @@
 #include "UI.h"
 #include "ADC.h"
 #include "PSU.h"
-
-
+#include "lcd.h"
 
 //globals
 uint32_t usbflushtime;				// usb poll timer
@@ -41,16 +40,12 @@ int main(void)
 {
 	char c;
 	int i;
-	uint8_t buff[256];
-
-    unsigned char temp;
 
 	// init vars
 	usbflushtime=0;
-//#define LADEBUG
+
 	// init clock
 	rcc_clock_setup_in_hse_8mhz_out_72mhz();
-//	rcc_clock_setup_in_hsi_out_48mhz();
 
 	// enable clocks for IO and alternate functions
 	rcc_periph_clock_enable(RCC_GPIOA);
@@ -62,20 +57,19 @@ int main(void)
 	rcc_periph_clock_enable(RCC_GPIOG);
 	rcc_periph_clock_enable(RCC_AFIO);
 
-    /*
-    la_sram_mode_setup();
-    la_sram_mode_spi();
-    la_sram_quad_setup();
-    la_sram_quad_output();
-    la_sram_arm_setup();
-    la_sram_arm_stop();
-    */
-
 	AFIO_MAPR |= AFIO_MAPR_SWJ_CFG_JTAG_OFF_SW_ON;		// disable jtag/enable swd
 
 	// setup pins (move to a separate function??)
 	gpio_set_mode(BP_USB_PULLUP_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_USB_PULLUP_PIN);	// USB d+ pullup
-	gpio_clear(BP_USB_PULLUP_PORT, BP_USB_PULLUP_PIN);							// pull down
+	gpio_clear(BP_USB_PULLUP_PORT, BP_USB_PULLUP_PIN);
+    // on-board pull-up resistors control
+	gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);								// active hi
+	gpio_set_mode(BP_VPUEN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPUEN_PIN);		// VPU disable
+	// LEDs
+	gpio_set_mode(BP_LED_MODE_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_MODE_PIN);
+	gpio_clear(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
+	gpio_set_mode(BP_LED_USB_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_USB_PIN);
+	gpio_clear(BP_LED_USB_PORT, BP_LED_USB_PIN);						// pull down
 
 	// setup systick
 	systick_set_clocksource(STK_CSR_CLKSOURCE_AHB_DIV8);	// 9000000 Hz
@@ -103,12 +97,6 @@ int main(void)
 	// init UI
 	initUI();
 
-	// LEDs
-	gpio_set_mode(BP_LED_MODE_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_MODE_PIN);
-	gpio_clear(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
-	gpio_set_mode(BP_LED_USB_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_USB_PIN);
-	gpio_clear(BP_LED_USB_PORT, BP_LED_USB_PIN);
-
 	// ADC
 	initADC();
 
@@ -117,7 +105,9 @@ int main(void)
 
     setupLCD();
 	initializeLCD();
-	setBoundingBox(0, 240, 0, 320);
+	//clearLCD();
+	writeFileToLCD();
+	updateLCD(1);
 
     if(uploadfpga()==1){
         gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
