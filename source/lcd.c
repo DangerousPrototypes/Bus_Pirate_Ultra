@@ -4,6 +4,7 @@
 #include "lcd.h"
 #include "font.h"
 #include "fpga.h"
+#include "UI.h"
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
@@ -52,14 +53,11 @@ void updateLCD(uint8_t initial){
     if(initial){//this needs to be passed an array of strings from the protocol...
         //164
         for(i=0;i<10;i++){
-            setBoundingBox( (i*24)+6, (i*24)+6+13, 165-(14*3), 165);
+            setBoundingBox( (i*24)+6, (i*24)+6+13, 165-(10*3), 165);
             gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
             gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
             switch(i){
             case 8:
-                writeCharacterToLCD('u');
-                writeCharacterToLCD('o');
-                writeCharacterToLCD('V');
                 break;
             case 9:
                 writeCharacterToLCD('D');
@@ -85,9 +83,30 @@ void updateLCD(uint8_t initial){
         gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
         gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
 
-
+        writePSUstate();
 
     }
+
+}
+
+void writePSUstate(void){
+
+    setBoundingBox( (8*24)+6, (8*24)+6+13, 165-(10*4), 165);
+    gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+    gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+    if(modeConfig.psu==0){
+        writeCharacterToLCD('f');
+        writeCharacterToLCD('e');
+        writeCharacterToLCD('r');
+        writeCharacterToLCD('V');
+    }else{
+        writeCharacterToLCD('t');
+        writeCharacterToLCD('u');
+        writeCharacterToLCD('o');
+        writeCharacterToLCD('V');
+    }
+    gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+    gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
 
 }
 

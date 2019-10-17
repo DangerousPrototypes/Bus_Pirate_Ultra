@@ -1,5 +1,7 @@
 #include <stdint.h>
 #include "buspirate.h"
+#include "UI.h"
+#include "lcd.h"
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/dac.h>
@@ -12,6 +14,8 @@ void psuSetOutput(uint16_t value){
     dac_software_trigger(CHANNEL_1);
     //enable the VREG
     gpio_set(BP_PSUEN_PORT, BP_PSUEN_PIN);
+    modeConfig.psu=1;
+    writePSUstate();
 }
 
 void psuDisable(){
@@ -19,6 +23,9 @@ void psuDisable(){
     dac_disable(CHANNEL_1); //turn off DAC
     //gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO4); //DAC pin to output and ground
     //gpio_clear(GPIOA,GPIO4);
+
+    modeConfig.psu=0;
+    writePSUstate();
 
 }
 
@@ -35,4 +42,6 @@ void psuinit(void){
     dac_disable_waveform_generation(CHANNEL_1);
     dac_enable(CHANNEL_1);
     dac_set_trigger_source(DAC_CR_TSEL1_SW);
+
+    modeConfig.psu=0;
 }

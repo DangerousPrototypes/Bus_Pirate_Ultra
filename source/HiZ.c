@@ -6,6 +6,7 @@
 #include "cdcacm.h"
 #include "UI.h"
 #include "AUXpin.h"
+#include "lcd.h"
 
 
 void HiZpins(void)
@@ -42,4 +43,5 @@ void HiZsetup_exc(void)
 
 	// allow postphoned inits
 	modeConfig.init=0;
+
 }

@@ -8,3 +8,4 @@ void writeCharacterToLCD(uint8_t c);
 void updateLCD(uint8_t initial);
 void writeFileToLCD(void);
 void writeByteNumberToLCD(uint8_t c);
+void writePSUstate(void);

@@ -106,8 +106,10 @@ int main(void)
     setupLCD();
 	initializeLCD();
 	//clearLCD();
+	disableLCD();
 	writeFileToLCD();
 	updateLCD(1);
+	enableLCD();
 
     if(uploadfpga()==1){
         gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);
