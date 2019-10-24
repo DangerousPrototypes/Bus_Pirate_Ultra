@@ -26,11 +26,11 @@
 
 // globals
 uint32_t cmdhead, cmdtail, cursor;		// TODO swap head an tail?
-uint16_t bytecodePreprocessed, bytecodeProcessed, bytecodePostprocessed;
+uint16_t bytecodePreprocessed, bytecodePostprocessed;
 char cmdbuff[CMDBUFFSIZE];
 struct _modeConfig modeConfig;
 
-struct _bytecode bytecodes[256];
+struct _bytecode bytecodes[512];
 
 void serviceAsyncCommandFIFO();
 void postProcess();
@@ -72,9 +72,12 @@ void consumewhitechars(void)
 }
 
 // decodes value from the cmdline
-// XXXXXX integer
+//TODO: set default entry format!!!
+// XXXXXX default
+// 0dXXXX decimal
 // 0xXXXX hexadecimal
 // 0bXXXX binair
+// bits'h/b/dXXXX format??
 uint32_t getint(void)
 {
 	int i;
@@ -301,7 +304,7 @@ void doUI(void)
 		    //temp=FPGA_REG_07;
 
 		bytecodePreprocessed=0;
-		bytecodeProcessed=0;
+		//bytecodeProcessed=0;
 		bytecodePostprocessed=0;
 		cancelPreprocessor=0;
 
@@ -321,12 +324,20 @@ void doUI(void)
 
 		cdcprintf("\r\n");
 
+        FPGA_REG_03|=(0b1<<7);//put statemachine in reset
+
 		bytecodes[bytecodePreprocessed].command=0xFE; //start LA command...
 		bytecodes[bytecodePreprocessed].blocking=0; //start LA command...
 		bytecodePreprocessed=bytecodePreprocessed+1;
+		FPGA_REG_07=0xfe00;
 
 		while((go==1)&&(cmdtail!=cmdhead))
 		{
+
+            //TODO: move to child loop!!!!!!!
+			//if(!gpio_get(BP_FPGA_FIFO_IN_FULL_PORT,BP_FPGA_FIFO_IN_FULL_PIN))
+			    //continue;
+
 			c=cmdbuff[cmdtail];
 
 			// delayed init is handled here
@@ -340,7 +351,12 @@ void doUI(void)
 				}
 			}
 
+            while(gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN))
+                temp=FPGA_REG_07;
 
+            //prefill the common variables to save space below
+            bytecodes[bytecodePreprocessed].command=c;
+            bytecodes[bytecodePreprocessed].blocking=0;
 			switch (c)
 			{
                 case '0':
@@ -357,39 +373,70 @@ void doUI(void)
                     bytecodes[bytecodePreprocessed].data=orderbits(getint());
                     bytecodes[bytecodePreprocessed].option1=getnumbits();
                     bytecodes[bytecodePreprocessed].repeat=getrepeat();
-                    bytecodes[bytecodePreprocessed].blocking=0;
+                    //bytecodes[bytecodePreprocessed].blocking=0;
                     if(bytecodes[bytecodePreprocessed].option1<1) //custom user bits or use mode default
                         bytecodes[bytecodePreprocessed].option1=(uint16_t)modeConfig.numbits;
+
+                    //if (modeConfig.numbits<32) temp&=((1<<modeConfig.numbits)-1);
+                    //while(bytecodes[bytecodeProcessed].repeat--)
+                    //{//TODO: how to handle in lower layer, send custom bit numbers...
+                        protocols[modeConfig.mode].protocol_send(bytecodes[bytecodePreprocessed].data,bytecodes[bytecodePreprocessed].repeat,bytecodes[bytecodePreprocessed].option1);		// reshuffle bits if necessary
+                    //}
                     break;
-                case '&':
-				case '%':
                 case 'r':
-                    bytecodes[bytecodePreprocessed].command=c;
+                    //bytecodes[bytecodePreprocessed].command=c;
                     bytecodes[bytecodePreprocessed].option1=getnumbits();
                     bytecodes[bytecodePreprocessed].repeat=getrepeat();
-                    bytecodes[bytecodePreprocessed].blocking=0;
+                    //bytecodes[bytecodePreprocessed].blocking=0;
+                    protocols[modeConfig.mode].protocol_read();
                     break;
-				case '[':
-				case ']':
-				case '{':
-				case '}':
-				case '/':
-				case '\\':
-				case '^':
-				case '-':
-				case '_':
-				case '.':
-				case '!':
-                    bytecodes[bytecodePreprocessed].command=c;
-                    bytecodes[bytecodePreprocessed].blocking=0;
-				    break;
+                case '&':
+                    bytecodes[bytecodePreprocessed].repeat=getrepeat();
+                    FPGA_REG_07=(0x8400|(uint8_t)bytecodes[bytecodePreprocessed].repeat);//delay for repeat cycles
+                    break;
+				case '%':
+                    bytecodes[bytecodePreprocessed].repeat=getrepeat();
+                    for(i=0;i<bytecodes[bytecodePreprocessed].repeat;i++)
+                        FPGA_REG_07=(0x8400|(uint8_t)0x0F);//delay for repeat cycles
+                    break;
+                case '\"': //NOT SURE HOW TO HANDLE THIS YET... ALSO THERE IS A BUG IF ONLY ONE CHAR "H" says unterminated
+                   break;
+                case '[':   modeConfig.wwr=0; //WWR should be handled on the backend processing!!!
+                        protocols[modeConfig.mode].protocol_start();
+                        break;
+                case ']':   modeConfig.wwr=0;
+                        protocols[modeConfig.mode].protocol_stop();
+                        break;
+                case '{':   modeConfig.wwr=1;
+                        protocols[modeConfig.mode].protocol_startR();
+                        break;
+                case '}':   modeConfig.wwr=0;
+                        protocols[modeConfig.mode].protocol_stopR();
+                        break;
+                case '/':   protocols[modeConfig.mode].protocol_clkh();
+                        break;
+                case '\\':  protocols[modeConfig.mode].protocol_clkl();
+                        break;
+                case '^':   protocols[modeConfig.mode].protocol_clk();
+                        break;
+                case '-':   protocols[modeConfig.mode].protocol_dath();
+                        break;
+                case '_':   protocols[modeConfig.mode].protocol_datl();
+                        break;
+                case '.':   protocols[modeConfig.mode].protocol_dats();
+                        break;
+                case '!':   protocols[modeConfig.mode].protocol_bitr();
+                        break;
                 case 'a':
+                    //setAUX(0);
                 case '@':
+                    //cdcprintf("AUX=%d", getAUX());
                 case 'A':
+                    //setAUX(1);
                     if(modeConfig.mode!=HIZ)
                     {
-                        bytecodes[bytecodePreprocessed].command=c;
-                        bytecodes[bytecodePreprocessed].blocking=0;
+                        //bytecodes[bytecodePreprocessed].command=c;
+                        //bytecodes[bytecodePreprocessed].blocking=0;
                     }
                     else
                     {
@@ -408,47 +455,16 @@ void doUI(void)
 				case 'i':
 				case 'l':
 				case 'L':
-				//case 'm':
-				//case 'o':
+				case 'o':
 				case 'p':
 				case 'P':
 				case 'v':
 				case 'w':
-				//case 'W':
+				case 'W':
                 case '~':
-				    bytecodes[bytecodePreprocessed].command=c;
+				    //bytecodes[bytecodePreprocessed].command=c;
 				    bytecodes[bytecodePreprocessed].blocking=1;
 				    break;
-                case 'W':
-                        temp=askint("value", 1, 0xFFFFFFFF, 1000);
-                        psuSetOutput(temp);
-                        cancelPreprocessor=1;
-                        break;
-                /*case 'd':
-                        temp = voltage(BP_USB_CHAN, 1);
-                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
-                        cdcprintf("USB: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
-                         temp = voltage(BP_VOUT_CHAN, 1);
-                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
-                        cdcprintf("VOUT: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
-
-                        FPGA_REG_0A=0b1110;
-                        delayms(1);
-                        temp = voltage(BP_ADC_CHAN, 1);
-                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
-                        cdcprintf("ADC: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
-                        FPGA_REG_0A=0b0000;
-                        delayms(1);
-                        temp = voltage(BP_ADC_CHAN, 1);
-                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
-                        cdcprintf("ADC: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
-                        FPGA_REG_0A=0b0010;
-                        delayms(1);
-                        temp = voltage(BP_ADC_CHAN, 1);
-                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
-                        cdcprintf("ADC: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
-						cancelPreprocessor=1;
-                    break;*/
                 case '=': //do bitwise and other math here.... =0x10|0x20, =0x10<<1, =0x10*8, etc
 				case '|':
                     cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);
@@ -456,8 +472,6 @@ void doUI(void)
                     bytecodes[bytecodePreprocessed].data=getint();
                     bytecodes[bytecodePreprocessed].blocking=1;
                     break;
-				case '\"':
-				    break; //HOW TO DEAL WITH STRING??? INDEX IN BIG ARRAY? NULL TERMINATED IN ARRAY?
                 case '(':
                     cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);		// advance 1 position
                     temp=getint();
@@ -467,6 +481,11 @@ void doUI(void)
                         bytecodes[bytecodePreprocessed].command=c;
                         bytecodes[bytecodePreprocessed].data=temp;
                         bytecodes[bytecodePreprocessed].blocking=1;
+                        //TODO: pass to library to process below??????
+                        //pause processing untill this macro is executed????
+                        //if we don't pause there will be other stuff in the command queue
+                        //maybe have option to pre or post process each macro??
+                        protocols[modeConfig.mode].protocol_macro(bytecodes[bytecodePreprocessed].data);
                     }
                     else
                     {
@@ -476,10 +495,6 @@ void doUI(void)
                     break;
                 case 'm':
                     changemode();
-                    cancelPreprocessor=1;
-                    break;
-				case 'o':
-                    changedisplaymode();
                     cancelPreprocessor=1;
                     break;
 				case '$':
@@ -505,6 +520,11 @@ void doUI(void)
                     break;
 			}
 
+			//ADD HALT STATEMENT TO COMMAND QUEUE!
+            if(bytecodes[bytecodePreprocessed].blocking==1)
+                FPGA_REG_07=0xfd00;
+
+
 			cmdtail=(cmdtail+1)&(CMDBUFFSIZE-1);	// advance to next char/command
 			if((c!=' ')&&(c!=0x00)&&(c!=',')){
                 //cdcprintf("\r\n");
@@ -520,18 +540,27 @@ void doUI(void)
 			}
 		}
 
-        if(!cancelPreprocessor&&bytecodePreprocessed>1){
+        if(cancelPreprocessor){
+            gpio_set(BP_FPGA_FIFO_CLEAR_PORT,BP_FPGA_FIFO_CLEAR_PIN);
+            delayms(1);
+            gpio_clear(BP_FPGA_FIFO_CLEAR_PORT,BP_FPGA_FIFO_CLEAR_PIN);
+        }else if(bytecodePreprocessed>1){
             bytecodes[bytecodePreprocessed].command=0xFF; //stop LA command...
             bytecodes[bytecodePreprocessed].blocking=0;
             bytecodePreprocessed=bytecodePreprocessed+1;
-            FPGA_REG_03|=(0b1<<7);//put statemachine in reset
+            FPGA_REG_07=0xff00;
+
             logicAnalyzerCaptureStart();
+            FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
             while(bytecodePostprocessed<bytecodePreprocessed){
-                processByteCode();
+                //processByteCode();
                 postProcess();
             }
             logicAnalyzerCaptureStop();
         }
+            while(gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN)){
+                cdcprintf("Still in buffer: %4X ",FPGA_REG_07);
+            }
         cdcprintf("\r\n");
 
 
@@ -552,104 +581,11 @@ void doUI(void)
 	}
 }
 
-void processByteCode(){
-
-    uint16_t i;
-
-
-    //process byte code until fgpa full or we hit a blocking command....
-    while((bytecodeProcessed<bytecodePreprocessed) && !gpio_get(BP_FPGA_FIFO_IN_FULL_PORT,BP_FPGA_FIFO_IN_FULL_PIN))
-    {
-        switch (bytecodes[bytecodeProcessed].command)
-        {
-            case 0x00:
-                    //bytecodes[bytecodePreprocessed].option1=bits;
-                    //if (modeConfig.numbits<32) temp&=((1<<modeConfig.numbits)-1);
-                    //while(bytecodes[bytecodeProcessed].repeat--)
-                    //{//TODO: how to handle in lower layer, send custom bit numbers...
-                        protocols[modeConfig.mode].protocol_send(bytecodes[bytecodeProcessed].data,bytecodes[bytecodeProcessed].repeat,bytecodes[bytecodeProcessed].option1);		// reshuffle bits if necessary
-                    //}
-                    break;
-            case 'r':
-                //while(bytecodes[bytecodeProcessed].repeat--)
-                //{
-                    protocols[modeConfig.mode].protocol_read();
-                //}
-                break;
-            case '&':
-                    FPGA_REG_07=(0x8400|(uint8_t)bytecodes[bytecodeProcessed].repeat);//delay for repeat cycles
-                    //bytecodes[bytecodeProcessed].fpgaCommand=
-                    break;
-            case '%':
-                    for(i=0;i<bytecodes[bytecodeProcessed].repeat;i++)
-                        FPGA_REG_07=(0x8400|(uint8_t)0x0F);//delay for repeat cycles
-                    break;
-            case '\"': //NOT SURE HOW TO HANDLE THIS YET... ALSO THERE IS A BUG IF ONLY ONE CHAR "H" says unterminated
-                   break;
-            case '(':   protocols[modeConfig.mode].protocol_macro(bytecodes[bytecodeProcessed].data); //macro... should return if blocking or not??? hum
-                    break;
-            case '[':   modeConfig.wwr=0; //WWR should be handled on the backend processing!!!
-                    protocols[modeConfig.mode].protocol_start();
-                    break;
-            case ']':   modeConfig.wwr=0;
-                    protocols[modeConfig.mode].protocol_stop();
-                    break;
-            case '{':   modeConfig.wwr=1;
-                    protocols[modeConfig.mode].protocol_startR();
-                    break;
-            case '}':   modeConfig.wwr=0;
-                    protocols[modeConfig.mode].protocol_stopR();
-                    break;
-            case '/':   protocols[modeConfig.mode].protocol_clkh();
-                    break;
-            case '\\':  protocols[modeConfig.mode].protocol_clkl();
-                    break;
-            case '^':   protocols[modeConfig.mode].protocol_clk();
-                    break;
-            case '-':   protocols[modeConfig.mode].protocol_dath();
-                    break;
-            case '_':   protocols[modeConfig.mode].protocol_datl();
-                    break;
-            case '.':   protocols[modeConfig.mode].protocol_dats();
-                    break;
-            case '!':   protocols[modeConfig.mode].protocol_bitr();
-                    break;
-            case 'a':
-                    //setAUX(0);
-                    break;
-            case 'A':
-                    //setAUX(1);
-                    break;
-            case '@':
-                    //cdcprintf("AUX=%d", getAUX());
-                    break;
-            case 'g':
-                    //setPWM(0, 0);				// disable PWM
-                    break;
-            case 0xfe:
-                    FPGA_REG_07=0xfe00;
-                    break;
-            case 0xff:
-                    FPGA_REG_07=0xff00;
-                    break;
-                //below here are all blocking commands that wait for all previous commands to finish....
-            default:
-                    //ADD HALT STATEMENT TO COMMAND QUEUE!
-                    if(bytecodes[bytecodeProcessed].blocking==1)
-                        FPGA_REG_07=0xfd00;
-                    break;
-        }
-        bytecodeProcessed=bytecodeProcessed+1;
-    }
-
-    FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
-}
-
 void postProcess(){
     uint16_t temp, result;
     uint16_t i, temp2, temp3;
 
-    if((bytecodeProcessed>bytecodePostprocessed) && gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN))
+    if((bytecodePreprocessed>bytecodePostprocessed) && gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN))
     {//process next byte
 
             /*result=FPGA_REG_07;
@@ -657,6 +593,9 @@ void postProcess(){
             if(bytecodes[bytecodePostprocessed].blocking && result!=0xfd00){
                 cdcprintf("FPGA out of sync\r\n");
             }*/
+            //cdcprintf("DEBUG: %4X\r\n",FPGA_REG_07);
+            //bytecodePostprocessed=bytecodePostprocessed+1;
+            //return;
 
             switch (bytecodes[bytecodePostprocessed].command)
 			{
@@ -709,7 +648,7 @@ void postProcess(){
 						break;
 				case '&':
                         //TODO: compare command to verify we are in the right place in the data....
-                        if(FPGA_REG_07!=(0x8400|(uint8_t)bytecodes[bytecodeProcessed].repeat)){
+                        if(FPGA_REG_07!=(0x8400|(uint8_t)bytecodes[bytecodePostprocessed].repeat)){
                             cdcprintf("FPGA out of sync\r\n");
                         }
 						cdcprintf("Delay: %dus", bytecodes[bytecodePostprocessed].repeat);
@@ -733,16 +672,19 @@ void postProcess(){
                         cdcprintf("AUX=%d", getAUX());
 						break;
                 case 0xfe:
-                        if(FPGA_REG_07!=0xfe00){
-                            cdcprintf("FPGA out of sync\r\n");
-                        }
+                        temp=FPGA_REG_07;
                         cdcprintf("LA: start\r\n");
+                        if(temp!=0xfe00){
+                            cdcprintf("FPGA out of sync: %04X\r\n",temp);
+                        }
+
                         break;
                 case 0xff:
-                        if(FPGA_REG_07!=0xff00){
-                            cdcprintf("FPGA out of sync\r\n");
-                        }
+                        temp=FPGA_REG_07;
                         cdcprintf("LA: stop\r\n");
+                        if(temp!=0xff00){
+                            cdcprintf("FPGA out of sync: %04X\r\n",temp);
+                        }
                         break;
 				case 'g':
                         setPWM(0, 0);				// disable PWM
@@ -804,6 +746,9 @@ void postProcess(){
                         modeConfig.bitorder=1;
 						cdcprintf("Bitorder: LSB");
 						break;
+				case 'o':
+                        changedisplaymode();
+                    break;
 				case 'p':
                         gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);	// always permitted
 						cdcprintf("Pull-ups: disabled");
@@ -837,7 +782,8 @@ void postProcess(){
 				case 'W':
                         if(modeConfig.mode!=0)
 						{
-                            psuSetOutput(0x0000);
+                            temp=askint("value", 1, 0xFFFFFFFF, 1000);
+                            psuSetOutput(temp);
 							//delayms(10);
                             temp = voltage(BP_VOUT_CHAN, 1);
                             cdcprintf("Vout: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
@@ -893,7 +839,7 @@ void postProcess(){
 			if(bytecodes[bytecodePostprocessed].blocking) //TODO: there is a clock glitch on the logic analyzer clock when this happens...
             {
                 result=FPGA_REG_07; //clear the blocking command...
-    			FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
+    			FPGA_REG_03&=~(0b1<<7);//TODO: release statemachine from reset (this should be done on the read above by waiting until FIFO out empty!!!!
 			}
 			bytecodePostprocessed=bytecodePostprocessed+1;
 
@@ -1278,7 +1224,7 @@ void getuserinput(void)
 	while(!go)
 	{
 
-        updateLCD(0);
+        //updateLCD(0);
 
         if(cdcbyteready2())
 		{

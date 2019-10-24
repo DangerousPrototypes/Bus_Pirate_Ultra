@@ -57,7 +57,7 @@ void HWSPI_send_test(uint32_t d){
 uint32_t HWSPI_send(uint32_t d,uint32_t r,uint8_t b)
 {
 	uint16_t returnval, bpsm_command;
-
+//FPGA_REG_07=0x0804;
 	//TODO: lsb ??
 	if((modeConfig.numbits>=1)&&(modeConfig.numbits<=8))
 	{
@@ -203,11 +203,14 @@ void HWSPI_macro_post(uint32_t macro)
 
 void HWSPI_setup(void)
 {
-    //cdcprintf("Loading FPGA...");
-    //uploadfpga();
-    //cdcprintf("done!\r\n");
-
-
+    //Needs more care! FPGA needs to be reconfigured after this (logic analyzer setup, etc)
+    /*cdcprintf("Loading FPGA...");
+    if(uploadfpga()){
+        cdcprintf("done!\r\n");
+    }else{
+        cdcprintf("error :(\r\n");
+    } //TODO: return error status and go back to HiZ????
+*/
     //setup io
     //`define reg_bpio_oe wreg[6'h00][BP_PINS-1:0]
     //`define reg_bpio_od wreg[6'h00][BP_PINS-1+8:8]

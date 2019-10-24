@@ -82,6 +82,10 @@
 #define BP_FPGA_FIFO_IN_FULL_PIN   GPIO11
 #define BP_FPGA_FIFO_OUT_NEMPTY_PIN    GPIO12
 
+#define BP_FPGA_FIFO_CLEAR_PORT   GPIOD
+#define BP_FPGA_FIFO_CLEAR_PIN    GPIO6
+
+
 /*
 mcu_aux1	pc10
 mcu_aux2	pc11

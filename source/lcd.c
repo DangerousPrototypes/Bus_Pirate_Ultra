@@ -73,7 +73,7 @@ void updateLCD(uint8_t initial){
             gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
             gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
         }
-        i=9;
+        /*i=9;
         setBoundingBox( (i*24)+6, (i*24)+6+13, ys, 60);
         gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
         gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
@@ -82,7 +82,7 @@ void updateLCD(uint8_t initial){
         //writeCharacterToLCD('~'+1);
         gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
         gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-
+*/
         writePSUstate();
 
     }
