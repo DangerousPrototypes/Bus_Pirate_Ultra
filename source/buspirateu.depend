@@ -1329,7 +1329,7 @@
 
 1562674022 r:\libopencm3\include\libopencm3\stm32\f4\fmc.h
 
-1571302144 source:c:\msys64\home\ian\buspirate\source\hiz.c
+1572088257 source:c:\msys64\home\ian\buspirate\source\hiz.c
 	<stdint.h>
 	<libopencm3/stm32/gpio.h>
 	"buspirate.h"
@@ -1338,6 +1338,7 @@
 	"UI.h"
 	"AUXpin.h"
 	"lcd.h"
+	"PSU.h"
 
 1563208254 c:\msys64\home\ian\buspirate\source\hiz.h
 
@@ -1363,7 +1364,7 @@
 
 1572015469 c:\msys64\home\ian\buspirate\source\protocols.h
 
-1572001907 source:c:\msys64\home\ian\buspirate\source\ui.c
+1572087553 source:c:\msys64\home\ian\buspirate\source\ui.c
 	<stdlib.h>
 	<stdint.h>
 	<libopencm3/stm32/gpio.h>
@@ -1391,7 +1392,7 @@
 
 1572015469 c:\msys64\home\ian\buspirate\source\hwspi.h
 
-1572001669 source:c:\msys64\home\ian\buspirate\source\hwspi.c
+1572088257 source:c:\msys64\home\ian\buspirate\source\hwspi.c
 	<stdint.h>
 	"buspirate.h"
 	<libopencm3/stm32/spi.h>
@@ -1401,8 +1402,9 @@
 	"cdcacm.h"
 	"UI.h"
 	"FPGA.h"
+	"lcd.h"
 
-1571911601 source:c:\msys64\home\ian\buspirate\source\lcd.c
+1572088169 source:c:\msys64\home\ian\buspirate\source\lcd.c
 	<stdint.h>
 	"delay.h"
 	"buspirate.h"
@@ -1425,7 +1427,7 @@
 	<libopencm3/stm32/rcc.h>
 	<libopencm3/stm32/dac.h>
 
-1572015469 c:\msys64\home\ian\buspirate\source\lcd.h
+1572088161 c:\msys64\home\ian\buspirate\source\lcd.h
 
-1571311666 c:\msys64\home\ian\buspirate\source\font.h
+1572082960 c:\msys64\home\ian\buspirate\source\font.h
 

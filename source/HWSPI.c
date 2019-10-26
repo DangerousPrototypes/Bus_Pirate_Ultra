@@ -8,11 +8,13 @@
 #include "cdcacm.h"
 #include "UI.h"
 #include "FPGA.h"
+#include "lcd.h"
 
 
 static uint32_t cpol, cpha, br, dff, lsbfirst, csidle, od;
 
-const char pinLabels[]="MOSI\0CLOCK\0MISO\0CS\0AUX\0ADC\0DIO7\0DIO8\0";
+
+
 
 void HWSPI_start(void)
 {
@@ -208,6 +210,8 @@ void HWSPI_setup(void)
         cdcprintf("error :(\r\n");
     } //TODO: return error status and go back to HiZ????
 */
+    const char pinLabels[]="MOSI\0CLOCK\0MISO\0CS\0AUX\0ADC\0DIO7\0DIO8\0";
+    modeLabelsSetupLCD(pinLabels);
     //setup io
     //`define reg_bpio_oe wreg[6'h00][BP_PINS-1:0]
     //`define reg_bpio_od wreg[6'h00][BP_PINS-1+8:8]

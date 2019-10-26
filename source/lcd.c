@@ -19,83 +19,48 @@
 
 */
 
-void modeLabelsSetupLCD(char *labels){
-    uint8_t i,ys;
-    uint32_t temp;
-    ys=14;
-    if(!initial){
-        ys+=10;
-    }
-    //DIO1-8, Vout
-    for(i=0;i<9;i++){
+void modeLabelsSetupLCD(const char *labels){
+    uint8_t i,cnt=0;
 
+    for(i=0;i<10;i++){
+        /*
+        X1 = width of screen (239) - pixels from edge of first label (6) + font height-1 (13) - position (i) * pixels between label corners (24)
+        X2 = width of screen (239) - pixels from edge of first label (6) - position (i) * pixels between label corners (24)
+        Y1 = distance from top of screen (155)
+        Y2 = font width (10) * maximum characters allowed (5)
+        */
+        setBoundingBox( (239-(6+13))-(i*24), (239-6)-(i*24), 155, 155+((10*5)-1));
+        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
         switch(i){
-            case 8:
-                temp = voltage(BP_VOUT_CHAN, 1);
-                break;
-            default:
-                 FPGA_REG_0A=(0b0|(i<<1));
-                 delayus(10);
-                 temp = voltage(BP_ADC_CHAN, 1);
-                 break;
-        }
-        setBoundingBox( (i*24)+6, (i*24)+6+13, ys, 60);
-        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
-        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-        if(initial) writeCharacterToLCD('V'); //V
-        writeByteNumberToLCD((temp%1000)/100);
-        writeCharacterToLCD('.'); //.
-        writeByteNumberToLCD(temp/1000);
-        gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
-        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-    }
-
-    if(initial){//this needs to be passed an array of strings from the protocol...
-        //164
-        for(i=0;i<10;i++){
-            setBoundingBox( (i*24)+6, (i*24)+6+13, 165-(10*3), 165);
-            gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
-            gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-            switch(i){
-            case 8:
-                break;
-            case 9:
-                writeCharacterToLCD('D');
-                writeCharacterToLCD('N');
-                writeCharacterToLCD('G');
-                break;
-            default:
-                writeCharacterToLCD('Z');
-                writeCharacterToLCD('i');
-                writeCharacterToLCD('H');
-                break;
+        case 8:
+            break;
+        case 9:
+            writeCharacterToLCD('G');
+            writeCharacterToLCD('N');
+            writeCharacterToLCD('D');
+            break;
+        default:
+            while(labels[cnt]!=0x00 && cnt<(6*8)){ //5 characters per label maximum (plus 0x00) * 8 labels as a safety
+                writeCharacterToLCD(labels[cnt]);
+                cnt++;
             }
-            gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
-            gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+            cnt++;
+            break;
         }
-        /*i=9;
-        setBoundingBox( (i*24)+6, (i*24)+6+13, ys, 60);
-        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
-        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-        //writeCharacterToLCD('~'+1);
-        writeCharacterToLCD('~'+2);
-        //writeCharacterToLCD('~'+1);
         gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
         gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-*/
-        writePSUstate();
-
     }
+    writePSUstate();
 
 }
 
+//first pin label top is at 240px-6px, 240-6-10, next one starts -10px, left at 234
+
 void updateLCD(uint8_t initial){
-    uint8_t i,ys;
+    uint8_t i;
     uint32_t temp;
-    ys=14;
-    if(!initial){
-        ys+=10;
-    }
+
     //DIO1-8, Vout
     for(i=0;i<9;i++){
 
@@ -109,71 +74,41 @@ void updateLCD(uint8_t initial){
                  temp = voltage(BP_ADC_CHAN, 1);
                  break;
         }
-        setBoundingBox( (i*24)+6, (i*24)+6+13, ys, 60);
+
+        /*
+        X1 = width of screen (239) - pixels from edge of first label (6) + font height-1 (13) - position (i) * pixels between label corners (24)
+        X2 = width of screen (239) - pixels from edge of first label (6) - position (i) * pixels between label corners (24)
+        Y1 = distance from top of screen (270)
+        Y2 = font width (10) * maximum characters allowed (5) + distance from top of screen (270)
+        */
+        setBoundingBox( (239-(6+13))-(i*24), (239-6)-(i*24), 270, 270+((10*4)-1));
         gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
         gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-        if(initial) writeCharacterToLCD('V'); //V
-        writeByteNumberToLCD((temp%1000)/100);
-        writeCharacterToLCD('.'); //.
         writeByteNumberToLCD(temp/1000);
+        writeCharacterToLCD('.'); //.
+        writeByteNumberToLCD((temp%1000)/100);
+        if(initial) writeCharacterToLCD('V'); //V
         gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
         gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-    }
-
-    if(initial){//this needs to be passed an array of strings from the protocol...
-        //164
-        for(i=0;i<10;i++){
-            setBoundingBox( (i*24)+6, (i*24)+6+13, 165-(10*3), 165);
-            gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
-            gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-            switch(i){
-            case 8:
-                break;
-            case 9:
-                writeCharacterToLCD('D');
-                writeCharacterToLCD('N');
-                writeCharacterToLCD('G');
-                break;
-            default:
-                writeCharacterToLCD('Z');
-                writeCharacterToLCD('i');
-                writeCharacterToLCD('H');
-                break;
-            }
-            gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
-            gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-        }
-        /*i=9;
-        setBoundingBox( (i*24)+6, (i*24)+6+13, ys, 60);
-        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
-        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-        //writeCharacterToLCD('~'+1);
-        writeCharacterToLCD('~'+2);
-        //writeCharacterToLCD('~'+1);
-        gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
-        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
-*/
-        writePSUstate();
-
     }
 
 }
 
 void writePSUstate(void){
-
-    setBoundingBox( (8*24)+6, (8*24)+6+13, 165-(10*4), 165);
+    uint8_t i=8;
+    setBoundingBox( (239-(6+13))-(i*24), (239-6)-(i*24), 155, 155+(10*5));
     gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
     gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
     if(modeConfig.psu==0){
-        writeCharacterToLCD('f');
-        writeCharacterToLCD('e');
+        writeCharacterToLCD('V');
         writeCharacterToLCD('r');
-        writeCharacterToLCD('V');
+        writeCharacterToLCD('e');
+        writeCharacterToLCD('f');
     }else{
-        writeCharacterToLCD('t');
-        writeCharacterToLCD('u');
-        writeCharacterToLCD('o');
         writeCharacterToLCD('V');
+        writeCharacterToLCD('o');
+        writeCharacterToLCD('u');
+        writeCharacterToLCD('t');
     }
     gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
     gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);

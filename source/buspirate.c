@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "cdcacm.h"
 #include "buspirate.h"
+#include "protocols.h"
 #include "delay.h"
 #include "fpga.h"
 #include "fs.h"
@@ -110,6 +111,8 @@ int main(void)
 	writeFileToLCD();
 	updateLCD(1);
 	enableLCD();
+
+	protocols[0].protocol_setup_exc(); //run HiZ setup
 
     if(uploadfpga()==1){
         gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);

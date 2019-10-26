@@ -7,6 +7,8 @@
 #include "UI.h"
 #include "AUXpin.h"
 #include "lcd.h"
+#include "PSU.h"
+
 
 
 void HiZpins(void)
@@ -33,7 +35,7 @@ void HiZsetup_exc(void)
 {
 	// turn everything off
 	modeConfig.psu=0;
-	gpio_clear(BP_PSUEN_PORT, BP_PSUEN_PIN);
+	psuDisable();
 	modeConfig.pullups=0;
 	gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);
 
@@ -43,5 +45,8 @@ void HiZsetup_exc(void)
 
 	// allow postphoned inits
 	modeConfig.init=0;
+	const char pinLabels[]="HiZ\0HiZ\0HiZ\0HiZ\0HiZ\0HiZ\0HiZ\0HiZ\0";
+
+	modeLabelsSetupLCD(pinLabels);
 
 }

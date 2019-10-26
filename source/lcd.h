@@ -9,4 +9,4 @@ void updateLCD(uint8_t initial);
 void writeFileToLCD(void);
 void writeByteNumberToLCD(uint8_t c);
 void writePSUstate(void);
-void modeLabelsSetupLCD(char *labels);
+void modeLabelsSetupLCD(const char *labels);
