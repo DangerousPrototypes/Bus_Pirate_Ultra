@@ -19,6 +19,76 @@
 
 */
 
+void modeLabelsSetupLCD(char *labels){
+    uint8_t i,ys;
+    uint32_t temp;
+    ys=14;
+    if(!initial){
+        ys+=10;
+    }
+    //DIO1-8, Vout
+    for(i=0;i<9;i++){
+
+        switch(i){
+            case 8:
+                temp = voltage(BP_VOUT_CHAN, 1);
+                break;
+            default:
+                 FPGA_REG_0A=(0b0|(i<<1));
+                 delayus(10);
+                 temp = voltage(BP_ADC_CHAN, 1);
+                 break;
+        }
+        setBoundingBox( (i*24)+6, (i*24)+6+13, ys, 60);
+        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+        if(initial) writeCharacterToLCD('V'); //V
+        writeByteNumberToLCD((temp%1000)/100);
+        writeCharacterToLCD('.'); //.
+        writeByteNumberToLCD(temp/1000);
+        gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+    }
+
+    if(initial){//this needs to be passed an array of strings from the protocol...
+        //164
+        for(i=0;i<10;i++){
+            setBoundingBox( (i*24)+6, (i*24)+6+13, 165-(10*3), 165);
+            gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+            gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+            switch(i){
+            case 8:
+                break;
+            case 9:
+                writeCharacterToLCD('D');
+                writeCharacterToLCD('N');
+                writeCharacterToLCD('G');
+                break;
+            default:
+                writeCharacterToLCD('Z');
+                writeCharacterToLCD('i');
+                writeCharacterToLCD('H');
+                break;
+            }
+            gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+            gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+        }
+        /*i=9;
+        setBoundingBox( (i*24)+6, (i*24)+6+13, ys, 60);
+        gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
+        gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+        //writeCharacterToLCD('~'+1);
+        writeCharacterToLCD('~'+2);
+        //writeCharacterToLCD('~'+1);
+        gpio_set(BP_FS_CS_PORT, BP_FS_CS_PIN);
+        gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+*/
+        writePSUstate();
+
+    }
+
+}
+
 void updateLCD(uint8_t initial){
     uint8_t i,ys;
     uint32_t temp;
@@ -34,7 +104,7 @@ void updateLCD(uint8_t initial){
                 temp = voltage(BP_VOUT_CHAN, 1);
                 break;
             default:
-                 FPGA_REG_0A=i;
+                 FPGA_REG_0A=(0b0|(i<<1));
                  delayus(10);
                  temp = voltage(BP_ADC_CHAN, 1);
                  break;

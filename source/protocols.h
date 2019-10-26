@@ -64,7 +64,7 @@ typedef struct _protocol
 	void (*protocol_stop)(void);			// stop
 	void (*protocol_stopR)(void);			// stop with read
 	uint32_t (*protocol_send)(uint32_t,uint32_t,uint8_t);	// send(/read) max 32 bit
-	uint32_t (*protocol_read)(void);		// read max 32 bit
+	uint32_t (*protocol_read)(uint32_t,uint32_t,uint8_t);		// read max 32 bit
 	void (*protocol_clkh)(void);			// set clk high
 	void (*protocol_clkl)(void);			// set clk low
 	void (*protocol_dath)(void);			// set dat hi
@@ -80,7 +80,7 @@ typedef struct _protocol
 	void (*protocol_stop_post)(void);			// stop
 	void (*protocol_stopR_post)(void);			// stop with read
 	uint32_t (*protocol_send_post)(uint32_t,uint32_t,uint8_t);	// send(/read) max 32 bit
-	uint32_t (*protocol_read_post)(void);		// read max 32 bit
+	uint32_t (*protocol_read_post)(uint32_t,uint32_t,uint8_t);		// read max 32 bit
 	void (*protocol_clkh_post)(void);			// set clk high
 	void (*protocol_clkl_post)(void);			// set clk low
 	void (*protocol_dath_post)(void);			// set dat hi

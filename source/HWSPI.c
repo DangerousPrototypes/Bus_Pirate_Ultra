@@ -12,48 +12,29 @@
 
 static uint32_t cpol, cpha, br, dff, lsbfirst, csidle, od;
 
+const char pinLabels[]="MOSI\0CLOCK\0MISO\0CS\0AUX\0ADC\0DIO7\0DIO8\0";
 
 void HWSPI_start(void)
 {
-	//cdcprintf("set CS=%d", !csidle);
-
 	HWSPI_setcs(0);
-
-	modeConfig.wwr=0;
 }
 
 void HWSPI_startr(void)
 {
-	//cdcprintf("set CS=%d", !csidle);
-
 	HWSPI_setcs(0);
-
-	modeConfig.wwr=1;
 }
 
 void HWSPI_stop(void)
 {
-	//cdcprintf("set CS=%d", csidle);
-
 	HWSPI_setcs(1);
-
-	modeConfig.wwr=0;
-
 }
 
 void HWSPI_stopr(void)
 {
-	//cdcprintf("set CS=%d", csidle);
-
 	HWSPI_setcs(1);
-
-	modeConfig.wwr=0;
 }
 
-void HWSPI_send_test(uint32_t d){
-    cdcprintf("SPI write: %04X\r\n",d);
-}
-
+// This is used for read and write commands
 uint32_t HWSPI_send(uint32_t d,uint32_t r,uint8_t b)
 {
 	uint16_t returnval, bpsm_command;
@@ -76,28 +57,15 @@ uint32_t HWSPI_send(uint32_t d,uint32_t r,uint8_t b)
 	return (uint16_t) returnval;
 }
 
+/*
+// currently recycling the write function above
 uint32_t HWSPI_read(void)
 {
 	uint16_t returnval;
-/*
-	//TODO: check lsb??
-	if((modeConfig.numbits==8)||(modeConfig.numbits==16))
-	{
-		if(modeConfig.numbits==8) spi_set_dff_8bit(BP_SPI);			// is there a less overhead way of doing this?
-		if(modeConfig.numbits==16) spi_set_dff_16bit(BP_SPI);
 
-		returnval = HWSPI_xfer(0xFF);					// is 0xFF ok?
-//		returnval = spi_xfer(BP_SPI, 0xFF);					// is 0xFF ok?
-	}
-	else
-	{
-		cdcprintf("Only 8 or 16 bits are allowed, use SW3W instead");
-		modeConfig.error=1;
-		returnval=0;
-	}
-*/
 	return (uint16_t) returnval;
 }
+*/
 
 void HWSPI_macro(uint32_t macro)
 {
@@ -107,83 +75,112 @@ void HWSPI_macro(uint32_t macro)
 
 void HWSPI_start_post(void)
 {
-	//cdcprintf("set CS=%d", !csidle);
+    uint16_t temp;
+	cdcprintf("CS=%d\r\n", !csidle);
+	temp=FPGA_REG_07;
+	if((temp&0x8100)!=0x8100){
+        cdcprintf("FPGA out of sync: %04X!=%04X\r\n", temp, 0x8100);
+        //todo: return and raise error flag
+        modeConfig.error=1;
+	}
 
-	HWSPI_setcs(0);
-
-	modeConfig.wwr=0;
 }
 
 void HWSPI_startr_post(void)
 {
-	//cdcprintf("set CS=%d", !csidle);
-
-	HWSPI_setcs(0);
-
-	modeConfig.wwr=1;
+    uint16_t temp;
+	cdcprintf("CS=%d\r\n", !csidle);
+	temp=FPGA_REG_07;
+	if((temp&0x8100)!=0x8100){
+        cdcprintf("FPGA out of sync: %04X!=%04X\r\n", temp, 0x8100);
+        //todo: return and raise error flag
+        modeConfig.error=1;
+	}
 }
 
 void HWSPI_stop_post(void)
 {
-	//cdcprintf("set CS=%d", csidle);
-
-	HWSPI_setcs(1);
-
-	modeConfig.wwr=0;
-
+    uint16_t temp;
+	cdcprintf("CS=%d\r\n", csidle);
+	temp=FPGA_REG_07;
+	if((temp&0x8100)!=0x8100){
+        cdcprintf("FPGA out of sync: %04X!=%04X\r\n", temp, 0x8100);
+        //todo: return and raise error flag
+        modeConfig.error=1;
+	}
 }
 
 void HWSPI_stopr_post(void)
 {
-	//cdcprintf("set CS=%d", csidle);
-
-	HWSPI_setcs(1);
-
-	modeConfig.wwr=0;
+    uint16_t temp;
+	cdcprintf("CS=%d\r\n", csidle);
+	temp=FPGA_REG_07;
+	if((temp&0x8100)!=0x8100){
+        cdcprintf("FPGA out of sync: %04X!=%04X\r\n", temp, 0x8100);
+        //todo: return and raise error flag
+        modeConfig.error=1;
+	}
 }
 
 uint32_t HWSPI_send_post(uint32_t d,uint32_t r,uint8_t b)
 {
-	uint16_t returnval;
+	uint16_t temp1, temp2;
 
-	returnval=FPGA_REG_07;
+	temp1=FPGA_REG_07;
 
-    if(returnval!=(0x0000|(((uint16_t)b<<8)|((uint16_t)d&0x00FF)))){
-        cdcprintf("FPGA out of sync: %04X!=%04X\r\n", returnval, (0x0000|(((uint16_t)b<<8)|((uint16_t)d&0x00FF))));
-        //todo: return and raise error flag
-    }
+
     cdcprintf("TX: ");
-    printnum((uint8_t)returnval);
-    cdcprintf("RX: ");
-	while(!gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN))//todo: THIS SHOULD NOT BLOCK! COULD GET STUCK!!
-	    cdcprintf("Delay!");
-	returnval=FPGA_REG_07;
-    printnum((uint8_t)returnval); //TODO: use statemachine, can't depend on this word always being there!
-    cdcprintf(" %04X (%02dbits)\r\n",returnval,b);
-    return returnval;
+    printnum((uint8_t)temp1);
+
+    if(temp1!=(0x0000|(((uint16_t)b<<8)|((uint16_t)d&0x00FF)))){
+        cdcprintf("FPGA out of sync: %04X!=%04X\r\n", temp1, (0x0000|(((uint16_t)b<<8)|((uint16_t)d&0x00FF))));
+        //todo: return and raise error flag
+        modeConfig.error=1;
+        return 0xffff;
+    }
+
+    while(!gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN))//todo: THIS SHOULD NOT BLOCK! COULD GET STUCK!!
+        cdcprintf("Delay!");
+    temp2=FPGA_REG_07;
+
+    if(modeConfig.wwr==1){
+        cdcprintf(" RX: ");
+        printnum((uint8_t)temp2); //TODO: use statemachine, can't depend on this word always being there!
+        //cdcprintf(" %04X",temp2); //for debug of return command queue
+    }
+    cdcprintf(" (%02dbits)\r\n",b);
+
+
+
+    return temp1;
 }
 
-uint32_t HWSPI_read_post(void)
+uint32_t HWSPI_read_post(uint32_t d,uint32_t r,uint8_t b)
 {
-	uint16_t returnval;
-/*
-	//TODO: check lsb??
-	if((modeConfig.numbits==8)||(modeConfig.numbits==16))
-	{
-		if(modeConfig.numbits==8) spi_set_dff_8bit(BP_SPI);			// is there a less overhead way of doing this?
-		if(modeConfig.numbits==16) spi_set_dff_16bit(BP_SPI);
+	uint16_t temp;
 
-		returnval = HWSPI_xfer(0xFF);					// is 0xFF ok?
-//		returnval = spi_xfer(BP_SPI, 0xFF);					// is 0xFF ok?
-	}
-	else
-	{
-		cdcprintf("Only 8 or 16 bits are allowed, use SW3W instead");
-		modeConfig.error=1;
-		returnval=0;
-	}
-*/
-	return (uint16_t) returnval;
+	temp=FPGA_REG_07;
+
+    //cdcprintf("TX: ");
+    //printnum((uint8_t)temp1);
+
+    if(temp!=(0x0000|(((uint16_t)b<<8)|((uint16_t)d&0x00FF)))){
+        cdcprintf("FPGA out of sync: %04X!=%04X\r\n", temp, (0x0000|(((uint16_t)b<<8)|((uint16_t)d&0x00FF))));
+        //todo: return and raise error flag
+        modeConfig.error=1;
+        return 0xffff;
+    }
+
+    while(!gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN))//todo: THIS SHOULD NOT BLOCK! COULD GET STUCK!!
+        cdcprintf("Delay!");
+    temp=FPGA_REG_07;
+
+    cdcprintf("RX: ");
+    printnum((uint8_t)temp); //TODO: use statemachine, can't depend on this word always being there!
+    //cdcprintf(" %04X",temp2); //for debug of return command queue
+    cdcprintf(" (%02dbits)\r\n",b);
+
+    return temp;
 }
 
 void HWSPI_macro_post(uint32_t macro)
@@ -217,7 +214,18 @@ void HWSPI_setup(void)
     //`define reg_bpio_hl wreg[6'h01][BP_PINS-1:0]
     //`define reg_bpio_dir wreg[6'h01][BP_PINS-1+8:8]
     FPGA_REG_00=0x00FF; //normal output|output enable all pins
-    FPGA_REG_01=0b0000110000000000; //direction output(only non-spi pins)|low(unimplemented)
+    FPGA_REG_01=0b1111010000000000; //direction output(only non-spi pins)|low(unimplemented)
+    csidle=1;
+    HWSPI_setcs(1); //pre-idle the CS line
+    FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
+
+    delayms(10);
+    FPGA_REG_03|=(0b1<<7);//put statemachine in reset
+    gpio_set(BP_FPGA_FIFO_CLEAR_PORT,BP_FPGA_FIFO_CLEAR_PIN);
+    delayms(1);
+    gpio_clear(BP_FPGA_FIFO_CLEAR_PORT,BP_FPGA_FIFO_CLEAR_PIN);
+
+
 }
 
 void HWSPI_setup_exc(void)
@@ -341,29 +349,14 @@ void HWSPI_setcs(uint8_t cs)
 	if(cs==0)		// 'start'
 	{
 		if(csidle) bpsm_command=(0x8100);
-			else bpsm_command=(0x81FF);
+			else bpsm_command=(0x8100|(uint16_t)0b00001000);
 	}
 	else			// 'stop'
 	{
-		if(csidle) bpsm_command=(0x81FF);
+		if(csidle) bpsm_command=(0x8100|(uint16_t)0b00001000);
 			else bpsm_command=(0x8100);
 	}
 
 	FPGA_REG_07=bpsm_command;
-	cdcprintf("BPSM-io: %04X\r\n",bpsm_command);
 
 }
-
-uint16_t HWSPI_xfer(uint16_t d)
-{
-	FPGA_REG_07=(0x0800|(d&0x00FF));//write 8 bits of d
-	cdcprintf("BPSM-pwrite: %04X\r\n",(0x0800|(d&0x00FF)));
-	return 0x0000;
-}
-
-
-
-
-
-
-

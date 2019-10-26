@@ -102,7 +102,7 @@ struct _protocol protocols[MAXPROTO]={
 	nullfunc1,				// stop
 	nullfunc1,				// stop with read
 	nullfunc5,				// send(/read) max 32 bit
-	nullfunc3,				// read max 32 bit
+	nullfunc5,				// read max 32 bit
 	nullfunc1,				// set clk high
 	nullfunc1,				// set clk low
 	nullfunc1,				// set dat hi
@@ -118,7 +118,7 @@ struct _protocol protocols[MAXPROTO]={
 	nullfunc1,				// stop
 	nullfunc1,				// stop with read
 	nullfunc5,				// send(/read) max 32 bit
-	nullfunc3,				// read max 32 bit
+	nullfunc5,				// read max 32 bit
 	nullfunc1,				// set clk high
 	nullfunc1,				// set clk low
 	nullfunc1,				// set dat hi
@@ -223,7 +223,7 @@ struct _protocol protocols[MAXPROTO]={
 	HWSPI_stop,				// stop
 	HWSPI_stopr,				// stop with read
 	HWSPI_send,				// send(/read) max 32 bit
-	HWSPI_read,				// read max 32 bit
+	HWSPI_send,				// read max 32 bit
 	nullfunc1,				// set clk high
 	nullfunc1,				// set clk low
 	nullfunc1,				// set dat hi

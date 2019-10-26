@@ -351,9 +351,6 @@ void doUI(void)
 				}
 			}
 
-            while(gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN))
-                temp=FPGA_REG_07;
-
             //prefill the common variables to save space below
             bytecodes[bytecodePreprocessed].command=c;
             bytecodes[bytecodePreprocessed].blocking=0;
@@ -373,7 +370,6 @@ void doUI(void)
                     bytecodes[bytecodePreprocessed].data=orderbits(getint());
                     bytecodes[bytecodePreprocessed].option1=getnumbits();
                     bytecodes[bytecodePreprocessed].repeat=getrepeat();
-                    //bytecodes[bytecodePreprocessed].blocking=0;
                     if(bytecodes[bytecodePreprocessed].option1<1) //custom user bits or use mode default
                         bytecodes[bytecodePreprocessed].option1=(uint16_t)modeConfig.numbits;
 
@@ -384,12 +380,18 @@ void doUI(void)
                     //}
                     break;
                 case 'r':
-                    //bytecodes[bytecodePreprocessed].command=c;
+                    bytecodes[bytecodePreprocessed].data=0xff; // TODO: make default send value configurable!
                     bytecodes[bytecodePreprocessed].option1=getnumbits();
                     bytecodes[bytecodePreprocessed].repeat=getrepeat();
-                    //bytecodes[bytecodePreprocessed].blocking=0;
-                    protocols[modeConfig.mode].protocol_read();
-                    break;
+                    if(bytecodes[bytecodePreprocessed].option1<1) //custom user bits or use mode default
+                        bytecodes[bytecodePreprocessed].option1=(uint16_t)modeConfig.numbits;
+
+                    //if (modeConfig.numbits<32) temp&=((1<<modeConfig.numbits)-1);
+                    //while(bytecodes[bytecodeProcessed].repeat--)
+                    //{//TODO: how to handle in lower layer, send custom bit numbers...
+                        protocols[modeConfig.mode].protocol_read(bytecodes[bytecodePreprocessed].data,bytecodes[bytecodePreprocessed].repeat,bytecodes[bytecodePreprocessed].option1);		// reshuffle bits if necessary
+                    //}
+                     break;
                 case '&':
                     bytecodes[bytecodePreprocessed].repeat=getrepeat();
                     FPGA_REG_07=(0x8400|(uint8_t)bytecodes[bytecodePreprocessed].repeat);//delay for repeat cycles
@@ -401,17 +403,13 @@ void doUI(void)
                     break;
                 case '\"': //NOT SURE HOW TO HANDLE THIS YET... ALSO THERE IS A BUG IF ONLY ONE CHAR "H" says unterminated
                    break;
-                case '[':   modeConfig.wwr=0; //WWR should be handled on the backend processing!!!
-                        protocols[modeConfig.mode].protocol_start();
+                case '[':   protocols[modeConfig.mode].protocol_start();
                         break;
-                case ']':   modeConfig.wwr=0;
-                        protocols[modeConfig.mode].protocol_stop();
+                case ']':   protocols[modeConfig.mode].protocol_stop();
                         break;
-                case '{':   modeConfig.wwr=1;
-                        protocols[modeConfig.mode].protocol_startR();
+                case '{':   protocols[modeConfig.mode].protocol_startR();
                         break;
-                case '}':   modeConfig.wwr=0;
-                        protocols[modeConfig.mode].protocol_stopR();
+                case '}':   protocols[modeConfig.mode].protocol_stopR();
                         break;
                 case '/':   protocols[modeConfig.mode].protocol_clkh();
                         break;
@@ -558,9 +556,9 @@ void doUI(void)
             }
             logicAnalyzerCaptureStop();
         }
-            while(gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN)){
-                cdcprintf("Still in buffer: %4X ",FPGA_REG_07);
-            }
+        while(gpio_get(BP_FPGA_FIFO_OUT_NEMPTY_PORT,BP_FPGA_FIFO_OUT_NEMPTY_PIN)){
+            cdcprintf("Still in buffer: %4X ",FPGA_REG_07);
+        }
         cdcprintf("\r\n");
 
 
@@ -604,33 +602,23 @@ void postProcess(){
                     protocols[modeConfig.mode].protocol_send_post(bytecodes[bytecodePostprocessed].data,bytecodes[bytecodePostprocessed].repeat,bytecodes[bytecodePostprocessed].option1);
                     break;
                 case 'r':
-                        if(result!=(0x0800|(((uint16_t)bytecodes[bytecodePostprocessed].option1<<8)|((uint16_t)bytecodes[bytecodePostprocessed].data&0x00FF)))){
-                            cdcprintf("FPGA out of sync\r\n");
-                        }
-						//while(bytecodes[bytecodeIndex].repeat--)
-						//{
-							//protocols[modeConfig.mode].protocol_read();
-
-                        cdcprintf("RX: ");
-                        printnum((uint8_t)FPGA_REG_07);
-                        cdcprintf("\r\n");
-						//}
+                     protocols[modeConfig.mode].protocol_read_post(bytecodes[bytecodePostprocessed].data,bytecodes[bytecodePostprocessed].repeat,bytecodes[bytecodePostprocessed].option1);
 						break;
 				case '\"': //NOT SURE HOW TO HANDLE THIS YET... ALSO THERE IS A BUG IF ONLY ONE CHAR "H" says unterminated
 				       break;
 				case '(':   //protocols[modeConfig.mode].protocol_macro(bytecodes[bytecodeIndex].data);
 						break;
 				case '[':   modeConfig.wwr=0; //WWR should be handled on the backend processing!!!
-                        //protocols[modeConfig.mode].protocol_start_post(result);
+                        protocols[modeConfig.mode].protocol_start_post();
 						break;
 				case ']':   modeConfig.wwr=0;
-						//protocols[modeConfig.mode].protocol_stop_post(result);
+						protocols[modeConfig.mode].protocol_stop_post();
 						break;
 				case '{':   modeConfig.wwr=1;
-						//protocols[modeConfig.mode].protocol_startR_post(result);
+						protocols[modeConfig.mode].protocol_startR_post();
 						break;
 				case '}':   modeConfig.wwr=0;
-						//protocols[modeConfig.mode].protocol_stopR_post(result);
+						protocols[modeConfig.mode].protocol_stopR_post();
 						break;
 				case '/':   //protocols[modeConfig.mode].protocol_clkh_post(result);
 						break;
@@ -651,14 +639,14 @@ void postProcess(){
                         if(FPGA_REG_07!=(0x8400|(uint8_t)bytecodes[bytecodePostprocessed].repeat)){
                             cdcprintf("FPGA out of sync\r\n");
                         }
-						cdcprintf("Delay: %dus", bytecodes[bytecodePostprocessed].repeat);
+						cdcprintf("Delay: %dus\r\n", bytecodes[bytecodePostprocessed].repeat);
 						break;
                 case '%':
                         //TODO: compare command to verify we are in the right place in the data....
                         if(FPGA_REG_07!=(0x8400|0x0f)){
                             cdcprintf("FPGA out of sync\r\n");
                         }
-                        cdcprintf("Delay: %dms", bytecodes[bytecodePostprocessed].repeat);
+                        cdcprintf("Delay: %dms\r\n", bytecodes[bytecodePostprocessed].repeat);
                         /*for(i=1;i<bytecodes[bytecodePostprocessed].repeat;i++)
                             temp=FPGA_REG_07;//delay for repeat cycled (CURRENTLY NOT SAFE!!!! NEED STATEMACHINE!!)*/
                     break;
@@ -725,7 +713,7 @@ void postProcess(){
                         cdcgetc();
 						break;
 				case 'f':
-                        cdcprintf("Freq: %ld Hz", getfreq());
+                        cdcprintf("Freq: %ld Hz\r\n", getfreq());
 						break;
 
 				case 'h':
@@ -751,7 +739,7 @@ void postProcess(){
                     break;
 				case 'p':
                         gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);	// always permitted
-						cdcprintf("Pull-ups: disabled");
+						cdcprintf("Pull-ups: disabled\r\n");
 						modeConfig.pullups=0;
 						break;
 				case 'P':
@@ -762,7 +750,7 @@ void postProcess(){
 							cdcprintf("Pull-ups: enabled\r\n");
 							delayms(10);
 							temp = voltage(BP_VOUT_CHAN, 1);
-							cdcprintf("Vpu: %d.%02dV", temp/1000, (temp%1000)/10);
+							cdcprintf("Vpu: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
 							modeConfig.pullups=1;
 						}
 						else
@@ -776,13 +764,14 @@ void postProcess(){
 						break;
 				case 'w':
                         psuDisable();
-						cdcprintf("Vout: disabled");
+						cdcprintf("Vout: disabled\r\nw");
 						modeConfig.psu=0;
 						break;
 				case 'W':
                         if(modeConfig.mode!=0)
 						{
-                            temp=askint("value", 1, 0xFFFFFFFF, 1000);
+                            temp=askint("value ", 0, 0xFFF, 0x6c0);
+                            //temp=10;
                             psuSetOutput(temp);
 							//delayms(10);
                             temp = voltage(BP_VOUT_CHAN, 1);
@@ -1224,7 +1213,7 @@ void getuserinput(void)
 	while(!go)
 	{
 
-        //updateLCD(0);
+        updateLCD(0);
 
         if(cdcbyteready2())
 		{
@@ -1484,6 +1473,8 @@ uint32_t askint(const char *menu, uint32_t minval, uint32_t maxval, uint32_t def
 
 	// clear errors
 	modeConfig.error=0;
+
+			cmdtail=cmdhead;	// flush all input
 
 	return temp;
 }

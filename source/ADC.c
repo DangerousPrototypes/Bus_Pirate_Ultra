@@ -30,7 +30,7 @@ void initADC(void)
 	//adc_enable_temperature_sensor();
 
 	// set conversion time (xxms)
-	adc_set_sample_time_on_all_channels(BP_ADC, ADC_SMPR_SMP_7DOT5CYC);
+	adc_set_sample_time_on_all_channels(BP_ADC, ADC_SMPR_SMP_13DOT5CYC);
 
 	// power on after onversion
 	adc_power_on(BP_ADC);

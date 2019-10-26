@@ -175,7 +175,7 @@ void logicAnalyzerCaptureStop(void){
 	spiWx4(CMDREADQUAD); //read command
 	spiWx4(0);
 	spiWx4(0);
-	spiWx4(0); //3 byte address
+	spiWx4(1); //3 byte address
 	setup_spix4r(); //read
 	spiRx4(); //dummy byte * 3 for fast quad read command
 	spiRx4(); //dummy byte
