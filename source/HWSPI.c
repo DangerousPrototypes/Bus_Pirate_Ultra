@@ -9,7 +9,7 @@
 #include "UI.h"
 #include "FPGA.h"
 #include "lcd.h"
-
+#include "delay.h"
 
 static uint32_t cpol, cpha, br, dff, lsbfirst, csidle, od;
 

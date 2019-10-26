@@ -107,10 +107,10 @@ int main(void)
     setupLCD();
 	initializeLCD();
 	//clearLCD();
-	disableLCD();
-	writeFileToLCD();
-	updateLCD(1);
-	enableLCD();
+	//disableLCD();
+	//writeFileToLCD();
+	//updateLCD(1);
+	//enableLCD();
 
 	protocols[0].protocol_setup_exc(); //run HiZ setup
 

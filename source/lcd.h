@@ -10,3 +10,5 @@ void writeFileToLCD(void);
 void writeByteNumberToLCD(uint8_t c);
 void writePSUstate(void);
 void modeLabelsSetupLCD(const char *labels);
+void enableLCD(void);
+void disableLCD(void);

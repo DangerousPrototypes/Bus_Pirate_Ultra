@@ -1213,7 +1213,7 @@ void getuserinput(void)
 	while(!go)
 	{
 
-        updateLCD(0);
+        //updateLCD(0);
 
         if(cdcbyteready2())
 		{

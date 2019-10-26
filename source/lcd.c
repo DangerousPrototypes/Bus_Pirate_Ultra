@@ -5,22 +5,15 @@
 #include "font.h"
 #include "fpga.h"
 #include "UI.h"
+#include "ADC.h"
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
 
-/*
-//IO pins voltage write bounding boxes
-//DIO1 - (6,14) to (6+14,14) Ymax=47
-// DIO2-Voout ((n*24)+6) to (n*24)+14+6,14) Ymax = 47
-
-
-
-
-*/
-
 void modeLabelsSetupLCD(const char *labels){
     uint8_t i,cnt=0;
+	disableLCD();
+    writeFileToLCD();
 
     for(i=0;i<10;i++){
         /*
@@ -52,6 +45,8 @@ void modeLabelsSetupLCD(const char *labels){
         gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
     }
     writePSUstate();
+    updateLCD(1);
+	enableLCD();
 
 }
 
@@ -195,13 +190,6 @@ void clearLCD(void){
     gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
 }
 
-void disableLCD(void){
-    writeLCDcommand(0x28);
-}
-
-void enableLCD(void){
-    writeLCDcommand(0x29);
-}
 
 void setBoundingBox(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye){
     //setup write area
@@ -233,6 +221,13 @@ void writeLCDdata(uint16_t data){
     spi_xfer(BP_LCD_SPI, (uint16_t) data);
     gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
 }
+void disableLCD(void){
+    writeLCDcommand(0x28);
+}
+
+void enableLCD(void){
+    writeLCDcommand(0x29);
+}
 
 void setupLCD(void){
     uint8_t i,c;
@@ -255,7 +250,7 @@ void setupLCD(void){
 
 	// setup SPI (cpol=1, cpha=1) +- 1MHz
 	spi_reset(BP_LCD_SPI);
-	spi_init_master(BP_LCD_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_4, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE, SPI_CR1_CPHA_CLK_TRANSITION_2, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
+	spi_init_master(BP_LCD_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_2, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE, SPI_CR1_CPHA_CLK_TRANSITION_2, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
 	spi_set_full_duplex_mode(BP_LCD_SPI);
 	spi_enable(BP_LCD_SPI);
 
