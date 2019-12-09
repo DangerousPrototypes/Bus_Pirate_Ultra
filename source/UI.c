@@ -401,6 +401,11 @@ void doUI(void)
                     for(i=0;i<bytecodes[bytecodePreprocessed].repeat;i++)
                         FPGA_REG_07=(0x8400|(uint8_t)0x0F);//delay for repeat cycles
                     break;
+                case 'd':
+                    FPGA_REG_0A=(0b0|(8<<1));//hack to measure Vout/Vref!!!! needs to be moved inside FPGA
+                    bytecodes[bytecodePreprocessed].repeat=getrepeat();
+                    FPGA_REG_07=(0x8500);
+                    break;
                 case '\"': //NOT SURE HOW TO HANDLE THIS YET... ALSO THERE IS A BUG IF ONLY ONE CHAR "H" says unterminated
                    break;
                 case '[':   protocols[modeConfig.mode].protocol_start();
@@ -442,7 +447,6 @@ void doUI(void)
                         modeConfig.error=1;
                     }
 				    break;
-                case 'd':
                 case 'D':
                 case 'f':
                 case 'g':
@@ -500,7 +504,8 @@ void doUI(void)
 				    cancelPreprocessor=1;
   					break;
 				case '#':
-				    reset();
+				    //reset();
+				    psutest();
 				    cancelPreprocessor=1;
                     break;
 				//case '~':
@@ -696,11 +701,13 @@ void postProcess(){
 						}
 						break;
 				case 'd':
-                        //temp = voltage(BP_ADC_CHAN, 1);
-                        //FPGA_REG_03&=~(0b1<<7);//release statemachine from reset
-                        //cdcprintf("ADC: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
-                        temp = voltage(BP_VOUT_CHAN, 1);
-                        cdcprintf("Vout: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
+                        temp=FPGA_REG_07;
+                        if(temp!=(0x8500)){
+                            cdcprintf("ADC FPGA out of sync %04X\r\n",temp);
+                        }
+						cdcprintf("ADC: %04X\r\n", FPGA_REG_07);
+                        //temp = voltage(BP_VOUT_CHAN, 1);
+                        //cdcprintf("Vout: %d.%02dV\r\n", temp/1000, (temp%1000)/10);
 						break;
 				case 'D':
                         cdcprintf("Press any key to exit\r\n");

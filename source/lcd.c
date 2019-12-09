@@ -178,7 +178,7 @@ void clearLCD(void){
 
     setBoundingBox(0, 240, 0, 320);
 
-    color=white;
+    color=red;
     gpio_set(BP_LCD_DP_PORT,BP_LCD_DP_PIN);
     gpio_clear(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
     for(x=0;x<240;x++){
@@ -188,6 +188,7 @@ void clearLCD(void){
         }
     }
     gpio_set(BP_LCD_CS_PORT, BP_LCD_CS_PIN);
+
 }
 
 
@@ -272,6 +273,251 @@ void setupLCD(void){
     }
 }
 
+void initializeILI9341(void){
+
+gpio_clear(BP_LCD_RESET_PORT,BP_LCD_RESET_PIN);
+delayms(120);
+gpio_set(BP_LCD_RESET_PORT,BP_LCD_RESET_PIN);
+delayms(120);
+
+writeLCDcommand(0x11);//Sleep out, DC/DC converter, internal oscillator, panel scanning "enable"
+delayms(120);
+
+writeLCDcommand(0x01);//soft reset
+delayms(1000);
+//power control A
+writeLCDcommand(0xCB);
+writeLCDdata(0x39);
+writeLCDdata(0x2C);
+writeLCDdata(0x00);
+writeLCDdata(0x34);
+writeLCDdata(0x02);
+
+//power control B
+writeLCDcommand(0xCF);
+writeLCDdata(0x00);
+writeLCDdata(0xC1);
+writeLCDdata(0x30);
+
+//driver timing control A
+writeLCDcommand(0xE8);
+writeLCDdata(0x85);
+writeLCDdata(0x00);
+writeLCDdata(0x78);
+
+//driver timing control B
+writeLCDcommand(0xEA);
+writeLCDdata(0x00);
+writeLCDdata(0x00);
+
+//power on sequence control
+writeLCDcommand(0xED);
+writeLCDdata(0x64);
+writeLCDdata(0x03);
+writeLCDdata(0x12);
+writeLCDdata(0x81);
+
+//pump ratio control
+writeLCDcommand(0xF7);
+writeLCDdata(0x20);
+
+//power control,VRH[5:0]
+writeLCDcommand(0xC0);
+writeLCDdata(0x23);
+
+//Power control,SAP[2:0];BT[3:0]
+writeLCDcommand(0xC1);
+writeLCDdata(0x10);
+
+//vcm control
+writeLCDcommand(0xC5);
+writeLCDdata(0x3E);
+writeLCDdata(0x28);
+
+//vcm control 2
+writeLCDcommand(0xC7);
+writeLCDdata(0x86);
+
+//memory access control
+writeLCDcommand(0x36);
+writeLCDdata(0x48);
+
+//pixel format
+writeLCDcommand(0x3A);
+writeLCDdata(0x55);
+
+//frameration control,normal mode full colours
+writeLCDcommand(0xB1);
+writeLCDdata(0x00);
+writeLCDdata(0x18);
+
+//display function control
+writeLCDcommand(0xB6);
+writeLCDdata(0x08);
+writeLCDdata(0x82);
+writeLCDdata(0x27);
+
+//3gamma function disable
+writeLCDcommand(0xF2);
+writeLCDdata(0x00);
+
+//gamma curve selected
+writeLCDcommand(0x26);
+writeLCDdata(0x01);
+
+//set positive gamma correction
+writeLCDcommand(0xE0);
+writeLCDdata(0x0F);
+writeLCDdata(0x31);
+writeLCDdata(0x2B);
+writeLCDdata(0x0C);
+writeLCDdata(0x0E);
+writeLCDdata(0x08);
+writeLCDdata(0x4E);
+writeLCDdata(0xF1);
+writeLCDdata(0x37);
+writeLCDdata(0x07);
+writeLCDdata(0x10);
+writeLCDdata(0x03);
+writeLCDdata(0x0E);
+writeLCDdata(0x09);
+writeLCDdata(0x00);
+
+//set negative gamma correction
+writeLCDcommand(0xE1);
+writeLCDdata(0x00);
+writeLCDdata(0x0E);
+writeLCDdata(0x14);
+writeLCDdata(0x03);
+writeLCDdata(0x11);
+writeLCDdata(0x07);
+writeLCDdata(0x31);
+writeLCDdata(0xC1);
+writeLCDdata(0x48);
+writeLCDdata(0x08);
+writeLCDdata(0x0F);
+writeLCDdata(0x0C);
+writeLCDdata(0x31);
+writeLCDdata(0x36);
+writeLCDdata(0x0F);
+
+//exit sleep
+writeLCDcommand(0x11);
+delayms(120);
+//display on
+writeLCDcommand(0x29);
+
+
+/*
+	writeLCDcommand(ILI9341_CMD_POWER_ON_SEQ_CONTROL);
+	writeLCDdata(ILI9341_CMD_IDLE_MODE_ON);
+	writeLCDdata(ILI9341_CMD_MEMORY_WRITE);
+	writeLCDdata(ILI9341_CMD_NOP);
+	writeLCDdata(ILI9341_CMD_TEARING_EFFECT_LINE_OFF);
+	writeLCDdata(0x02); 	// XXX
+
+	writeLCDcommand(ILI9341_CMD_POWER_CONTROL_B);
+	writeLCDdata(ILI9341_CMD_NOP);
+	writeLCDdata(ILI9341_CMD_POWER_CONTROL_2);
+	writeLCDdata(ILI9341_CMD_PARTIAL_AREA);
+
+	writeLCDcommand(ILI9341_CMD_DRIVER_TIMING_CONTROL_A);
+	writeLCDdata(0x85); 	// XXX
+	writeLCDdata(ILI9341_CMD_NOP);
+	writeLCDdata(0x78); 	// XXX
+
+	writeLCDcommand(ILI9341_CMD_DRIVER_TIMING_CONTROL_B);
+	writeLCDdata(ILI9341_CMD_NOP);
+	writeLCDdata(ILI9341_CMD_NOP);
+
+	writeLCDcommand(0xED);	// XXX
+	writeLCDdata(0x64); 	// XXX
+	writeLCDdata(0x03);	// XXX
+	writeLCDdata(ILI9341_CMD_PARTIAL_MODE_ON);
+	writeLCDdata(0X81); 	// XXX
+
+	writeLCDcommand(ILI9341_CMD_PUMP_RATIO_CONTROL);
+	writeLCDdata(ILI9341_CMD_DISP_INVERSION_OFF);
+
+	writeLCDcommand(ILI9341_CMD_POWER_CONTROL_1);
+	writeLCDdata(0x23);	//VRH[5:0] 	// XXX
+
+	writeLCDcommand(ILI9341_CMD_POWER_CONTROL_2);
+	writeLCDdata(ILI9341_CMD_ENTER_SLEEP_MODE);
+
+	writeLCDcommand(ILI9341_CMD_VCOM_CONTROL_1);
+	writeLCDdata(ILI9341_CMD_READ_MEMORY_CONTINUE);
+	writeLCDdata(ILI9341_CMD_DISPLAY_OFF);
+
+	writeLCDcommand(ILI9341_CMD_VCOM_CONTROL_2);
+	writeLCDdata(0x86);	//--	// XXX
+
+	writeLCDcommand(ILI9341_CMD_MEMORY_ACCESS_CONTROL);
+	writeLCDdata(0x48);	//C8	//48 68gal.gal.gal.//28 E8 gal.gal.gal.	// XXX
+
+	writeLCDcommand(ILI9341_CMD_COLMOD_PIXEL_FORMAT_SET);
+	writeLCDdata(ILI9341_CMD_WRITE_CONTENT_ADAPT_BRIGHTNESS);
+
+	writeLCDcommand(ILI9341_CMD_FRAME_RATE_CONTROL_NORMAL);
+	writeLCDdata(ILI9341_CMD_NOP);
+	writeLCDdata(0x18); 	// XXX
+
+	writeLCDcommand(ILI9341_CMD_DISPLAY_FUNCTION_CONTROL);
+	writeLCDdata(0x08); 	// XXX
+	writeLCDdata(0x82);	// XXX
+	writeLCDdata(0x27);	// XXX
+
+	writeLCDcommand(ILI9341_CMD_ENABLE_3_GAMMA_CONTROL);
+	writeLCDdata(ILI9341_CMD_NOP);
+
+	writeLCDcommand(0x26);	//Gamma curve selected 	// XXX
+	writeLCDdata(ILI9341_CMD_SOFTWARE_RESET);
+
+	writeLCDcommand(ILI9341_CMD_POSITIVE_GAMMA_CORRECTION);
+	writeLCDdata(0x0F); 	// XXX
+	writeLCDdata(0x31);	// XXX
+	writeLCDdata(ILI9341_CMD_PAGE_ADDRESS_SET);
+	writeLCDdata(ILI9341_CMD_READ_DISP_PIXEL_FORMAT);
+	writeLCDdata(ILI9341_CMD_READ_DISP_SIGNAL_MODE);
+	writeLCDdata(0x08); 	// XXX
+	writeLCDdata(0x4E); 	// XXX
+	writeLCDdata(0xF1); 	// XXX
+	writeLCDdata(ILI9341_CMD_VERT_SCROLL_START_ADDRESS);
+	writeLCDdata(0x07); 	// XXX
+	writeLCDdata(ILI9341_CMD_ENTER_SLEEP_MODE);
+	writeLCDdata(0x03);	// XXX
+	writeLCDdata(ILI9341_CMD_READ_DISP_SIGNAL_MODE);
+	writeLCDdata(ILI9341_CMD_READ_DISP_STATUS);
+	writeLCDdata(ILI9341_CMD_NOP);
+
+	writeLCDcommand(ILI9341_CMD_NEGATIVE_GAMMA_CORRECTION);
+	writeLCDdata(ILI9341_CMD_NOP);
+	writeLCDdata(ILI9341_CMD_READ_DISP_SIGNAL_MODE);
+	writeLCDdata(0x14); 	// XXX
+	writeLCDdata(0x03);	// XXX
+	writeLCDdata(ILI9341_CMD_SLEEP_OUT);
+	writeLCDdata(0x07); 	// XXX
+	writeLCDdata(0x31); 	// XXX
+	writeLCDdata(ILI9341_CMD_POWER_CONTROL_2);
+	writeLCDdata(0x48); 	// XXX
+	writeLCDdata(0x08); 	// XXX
+	writeLCDdata(0x0F); 	// XXX
+	writeLCDdata(ILI9341_CMD_READ_DISP_PIXEL_FORMAT);
+	writeLCDdata(0x31); 	// XXX
+	writeLCDdata(ILI9341_CMD_MEMORY_ACCESS_CONTROL);
+	writeLCDdata(ILI9341_CMD_READ_DISP_SELF_DIAGNOSTIC);
+
+	writeLCDcommand(ILI9341_CMD_SLEEP_OUT);
+	delayms(120);
+
+	writeLCDcommand(ILI9341_CMD_DISPLAY_ON);
+	writeLCDcommand(ILI9341_CMD_MEMORY_WRITE);
+	//glcd_bg(bgcolor);
+
+*/
+
+}
+
 void initializeLCD(void){
 //#define QT020HLCG00 //nicer build quality
 #define HT020SQV003NS //large metal body frame
@@ -291,7 +537,7 @@ writeLCDdata(0x00);
 
 #ifdef HT020SQV003NS
 writeLCDcommand(0x36);  //MADCTL (36h): Memory Data Access Control
-writeLCDdata(0x00);
+writeLCDdata(0b00000000); //0x00
 #endif
 
 writeLCDcommand(0x3A);//COLMOD,interface pixel format

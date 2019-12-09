@@ -12,3 +12,4 @@ void writePSUstate(void);
 void modeLabelsSetupLCD(const char *labels);
 void enableLCD(void);
 void disableLCD(void);
+void initializeILI9341(void);

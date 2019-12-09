@@ -64,8 +64,8 @@ int main(void)
 	gpio_set_mode(BP_USB_PULLUP_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_USB_PULLUP_PIN);	// USB d+ pullup
 	gpio_clear(BP_USB_PULLUP_PORT, BP_USB_PULLUP_PIN);
     // on-board pull-up resistors control
-	gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);								// active hi
-	gpio_set_mode(BP_VPUEN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPUEN_PIN);		// VPU disable
+	//gpio_clear(BP_VPUEN_PORT, BP_VPUEN_PIN);								// active hi
+	//gpio_set_mode(BP_VPUEN_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_VPUEN_PIN);		// VPU disable
 	// LEDs
 	gpio_set_mode(BP_LED_MODE_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BP_LED_MODE_PIN);
 	gpio_clear(BP_LED_MODE_PORT, BP_LED_MODE_PIN);
@@ -102,17 +102,18 @@ int main(void)
 	initADC();
 
 	// DAC/PSU
-	psuinit();
+	//psuinit();
 
     setupLCD();
 	initializeLCD();
-	//clearLCD();
+	//initializeILI9341();
+	clearLCD();
 	//disableLCD();
-	//writeFileToLCD();
-	//updateLCD(1);
+	writeFileToLCD();
+	updateLCD(1);
 	//enableLCD();
 
-	protocols[0].protocol_setup_exc(); //run HiZ setup
+	//protocols[0].protocol_setup_exc(); //run HiZ setup
 
     if(uploadfpga()==1){
         gpio_set(BP_LED_MODE_PORT,BP_LED_MODE_PIN);

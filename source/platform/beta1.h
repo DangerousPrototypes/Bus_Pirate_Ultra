@@ -42,17 +42,17 @@
 #define BP_LCD_CLK_PIN		GPIO5
 #define BP_LCD_MOSI_PIN	    GPIO7
 #define BP_LCD_MISO_PIN	    GPIO6
-#define BP_LCD_CS_PIN		GPIO12
-#define BP_LCD_DP_PIN      GPIO11
-#define BP_LCD_RESET_PIN    GPIO4
-#define BP_LCD_AUX2_PIN    GPIO5
+#define BP_LCD_CS_PIN		GPIO2
+#define BP_LCD_DP_PIN      GPIO3
+#define BP_LCD_RESET_PIN    GPIO5
+#define BP_LCD_AUX2_PIN    GPIO4
 #define BP_LCD_CLK_PORT	    GPIOA
 #define BP_LCD_MOSI_PORT	GPIOA
 #define BP_LCD_MISO_PORT	GPIOA
-#define BP_LCD_CS_PORT		GPIOF
-#define BP_LCD_DP_PORT      GPIOF
-#define BP_LCD_RESET_PORT    GPIOC
-#define BP_LCD_AUX2_PORT    GPIOC
+#define BP_LCD_CS_PORT		GPIOE
+#define BP_LCD_DP_PORT      GPIOE
+#define BP_LCD_RESET_PORT    GPIOE
+#define BP_LCD_AUX2_PORT    GPIOE
 
 
 
@@ -168,8 +168,8 @@ mcu_int1	pe3
 // pullups and poewrsupplies
 #define BP_VPUEN_PORT		GPIOG
 #define BP_VPUEN_PIN		GPIO0
-#define BP_PSUEN_PORT		GPIOE
-#define BP_PSUEN_PIN		GPIO5
+//#define BP_PSUEN_PORT		GPIOE
+//#define BP_PSUEN_PIN		GPIO5
 
 // adc
 #define BP_ADC			ADC1
@@ -186,6 +186,25 @@ mcu_int1	pe3
 #define BP_VOUT_PIN		GPIO2
 
 
+#define DAC_CLOCK_PORT GPIOC
+#define DAC_CLOCK_PIN   GPIO4
+#define DAC_DATA_PORT   GPIOB
+#define DAC_DATA_PIN    GPIO1
+#define DAC_SYNC_PORT   GPIOC
+#define DAC_SYNC_PIN    GPIO5
+
+#define CURRENT_INT0_PORT GPIOC
+#define CURRENT_INT0_PIN    GPIO1
+#define CURRENT_INT1_PORT GPIOC
+#define CURRENT_INT1_PIN    GPIO3
+
+#define CURRENT_TEST_PORT   GPIOG
+#define CURRENT_TEST_PIN    GPIO5
+#define CURRENT_RESET_PORT  GPIOC
+#define CURRENT_RESET_PIN   GPIO2
+
+#define VREGEN_PORT GPIOB
+#define VREGEN_PIN  GPIO2
 
 
 
