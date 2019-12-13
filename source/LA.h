@@ -34,10 +34,13 @@ void logicAnalyzerTest(void);
 #define la_sram_quad_output() gpio_set(GPIOE, GPIO3)
 #define la_sram_quad_input() gpio_clear(GPIOE, GPIO3)
 
-#define sram_select() sram_select_0(); sram_select_1()
-#define sram_select_0() FPGA_REG_03&=~(0b1<<8)
-#define sram_select_1() FPGA_REG_03&=~(0b1<<9)
-#define sram_deselect() FPGA_REG_03|=0b11<<8
+#define sram_enable() config_register|=(0b11000);FPGA_REG_03=config_register
+#define sram_enable_0() config_register|=(0b01000);FPGA_REG_03=config_register
+#define sram_enable_1() config_register|=(0b10000);FPGA_REG_03=config_register
+#define sram_disable() config_register&=~(0b11000);FPGA_REG_03=config_register
+
+#define sram_select() gpio_clear(BP_FPGA_CS_PORT,BP_FPGA_CS_PIN)
+#define sram_deselect() gpio_set(BP_FPGA_CS_PORT,BP_FPGA_CS_PIN)
 
 #define sram_clock_high() gpio_set(GPIOB,GPIO13)
 #define sram_clock_low() gpio_clear(GPIOB,GPIO13)
